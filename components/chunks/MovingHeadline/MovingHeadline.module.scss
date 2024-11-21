@@ -1,0 +1,43 @@
+.MovingHeadline {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 120px; /* Adjust size as per your design */
+  font-weight: bold;
+  background-color: black;
+  color: black;
+  margin-top: 200px;
+  padding: 80px 0;
+
+  .movingText {
+    display: inline-flex; /* Use flex for perfect alignment */
+    animation: moveLeft 20s linear infinite; /* Infinite leftward motion */
+    background-color: black;
+    width: max-content; /* Ensures seamless wrapping without gaps */
+  }
+
+  .word {
+    display: inline-block;
+    margin: 0 10px;
+
+    &.filled {
+      color: white;
+      background-color: black;
+    }
+
+    &.bordered {
+      color: transparent;
+      -webkit-text-stroke: 1px white; /* Border style for the text */
+      background-color: black;
+    }
+  }
+}
+
+@keyframes moveLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%); /* Animate only halfway for smooth looping */
+  }
+}
