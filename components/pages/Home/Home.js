@@ -1,11 +1,10 @@
 import React from "react";
+import Navbar from "../../chunks/Navbar/Navbar";
 
 const Home = () => {
   return (
     <div>
-      <h2>Building arkalalchakravarty.com 🚀🧑🏻‍💻</h2>
-
-      <p>Lets make the UI!!!!!!</p>
+      <Navbar />
     </div>
   );
 };
