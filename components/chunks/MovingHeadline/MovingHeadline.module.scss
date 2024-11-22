@@ -4,15 +4,12 @@
   white-space: nowrap;
   font-size: 120px; /* Adjust size as per your design */
   font-weight: bold;
-  background-color: black;
-  color: black;
-  margin-top: 200px;
-  padding: 80px 0;
+  color: white;
+  margin: 200px 0;
 
   .movingText {
     display: inline-flex; /* Use flex for perfect alignment */
     animation: moveLeft 20s linear infinite; /* Infinite leftward motion */
-    background-color: black;
     width: max-content; /* Ensures seamless wrapping without gaps */
   }
 
@@ -21,14 +18,12 @@
     margin: 0 10px;
 
     &.filled {
-      color: white;
-      background-color: black;
+      color: black;
     }
 
     &.bordered {
       color: transparent;
-      -webkit-text-stroke: 1px white; /* Border style for the text */
-      background-color: black;
+      -webkit-text-stroke: 1px black; /* Border style for the text */
     }
   }
 }
