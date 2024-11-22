@@ -51,9 +51,9 @@
       }
 
       .OnboardStepIcon {
-        border: 1px solid gray;
         border-radius: 10px;
         padding: 10px;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
 
         .OnboardStepIconImg {
           font-size: 26px;
