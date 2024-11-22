@@ -1,0 +1,64 @@
+.OnboardIntro {
+  width: 95%;
+  margin: 100px auto;
+  border: 1px dotted black;
+  padding: 50px 0;
+  display: flex;
+  justify-content: space-around;
+
+  .OnboardTitle {
+    h2 {
+      font-size: 40px;
+      margin: 10px 0;
+    }
+
+    .OnboardIntroImgBox {
+      display: flex;
+      justify-content: center;
+      margin: 50px 0;
+
+      .OnboardIntroImg {
+        width: 400px;
+        height: auto;
+        object-fit: contain;
+        display: flex;
+        justify-content: center;
+      }
+    }
+  }
+
+  .OnboardSteps {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 100px;
+    margin-top: 35px;
+
+    .OnboardStep {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+
+      .OnboardStepInfo {
+        h3 {
+          font-size: 26px;
+        }
+
+        p {
+          margin-top: 10px;
+          font-size: 16px;
+        }
+      }
+
+      .OnboardStepIcon {
+        border: 1px solid gray;
+        border-radius: 10px;
+        padding: 10px;
+
+        .OnboardStepIconImg {
+          font-size: 26px;
+        }
+      }
+    }
+  }
+}
