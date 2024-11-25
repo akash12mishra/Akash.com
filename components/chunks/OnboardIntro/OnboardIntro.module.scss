@@ -62,13 +62,13 @@
 
       .verticalLine {
         position: absolute;
-        left: 4.3%;
+        left: 4.3%; /* Adjust to align the line properly */
         transform: translateX(-50%);
         top: 100%;
         width: 2px;
-        height: 0;
+        height: 0; /* Initial height */
         background-color: black;
-        transition: height 0.5s ease-out;
+        transition: height 0.1s linear; /* Linear for consistent scroll speed */
       }
     }
   }
