@@ -6,6 +6,7 @@
   justify-content: center;
   gap: 40px;
   width: 60%;
+  height: 1000px;
 
   .founderImage {
     .founderImg {
@@ -19,9 +20,19 @@
   .founderDetails {
     p {
       font-size: 22px;
-      color: lightgray;
+      color: lightgray; // Default color for entire paragraph
       text-align: center;
-      line-height: 30px;
+      line-height: 1.5;
+
+      span {
+        display: inline-block; // Ensure smooth letter-by-letter animation
+        color: lightgray; // Default letter color
+      }
+
+      br {
+        display: block; // Ensure proper spacing for line breaks
+        margin: 10px 0; // Add space between lines
+      }
     }
   }
 

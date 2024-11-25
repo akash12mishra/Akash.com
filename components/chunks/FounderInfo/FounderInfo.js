@@ -1,9 +1,77 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./FounderInfo.module.scss";
 import founderLogo from "../../../assets/images/arka.png";
 import Image from "next/image";
 
 const FounderInfo = () => {
+  const paragraphRef = useRef(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!paragraphRef.current) return;
+
+      const paragraphRect = paragraphRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Adjust progress calculation to ensure the animation completes by the end of the scroll
+      const progress = Math.min(
+        Math.max(
+          (windowHeight - paragraphRect.top) /
+            (paragraphRect.height + windowHeight * 0.5), // Reduced height for faster completion
+          0
+        ),
+        1
+      );
+
+      setScrollProgress(progress); // Update progress between 0 and 1
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initialize on mount
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // Paragraph text with line breaks for rendering as per the image
+  const paragraphText = [
+    "“Manu is the man! He is the best front-end developer I have worked with.",
+    "He took the requirements and quite literally ran with them.",
+    "",
+    "We are super happy with the result and product we got.",
+    "He’s very intelligent, experienced, friendly, and helpful.",
+    "To anyone reading this - I can’t recommend this Manu enough, your job will be done exceptionally well, and you will be delighted with the end result.”",
+  ];
+
+  const totalCharacters = paragraphText.join("").length;
+
+  // Helper function to render text letter by letter
+  const renderLetterByLetter = (text, startIndex) => {
+    return text.split("").map((char, index) => {
+      const progressIndex = startIndex + index;
+      const opacity = Math.min(
+        Math.max(scrollProgress * totalCharacters - progressIndex, 0),
+        1
+      );
+
+      return (
+        <span
+          key={progressIndex}
+          style={{
+            color: opacity > 0 ? `rgba(0, 0, 0, ${opacity})` : "lightgray", // Transition to black, start as lightgray
+            transition: "color 0.1s ease-out", // Smooth color transition
+          }}
+        >
+          {char === " " ? "\u00A0" : char} {/* Preserve spaces */}
+        </span>
+      );
+    });
+  };
+
   return (
     <div className={styles.FounderInfo}>
       <div className={styles.founderImage}>
@@ -11,13 +79,16 @@ const FounderInfo = () => {
       </div>
 
       <div className={styles.founderDetails}>
-        <p>
-          Manu is the man! He is the best front-end developer I have worked
-          with. He took the requirements and quite literally ran with them.{" "}
-          <br /> <br /> We are super happy with the result and product we got.
-          He iss very intelligent, experienced, friendly, and helpful. To anyone
-          reading this - I cannott recommend this Manu enough, your job will be
-          done exceptionally well, and you will be delighted with the end result
+        <p ref={paragraphRef}>
+          {paragraphText.map((line, lineIndex) => (
+            <React.Fragment key={lineIndex}>
+              {renderLetterByLetter(
+                line,
+                paragraphText.slice(0, lineIndex).join("").length
+              )}
+              {lineIndex < paragraphText.length - 1 && <br />}
+            </React.Fragment>
+          ))}
         </p>
       </div>
 
