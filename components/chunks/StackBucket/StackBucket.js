@@ -38,7 +38,7 @@ const StackBucket = () => {
         width: 600,
         height: 400,
         wireframes: false,
-        background: "#f8f8f8",
+        background: "#fff",
       },
     });
 
