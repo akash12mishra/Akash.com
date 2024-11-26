@@ -1,0 +1,31 @@
+.StackHeadline {
+  display: flex;
+  justify-content: center; /* Center the images horizontally */
+  overflow: hidden; /* Hide content outside the viewport */
+  position: relative;
+  margin: 50px 0;
+
+  .movingImages {
+    display: flex; /* Align images in a single row */
+    justify-content: space-evenly; /* Ensure even spacing between images */
+    animation: moveLeft 10s linear infinite; /* Infinite leftward scrolling */
+    width: calc(200%); /* Extend the container to accommodate duplicates */
+  }
+
+  .StackHeadlineImg {
+    width: 100px; /* Adjust size */
+    height: auto;
+    object-fit: contain;
+    flex-shrink: 0; /* Prevent images from shrinking */
+  }
+}
+
+/* Keyframes for seamless scrolling */
+@keyframes moveLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%); /* Scroll halfway to loop */
+  }
+}
