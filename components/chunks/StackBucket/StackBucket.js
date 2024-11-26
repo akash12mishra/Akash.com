@@ -10,6 +10,7 @@ import {
   World,
   Mouse,
   MouseConstraint,
+  Body,
 } from "matter-js";
 
 const StackBucket = () => {
@@ -48,46 +49,46 @@ const StackBucket = () => {
     const walls = [
       Bodies.rectangle(bucketWidth / 2, bucketHeight, bucketWidth, 20, {
         isStatic: true,
-        render: { fillStyle: "#ccc" },
+        render: { fillStyle: "black" },
       }), // Bottom wall
       Bodies.rectangle(0, bucketHeight / 2, 20, bucketHeight, {
         isStatic: true,
-        render: { fillStyle: "#ccc" },
+        render: { fillStyle: "black" },
       }), // Left wall
       Bodies.rectangle(bucketWidth, bucketHeight / 2, 20, bucketHeight, {
         isStatic: true,
-        render: { fillStyle: "#ccc" },
+        render: { fillStyle: "black" },
       }), // Right wall
     ];
 
     World.add(world, walls);
 
-    // Manually create a stack of image objects
+    // Create image objects
     const createImageBodies = () => {
-      const imageBodies = [];
-      const rows = 3; // Number of rows
-      const cols = 5; // Number of columns
-      const spacing = 50; // Space between objects
+      const imageBodies = images.map((src, index) => {
+        const x = 100 + index * 90; // Distribute images horizontally
+        const y = 50; // Initial Y position
 
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-          const x = 50 + col * spacing; // X position
-          const y = 50 + row * spacing; // Y position
-          const randomImage = images[Math.floor(Math.random() * images.length)]; // Random image
-
-          const body = Bodies.rectangle(x, y, 50, 50, {
-            render: {
-              sprite: {
-                texture: randomImage,
-                xScale: 0.2,
-                yScale: 0.2,
-              },
+        const body = Bodies.rectangle(x, y, 50, 50, {
+          render: {
+            sprite: {
+              texture: src,
+              xScale: 0.2,
+              yScale: 0.2,
             },
-          });
+          },
+        });
 
-          imageBodies.push(body);
-        }
-      }
+        // Apply a small random force to spread out the objects
+        const randomForceX = (Math.random() - 0.5) * 0.05;
+        const randomForceY = (Math.random() - 0.5) * 0.05;
+        Body.applyForce(body, body.position, {
+          x: randomForceX,
+          y: randomForceY,
+        });
+
+        return body;
+      });
 
       World.add(world, imageBodies);
     };
