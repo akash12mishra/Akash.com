@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./StackBucket.module.scss";
 import {
   Engine,
@@ -11,12 +11,39 @@ import {
   Mouse,
   MouseConstraint,
   Body,
+  Events, // Import Events from matter-js
 } from "matter-js";
 
 const StackBucket = () => {
   const sceneRef = useRef(null);
+  const [inView, setInView] = useState(false); // Track if the component is in view
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true); // Trigger the animation when in view
+        } else {
+          setInView(false); // Optionally stop the animation when out of view
+        }
+      },
+      { threshold: 0.5 } // Trigger when 50% of the component is in view
+    );
+
+    if (sceneRef.current) {
+      observer.observe(sceneRef.current);
+    }
+
+    return () => {
+      if (sceneRef.current) {
+        observer.unobserve(sceneRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return; // Don't initialize the engine unless the component is in view
+
     const images = [
       "/images/React.png",
       "/images/nextJS.png",
@@ -36,14 +63,14 @@ const StackBucket = () => {
       engine: engine,
       options: {
         width: 600,
-        height: 400,
+        height: 300, // Reduced bucket height
         wireframes: false,
         background: "#fff",
       },
     });
 
     const bucketWidth = 600;
-    const bucketHeight = 400;
+    const bucketHeight = 300;
 
     // Add bucket boundaries
     const walls = [
@@ -113,7 +140,35 @@ const StackBucket = () => {
     Runner.run(runner, engine);
     Render.run(render);
 
-    // Cleanup on unmount
+    // Prevent objects from escaping boundaries
+    Events.on(engine, "collisionActive", (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+        [bodyA, bodyB].forEach((body) => {
+          // Ensure the object stays within bounds by checking positions
+          if (body.position.x < 25) {
+            Body.setVelocity(body, {
+              x: Math.abs(body.velocity.x),
+              y: body.velocity.y,
+            });
+          }
+          if (body.position.x > bucketWidth - 25) {
+            Body.setVelocity(body, {
+              x: -Math.abs(body.velocity.x),
+              y: body.velocity.y,
+            });
+          }
+          if (body.position.y < 25) {
+            Body.setVelocity(body, {
+              x: body.velocity.x,
+              y: Math.abs(body.velocity.y),
+            });
+          }
+        });
+      });
+    });
+
+    // Cleanup on unmount or when component goes out of view
     return () => {
       Render.stop(render);
       Runner.stop(runner);
@@ -122,7 +177,7 @@ const StackBucket = () => {
       render.canvas.remove();
       render.textures = {};
     };
-  }, []);
+  }, [inView]); // Re-run the effect only when `inView` changes
 
   return <div ref={sceneRef} className={styles.StackBucket}></div>;
 };
