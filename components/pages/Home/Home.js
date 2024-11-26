@@ -3,7 +3,7 @@ import Navbar from "../../chunks/Navbar/Navbar";
 import MovingHeadline from "../../chunks/MovingHeadline/MovingHeadline";
 import OnboardIntro from "../../chunks/OnboardIntro/OnboardIntro";
 import FounderInfo from "../../chunks/FounderInfo/FounderInfo";
-import StackHeadline from "../../chunks/StackHeadline/StackHeadline";
+import StackBucket from "../../chunks/StackBucket/StackBucket";
 
 const Home = () => {
   return (
@@ -12,7 +12,7 @@ const Home = () => {
       <MovingHeadline />
       <OnboardIntro />
       <FounderInfo />
-      <StackHeadline />
+      <StackBucket />
     </div>
   );
 };
