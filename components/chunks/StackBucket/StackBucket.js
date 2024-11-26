@@ -11,23 +11,24 @@ import {
   Mouse,
   MouseConstraint,
   Body,
-  Events, // Import Events from matter-js
+  Events,
+  Composite, // Import Composite for managing bodies
 } from "matter-js";
 
 const StackBucket = () => {
   const sceneRef = useRef(null);
-  const [inView, setInView] = useState(false); // Track if the component is in view
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setInView(true); // Trigger the animation when in view
+          setInView(true);
         } else {
-          setInView(false); // Optionally stop the animation when out of view
+          setInView(false);
         }
       },
-      { threshold: 0.5 } // Trigger when 50% of the component is in view
+      { threshold: 0.5 }
     );
 
     if (sceneRef.current) {
@@ -42,7 +43,7 @@ const StackBucket = () => {
   }, []);
 
   useEffect(() => {
-    if (!inView) return; // Don't initialize the engine unless the component is in view
+    if (!inView) return;
 
     const images = [
       "/images/React.png",
@@ -55,7 +56,6 @@ const StackBucket = () => {
     const engine = Engine.create();
     const world = engine.world;
 
-    // Configure gravity
     engine.gravity.y = 1;
 
     const render = Render.create({
@@ -63,7 +63,7 @@ const StackBucket = () => {
       engine: engine,
       options: {
         width: 600,
-        height: 300, // Reduced bucket height
+        height: 300,
         wireframes: false,
         background: "#fff",
       },
@@ -74,29 +74,33 @@ const StackBucket = () => {
 
     // Add bucket boundaries
     const walls = [
-      Bodies.rectangle(bucketWidth / 2, bucketHeight, bucketWidth, 20, {
+      Bodies.rectangle(bucketWidth / 2, bucketHeight + 10, bucketWidth, 20, {
         isStatic: true,
-        render: { fillStyle: "black" },
+        render: { visible: false },
       }), // Bottom wall
-      Bodies.rectangle(0, bucketHeight / 2, 20, bucketHeight, {
+      Bodies.rectangle(-10, bucketHeight / 2, 20, bucketHeight, {
         isStatic: true,
-        render: { fillStyle: "black" },
+        render: { visible: false },
       }), // Left wall
-      Bodies.rectangle(bucketWidth, bucketHeight / 2, 20, bucketHeight, {
+      Bodies.rectangle(bucketWidth + 10, bucketHeight / 2, 20, bucketHeight, {
         isStatic: true,
-        render: { fillStyle: "black" },
+        render: { visible: false },
       }), // Right wall
     ];
 
     World.add(world, walls);
 
-    // Create image objects
+    // Create non-overlapping image objects
     const createImageBodies = () => {
       const imageBodies = images.map((src, index) => {
-        const x = 100 + index * 90; // Distribute images horizontally
+        const x = 100 + index * 90; // Initial X position
         const y = 50; // Initial Y position
 
         const body = Bodies.rectangle(x, y, 50, 50, {
+          restitution: 0.9, // Bounciness
+          friction: 0.2, // Friction for realistic collision
+          frictionAir: 0.05,
+          density: 0.01, // Mass
           render: {
             sprite: {
               texture: src,
@@ -106,18 +110,37 @@ const StackBucket = () => {
           },
         });
 
-        // Apply a small random force to spread out the objects
-        const randomForceX = (Math.random() - 0.5) * 0.05;
-        const randomForceY = (Math.random() - 0.5) * 0.05;
-        Body.applyForce(body, body.position, {
-          x: randomForceX,
-          y: randomForceY,
-        });
-
         return body;
       });
 
       World.add(world, imageBodies);
+
+      // Prevent overlap by applying separating forces dynamically
+      Events.on(engine, "beforeUpdate", () => {
+        for (let i = 0; i < imageBodies.length; i++) {
+          for (let j = i + 1; j < imageBodies.length; j++) {
+            const bodyA = imageBodies[i];
+            const bodyB = imageBodies[j];
+
+            const dx = bodyA.position.x - bodyB.position.x;
+            const dy = bodyA.position.y - bodyB.position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const minDistance = 50; // Minimum distance to avoid overlap
+
+            if (distance < minDistance) {
+              const overlap = minDistance - distance;
+              const force = overlap * 0.02; // Adjust force for smooth separation
+
+              const angle = Math.atan2(dy, dx);
+              const fx = Math.cos(angle) * force;
+              const fy = Math.sin(angle) * force;
+
+              Body.applyForce(bodyA, bodyA.position, { x: fx, y: fy });
+              Body.applyForce(bodyB, bodyB.position, { x: -fx, y: -fy });
+            }
+          }
+        }
+      });
     };
 
     createImageBodies();
@@ -135,36 +158,45 @@ const StackBucket = () => {
     World.add(world, mouseConstraint);
     render.mouse = mouse;
 
-    // Run the engine and renderer
     const runner = Runner.create();
     Runner.run(runner, engine);
     Render.run(render);
 
     // Prevent objects from escaping boundaries
-    Events.on(engine, "collisionActive", (event) => {
-      event.pairs.forEach((pair) => {
-        const { bodyA, bodyB } = pair;
-        [bodyA, bodyB].forEach((body) => {
-          // Ensure the object stays within bounds by checking positions
-          if (body.position.x < 25) {
-            Body.setVelocity(body, {
-              x: Math.abs(body.velocity.x),
-              y: body.velocity.y,
-            });
-          }
-          if (body.position.x > bucketWidth - 25) {
-            Body.setVelocity(body, {
-              x: -Math.abs(body.velocity.x),
-              y: body.velocity.y,
-            });
-          }
-          if (body.position.y < 25) {
-            Body.setVelocity(body, {
-              x: body.velocity.x,
-              y: Math.abs(body.velocity.y),
-            });
-          }
-        });
+    Events.on(engine, "beforeUpdate", () => {
+      Composite.allBodies(world).forEach((body) => {
+        if (body.position.y > bucketHeight - 25) {
+          Body.setPosition(body, {
+            x: body.position.x,
+            y: bucketHeight - 25,
+          });
+          Body.setVelocity(body, {
+            x: body.velocity.x,
+            y: -Math.abs(body.velocity.y),
+          });
+        }
+
+        if (body.position.x < 25) {
+          Body.setPosition(body, {
+            x: 25,
+            y: body.position.y,
+          });
+          Body.setVelocity(body, {
+            x: Math.abs(body.velocity.x),
+            y: body.velocity.y,
+          });
+        }
+
+        if (body.position.x > bucketWidth - 25) {
+          Body.setPosition(body, {
+            x: bucketWidth - 25,
+            y: body.position.y,
+          });
+          Body.setVelocity(body, {
+            x: -Math.abs(body.velocity.x),
+            y: body.velocity.y,
+          });
+        }
       });
     });
 
@@ -177,7 +209,7 @@ const StackBucket = () => {
       render.canvas.remove();
       render.textures = {};
     };
-  }, [inView]); // Re-run the effect only when `inView` changes
+  }, [inView]);
 
   return <div ref={sceneRef} className={styles.StackBucket}></div>;
 };
