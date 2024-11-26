@@ -2,9 +2,30 @@
   width: 600px;
   height: 300px;
   margin: 0 auto;
-  border: 2px solid black;
   background: #fff;
+  border-radius: 20px;
   position: relative;
   overflow: hidden; // Ensure objects stay within the bucket
   margin: 100px auto;
+  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+
+  h3 {
+    font-size: 20px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: transparent;
+  }
+
+  p {
+    font-size: 16px;
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background: transparent;
+    color: lightgray;
+    font-weight: bold;
+  }
 }

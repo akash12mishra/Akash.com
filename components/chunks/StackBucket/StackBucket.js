@@ -12,7 +12,7 @@ import {
   MouseConstraint,
   Body,
   Events,
-  Composite, // Import Composite for managing bodies
+  Composite,
 } from "matter-js";
 
 const StackBucket = () => {
@@ -74,33 +74,55 @@ const StackBucket = () => {
 
     // Add bucket boundaries
     const walls = [
-      Bodies.rectangle(bucketWidth / 2, bucketHeight + 10, bucketWidth, 20, {
+      Bodies.rectangle(bucketWidth / 2, bucketHeight, bucketWidth, 20, {
         isStatic: true,
         render: { visible: false },
-      }), // Bottom wall
+      }),
       Bodies.rectangle(-10, bucketHeight / 2, 20, bucketHeight, {
         isStatic: true,
         render: { visible: false },
-      }), // Left wall
+      }),
       Bodies.rectangle(bucketWidth + 10, bucketHeight / 2, 20, bucketHeight, {
         isStatic: true,
         render: { visible: false },
-      }), // Right wall
+      }),
     ];
 
     World.add(world, walls);
 
-    // Create non-overlapping image objects
+    // Function to create non-overlapping bodies
     const createImageBodies = () => {
-      const imageBodies = images.map((src, index) => {
-        const x = 100 + index * 90; // Initial X position
-        const y = 50; // Initial Y position
+      const imageBodies = [];
+      const spacing = 60; // Minimum spacing between objects
 
+      images.forEach((src, index) => {
+        let x, y, validPosition;
+
+        do {
+          // Generate random positions
+          x = Math.random() * (bucketWidth - 50) + 25;
+          y = Math.random() * (bucketHeight / 2); // Top half of the bucket
+          validPosition = true;
+
+          // Ensure no overlap with existing bodies
+          for (let body of imageBodies) {
+            const dx = body.position.x - x;
+            const dy = body.position.y - y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < spacing) {
+              validPosition = false;
+              break;
+            }
+          }
+        } while (!validPosition);
+
+        // Create the body
         const body = Bodies.rectangle(x, y, 50, 50, {
-          restitution: 0.9, // Bounciness
-          friction: 0.2, // Friction for realistic collision
+          restitution: 0.9,
+          friction: 0.2,
           frictionAir: 0.05,
-          density: 0.01, // Mass
+          density: 0.01,
           render: {
             sprite: {
               texture: src,
@@ -110,12 +132,12 @@ const StackBucket = () => {
           },
         });
 
-        return body;
+        imageBodies.push(body);
       });
 
       World.add(world, imageBodies);
 
-      // Prevent overlap by applying separating forces dynamically
+      // Prevent overlap dynamically
       Events.on(engine, "beforeUpdate", () => {
         for (let i = 0; i < imageBodies.length; i++) {
           for (let j = i + 1; j < imageBodies.length; j++) {
@@ -125,11 +147,11 @@ const StackBucket = () => {
             const dx = bodyA.position.x - bodyB.position.x;
             const dy = bodyA.position.y - bodyB.position.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            const minDistance = 50; // Minimum distance to avoid overlap
+            const minDistance = spacing;
 
             if (distance < minDistance) {
               const overlap = minDistance - distance;
-              const force = overlap * 0.02; // Adjust force for smooth separation
+              const force = overlap * 0.03; // Adjust force for smooth separation
 
               const angle = Math.atan2(dy, dx);
               const fx = Math.cos(angle) * force;
@@ -211,7 +233,12 @@ const StackBucket = () => {
     };
   }, [inView]);
 
-  return <div ref={sceneRef} className={styles.StackBucket}></div>;
+  return (
+    <div ref={sceneRef} className={styles.StackBucket}>
+      <h3>My Tech Stack</h3>
+      <p>Interact - Drag & Drop with cursor</p>
+    </div>
+  );
 };
 
 export default StackBucket;
