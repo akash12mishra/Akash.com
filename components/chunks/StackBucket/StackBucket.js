@@ -81,26 +81,26 @@ const StackBucket = () => {
       element: sceneRef.current,
       engine: engine,
       options: {
-        width: 400,
+        width: 300, // Narrower bucket width
         height: 400,
         wireframes: false,
         background: "#fff",
       },
     });
 
-    // Add walls (bucket borders)
+    // Add walls (bucket borders) to simulate a cylindrical container
     const bucketWalls = [
-      Bodies.rectangle(200, 395, 400, 10, {
+      Bodies.rectangle(150, 395, 300, 10, {
         isStatic: true,
-        render: { fillStyle: "white" }, // Bottom wall as light gray border
+        render: { fillStyle: "white" }, // Bottom wall
       }),
-      Bodies.rectangle(20, 200, 10, 400, {
+      Bodies.rectangle(50, 200, 10, 400, {
         isStatic: true,
-        render: { fillStyle: "white" }, // Left wall as light gray border
+        render: { fillStyle: "white" }, // Left curved wall
       }),
-      Bodies.rectangle(380, 200, 10, 400, {
+      Bodies.rectangle(250, 200, 10, 400, {
         isStatic: true,
-        render: { fillStyle: "white" }, // Right wall as light gray border
+        render: { fillStyle: "white" }, // Right curved wall
       }),
     ];
 
@@ -108,7 +108,7 @@ const StackBucket = () => {
 
     // Function to drop objects sequentially
     const dropBodiesSequentially = () => {
-      const startX = 200;
+      const startX = 150; // Adjusted to fit inside the narrower bucket
       const initialY = 50;
 
       images.forEach((src, index) => {
