@@ -10,7 +10,6 @@ import {
   World,
   Mouse,
   MouseConstraint,
-  Body,
 } from "matter-js";
 import Image from "next/image";
 
@@ -89,6 +88,7 @@ const StackBucket = () => {
       },
     });
 
+    // Add walls (bucket borders)
     const bucketWalls = [
       Bodies.rectangle(200, 395, 400, 10, {
         isStatic: true,
@@ -106,6 +106,7 @@ const StackBucket = () => {
 
     World.add(world, bucketWalls);
 
+    // Function to drop objects sequentially
     const dropBodiesSequentially = () => {
       const startX = 200;
       const initialY = 50;
@@ -125,25 +126,25 @@ const StackBucket = () => {
           });
 
           World.add(world, body);
-
-          if (index === 2) {
-            Body.applyForce(
-              body,
-              { x: startX, y: initialY },
-              { x: -0.05, y: 0 }
-            );
-          } else if (index === 3) {
-            Body.applyForce(
-              body,
-              { x: startX, y: initialY },
-              { x: 0.05, y: 0 }
-            );
-          }
-        }, index * 500);
+        }, index * 800);
       });
     };
 
     dropBodiesSequentially();
+
+    // Add mouse control for interactivity
+    const mouse = Mouse.create(render.canvas);
+    const mouseConstraint = MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: { visible: false }, // Hide drag line
+      },
+    });
+
+    World.add(world, mouseConstraint); // Enable dragging
+
+    render.mouse = mouse;
 
     const runner = Runner.create();
     Runner.run(runner, engine);
