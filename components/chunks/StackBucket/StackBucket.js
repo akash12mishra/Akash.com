@@ -113,10 +113,10 @@ const StackBucket = () => {
       const initialY = 50;
       const positions = {
         nextJS: { x: 150, y: 300, angle: 0 }, // Horizontal base
-        vercel: { x: 150, y: 250, angle: 0 }, // On top of NextJS
-        react: { x: 100, y: 200, angle: -Math.PI / 8 }, // Left side
-        openAI: { x: 200, y: 200, angle: Math.PI / 8 }, // Right side
-        mongoDB: { x: 150, y: 150, angle: 0 }, // Top center
+        vercel: { x: 150, y: 240, angle: 0 }, // On top of NextJS
+        react: { x: 100, y: 190, angle: -Math.PI / 8 }, // Left side
+        openAI: { x: 200, y: 170, angle: Math.PI / 8 }, // Top-right, slightly over "C"
+        mongoDB: { x: 140, y: 120, angle: -Math.PI / 12 }, // Top, inclined above OpenAI
       };
 
       images.forEach((img, index) => {
