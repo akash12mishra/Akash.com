@@ -10,6 +10,7 @@ import {
   World,
   Mouse,
   MouseConstraint,
+  Body,
 } from "matter-js";
 import Image from "next/image";
 
@@ -67,11 +68,11 @@ const StackBucket = () => {
     if (activeSection !== "stackBucket") return;
 
     const images = [
-      "/images/nextJS.png",
-      "/images/mongoDB.png",
-      "/images/openai.png",
-      "/images/react.png",
-      "/images/vercel.png",
+      { src: "/images/nextJS.png", id: "nextJS" },
+      { src: "/images/vercel.png", id: "vercel" },
+      { src: "/images/react.png", id: "react" },
+      { src: "/images/openai.png", id: "openAI" },
+      { src: "/images/mongoDB.png", id: "mongoDB" },
     ];
 
     const engine = Engine.create();
@@ -108,17 +109,24 @@ const StackBucket = () => {
 
     // Function to drop objects sequentially
     const dropBodiesSequentially = () => {
-      const startX = 150; // Adjusted to fit inside the narrower bucket
+      const startX = 150; // Center of the bucket
       const initialY = 50;
+      const positions = {
+        nextJS: { x: 150, y: 300, angle: 0 }, // Horizontal base
+        vercel: { x: 150, y: 250, angle: 0 }, // On top of NextJS
+        react: { x: 100, y: 200, angle: -Math.PI / 8 }, // Left side
+        openAI: { x: 200, y: 200, angle: Math.PI / 8 }, // Right side
+        mongoDB: { x: 150, y: 150, angle: 0 }, // Top center
+      };
 
-      images.forEach((src, index) => {
+      images.forEach((img, index) => {
         setTimeout(() => {
           const body = Bodies.rectangle(startX, initialY, 50, 50, {
             restitution: 0.7,
-            friction: 0.1,
+            friction: 0.5,
             render: {
               sprite: {
-                texture: src,
+                texture: img.src,
                 xScale: 0.2,
                 yScale: 0.2,
               },
@@ -126,6 +134,16 @@ const StackBucket = () => {
           });
 
           World.add(world, body);
+
+          // After falling, position the objects in the desired stacking pattern
+          setTimeout(() => {
+            Body.setPosition(body, {
+              x: positions[img.id].x,
+              y: positions[img.id].y,
+            });
+            Body.setAngle(body, positions[img.id].angle);
+            Body.setStatic(body, true); // Lock the body in place
+          }, 1000);
         }, index * 800);
       });
     };
