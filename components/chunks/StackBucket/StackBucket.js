@@ -144,7 +144,7 @@ const StackBucket = () => {
             Body.setAngle(body, positions[img.id].angle);
             Body.setStatic(body, true); // Lock the body in place
           }, 1000);
-        }, index * 800);
+        }, index * 600);
       });
     };
 
@@ -241,9 +241,7 @@ const StackBucket = () => {
         className={`${styles.StackBucket} ${
           activeSection === "stackBucket" ? styles.visible : styles.hidden
         }`}
-      >
-        <p>Interact - Drag & Drop with cursor</p>
-      </div>
+      ></div>
     </div>
   );
 };
