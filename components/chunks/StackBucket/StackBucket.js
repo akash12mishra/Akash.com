@@ -12,6 +12,7 @@ import {
   MouseConstraint,
   Body,
 } from "matter-js";
+import Image from "next/image";
 
 const StackBucket = () => {
   const sceneRef = useRef(null);
@@ -176,6 +177,48 @@ const StackBucket = () => {
   return (
     <div className={styles.StackBucketWrap}>
       <div className={styles.stackHead}>{sentence}</div>
+
+      <div className={styles.stackImages}>
+        <Image
+          src="/images/nextJS.png"
+          alt="NextJS"
+          className={styles.stackImg}
+          width={100}
+          height={100}
+        />
+
+        <Image
+          src="/images/mongoDB.png"
+          alt="NextJS"
+          className={styles.stackImg}
+          width={100}
+          height={100}
+        />
+
+        <Image
+          src="/images/openai.png"
+          alt="NextJS"
+          className={styles.stackImg}
+          width={100}
+          height={100}
+        />
+
+        <Image
+          src="/images/react.png"
+          alt="NextJS"
+          className={styles.stackImg}
+          width={100}
+          height={100}
+        />
+
+        <Image
+          src="/images/vercel.png"
+          alt="NextJS"
+          className={styles.stackImg}
+          width={100}
+          height={100}
+        />
+      </div>
 
       <div ref={sceneRef} className={styles.StackBucket}>
         <p>Interact - Drag & Drop with cursor</p>
