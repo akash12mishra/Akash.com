@@ -11,8 +11,6 @@ import {
   Mouse,
   MouseConstraint,
   Body,
-  Events,
-  Composite,
 } from "matter-js";
 
 const StackBucket = () => {
@@ -90,82 +88,36 @@ const StackBucket = () => {
 
     World.add(world, walls);
 
-    // Function to create non-overlapping bodies
-    const createImageBodies = () => {
-      const imageBodies = [];
-      const spacing = 60; // Minimum spacing between objects
+    // Function to create and drop bodies sequentially
+    const dropBodiesSequentially = () => {
+      const startX = 80; // Starting X position
+      const spacing = 100; // Space between objects
 
       images.forEach((src, index) => {
-        let x, y, validPosition;
+        setTimeout(() => {
+          const x = startX + index * spacing;
+          const y = 50;
 
-        do {
-          // Generate random positions
-          x = Math.random() * (bucketWidth - 50) + 25;
-          y = Math.random() * (bucketHeight / 2); // Top half of the bucket
-          validPosition = true;
-
-          // Ensure no overlap with existing bodies
-          for (let body of imageBodies) {
-            const dx = body.position.x - x;
-            const dy = body.position.y - y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < spacing) {
-              validPosition = false;
-              break;
-            }
-          }
-        } while (!validPosition);
-
-        // Create the body
-        const body = Bodies.rectangle(x, y, 50, 50, {
-          restitution: 0.9,
-          friction: 0.2,
-          frictionAir: 0.05,
-          density: 0.01,
-          render: {
-            sprite: {
-              texture: src,
-              xScale: 0.2,
-              yScale: 0.2,
+          const body = Bodies.rectangle(x, y, 50, 50, {
+            restitution: 0.9,
+            friction: 0.2,
+            frictionAir: 0.05,
+            density: 0.01,
+            render: {
+              sprite: {
+                texture: src,
+                xScale: 0.2,
+                yScale: 0.2,
+              },
             },
-          },
-        });
+          });
 
-        imageBodies.push(body);
-      });
-
-      World.add(world, imageBodies);
-
-      // Prevent overlap dynamically
-      Events.on(engine, "beforeUpdate", () => {
-        for (let i = 0; i < imageBodies.length; i++) {
-          for (let j = i + 1; j < imageBodies.length; j++) {
-            const bodyA = imageBodies[i];
-            const bodyB = imageBodies[j];
-
-            const dx = bodyA.position.x - bodyB.position.x;
-            const dy = bodyA.position.y - bodyB.position.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const minDistance = spacing;
-
-            if (distance < minDistance) {
-              const overlap = minDistance - distance;
-              const force = overlap * 0.03; // Adjust force for smooth separation
-
-              const angle = Math.atan2(dy, dx);
-              const fx = Math.cos(angle) * force;
-              const fy = Math.sin(angle) * force;
-
-              Body.applyForce(bodyA, bodyA.position, { x: fx, y: fy });
-              Body.applyForce(bodyB, bodyB.position, { x: -fx, y: -fy });
-            }
-          }
-        }
+          World.add(world, body);
+        }, index * 500); // Delay each drop by 500ms
       });
     };
 
-    createImageBodies();
+    dropBodiesSequentially();
 
     // Add mouse control
     const mouse = Mouse.create(render.canvas);
@@ -183,44 +135,6 @@ const StackBucket = () => {
     const runner = Runner.create();
     Runner.run(runner, engine);
     Render.run(render);
-
-    // Prevent objects from escaping boundaries
-    Events.on(engine, "beforeUpdate", () => {
-      Composite.allBodies(world).forEach((body) => {
-        if (body.position.y > bucketHeight - 25) {
-          Body.setPosition(body, {
-            x: body.position.x,
-            y: bucketHeight - 25,
-          });
-          Body.setVelocity(body, {
-            x: body.velocity.x,
-            y: -Math.abs(body.velocity.y),
-          });
-        }
-
-        if (body.position.x < 25) {
-          Body.setPosition(body, {
-            x: 25,
-            y: body.position.y,
-          });
-          Body.setVelocity(body, {
-            x: Math.abs(body.velocity.x),
-            y: body.velocity.y,
-          });
-        }
-
-        if (body.position.x > bucketWidth - 25) {
-          Body.setPosition(body, {
-            x: bucketWidth - 25,
-            y: body.position.y,
-          });
-          Body.setVelocity(body, {
-            x: -Math.abs(body.velocity.x),
-            y: body.velocity.y,
-          });
-        }
-      });
-    });
 
     // Cleanup on unmount or when component goes out of view
     return () => {
