@@ -10,6 +10,7 @@ import {
   World,
   Mouse,
   MouseConstraint,
+  Body,
 } from "matter-js";
 
 const StackBucket = () => {
@@ -43,11 +44,11 @@ const StackBucket = () => {
     if (!inView) return;
 
     const images = [
-      "/images/React.png",
-      "/images/nextJS.png",
-      "/images/mongoDB.png",
-      "/images/openai.png",
-      "/images/vercel.png",
+      "/images/nextJS.png", // First
+      "/images/mongoDB.png", // Second
+      "/images/openai.png", // Third (slides left)
+      "/images/react.png", // Fourth (slides right)
+      "/images/vercel.png", // Fifth
     ];
 
     const engine = Engine.create();
@@ -66,7 +67,7 @@ const StackBucket = () => {
       },
     });
 
-    const bucketWidth = 600;
+    const bucketWidth = 400;
     const bucketHeight = 400;
 
     // Add bucket boundaries to mimic a cylinder shape
@@ -95,16 +96,18 @@ const StackBucket = () => {
 
     World.add(world, walls);
 
-    // Function to create and drop objects sequentially
+    // Function to create and drop objects in the desired flow
     const dropBodiesSequentially = () => {
       const startX = bucketWidth / 2; // Center of the bucket
+      const initialY = 50; // Starting height for falling objects
       const spacing = 50; // Space between stacked objects
 
       images.forEach((src, index) => {
         setTimeout(() => {
-          const x = startX;
-          const y = 50; // Objects start falling from the top
+          let x = startX;
+          let y = initialY;
 
+          // Create the body
           const body = Bodies.rectangle(x, y, 50, 50, {
             restitution: 0.7,
             friction: 0.1,
@@ -118,7 +121,18 @@ const StackBucket = () => {
           });
 
           World.add(world, body);
-        }, index * 800); // Drop each object every 800ms
+
+          // Apply forces for OpenAI and React objects
+          if (index === 2) {
+            // OpenAI: slide left
+            Body.applyForce(body, { x, y }, { x: -0.05, y: 0 }); // Leftward force
+            Body.setAngularVelocity(body, 0.1); // Smooth rotation
+          } else if (index === 3) {
+            // React: slide right
+            Body.applyForce(body, { x, y }, { x: 0.05, y: 0 }); // Rightward force
+            Body.setAngularVelocity(body, -0.1); // Smooth rotation
+          }
+        }, index * 1000); // Delay each drop by 1000ms for the flow
       });
     };
 
