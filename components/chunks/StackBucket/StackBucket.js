@@ -152,10 +152,20 @@ const StackBucket = () => {
     };
   }, [inView]);
 
+  const sentence = (
+    <>
+      <span className={`${styles.word} ${styles.filled}`}>Tech</span>
+      <span className={`${styles.word} ${styles.bordered}`}>Stack</span>
+    </>
+  );
+
   return (
-    <div ref={sceneRef} className={styles.StackBucket}>
-      <h3>My Tech Stack</h3>
-      <p>Interact - Drag & Drop with cursor</p>
+    <div className={styles.StackBucketWrap}>
+      <div className={styles.stackHead}>{sentence}</div>
+
+      <div ref={sceneRef} className={styles.StackBucket}>
+        <p>Interact - Drag & Drop with cursor</p>
+      </div>
     </div>
   );
 };
