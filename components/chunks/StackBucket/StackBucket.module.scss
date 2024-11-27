@@ -1,6 +1,10 @@
 .StackBucketWrap {
+  position: relative;
+  height: 100vh; /* Ensures the scroll container height is full screen */
+
   .stackHead {
     text-align: center;
+
     .word {
       display: inline-block;
       margin: 0 10px;
@@ -23,7 +27,6 @@
     align-items: center;
     justify-content: center;
     gap: 50px;
-    margin: 100px 0;
 
     .stackImg {
       height: auto;
@@ -36,11 +39,11 @@
     width: 400px;
     height: 400px;
     background: #fff;
-    border-radius: 50% / 20%; // Simulate the top of a cylinder
+    border-radius: 50% / 20%; /* Simulate the top of a cylinder */
     position: relative;
-    overflow: hidden; // Ensure objects stay within the bucket
-    margin: 200px auto;
+    overflow: hidden; /* Ensure objects stay within the bucket */
     box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    margin-top: 100px;
 
     p {
       font-size: 18px;
@@ -52,5 +55,26 @@
       color: lightgray;
       font-weight: bold;
     }
+  }
+
+  /* Animation transitions for visibility */
+  .stackImages,
+  .StackBucket {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .visible {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .hidden {
+    opacity: 0;
+    transform: translate(-50%, -60%);
   }
 }

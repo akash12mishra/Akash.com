@@ -16,100 +16,103 @@ import Image from "next/image";
 
 const StackBucket = () => {
   const sceneRef = useRef(null);
-  const [inView, setInView] = useState(false);
+  const wrapperRef = useRef(null);
+  const [activeSection, setActiveSection] = useState("stackImages"); // "stackImages" or "stackBucket"
+  const [lockScroll, setLockScroll] = useState(false); // Lock scrolling during transitions
 
+  // Handle scroll and manage transitions dynamically
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-        } else {
-          setInView(false);
-        }
-      },
-      { threshold: 0.5 }
-    );
+    const handleScroll = (e) => {
+      if (lockScroll) {
+        e.preventDefault();
+        return;
+      }
 
-    if (sceneRef.current) {
-      observer.observe(sceneRef.current);
-    }
+      const wrapper = wrapperRef.current;
+      if (!wrapper) return;
 
-    return () => {
-      if (sceneRef.current) {
-        observer.unobserve(sceneRef.current);
+      const scrollPosition = wrapper.scrollTop;
+      const scrollHeight = wrapper.scrollHeight;
+      const wrapperHeight = wrapper.offsetHeight;
+
+      // When scrolling reaches the end of the section
+      if (
+        activeSection === "stackImages" &&
+        scrollPosition + wrapperHeight >= scrollHeight &&
+        e.deltaY > 0 // Scroll down
+      ) {
+        setLockScroll(true);
+        setActiveSection("stackBucket");
+        setTimeout(() => setLockScroll(false), 1000); // Unlock after transition
+      } else if (
+        activeSection === "stackBucket" &&
+        scrollPosition <= 0 &&
+        e.deltaY < 0 // Scroll up
+      ) {
+        setLockScroll(true);
+        setActiveSection("stackImages");
+        setTimeout(() => setLockScroll(false), 1000); // Unlock after transition
       }
     };
-  }, []);
 
+    const wrapper = wrapperRef.current;
+    wrapper.addEventListener("wheel", handleScroll, { passive: false });
+
+    return () => {
+      wrapper.removeEventListener("wheel", handleScroll);
+    };
+  }, [activeSection, lockScroll]);
+
+  // Matter.js setup for the bucket section
   useEffect(() => {
-    if (!inView) return;
+    if (activeSection !== "stackBucket") return;
 
     const images = [
-      "/images/nextJS.png", // First
-      "/images/mongoDB.png", // Second
-      "/images/openai.png", // Third (slides left)
-      "/images/react.png", // Fourth (slides right)
-      "/images/vercel.png", // Fifth
+      "/images/nextJS.png",
+      "/images/mongoDB.png",
+      "/images/openai.png",
+      "/images/react.png",
+      "/images/vercel.png",
     ];
 
     const engine = Engine.create();
     const world = engine.world;
 
-    engine.gravity.y = 1;
-
     const render = Render.create({
       element: sceneRef.current,
       engine: engine,
       options: {
-        width: 600,
+        width: 400,
         height: 400,
         wireframes: false,
         background: "#fff",
       },
     });
 
-    const bucketWidth = 400;
-    const bucketHeight = 400;
-
-    // Add bucket boundaries to mimic a cylinder shape
-    const walls = [
-      Bodies.rectangle(bucketWidth / 2, bucketHeight, bucketWidth, 20, {
+    const bucketWalls = [
+      Bodies.rectangle(200, 395, 400, 10, {
         isStatic: true,
-        render: { visible: false },
-      }), // Bottom boundary
-      Bodies.rectangle(bucketWidth / 8, bucketHeight / 2, 20, bucketHeight, {
+        render: { fillStyle: "white" }, // Bottom wall as light gray border
+      }),
+      Bodies.rectangle(20, 200, 10, 400, {
         isStatic: true,
-        render: { visible: false },
-        angle: Math.PI / 6, // Tilt to simulate a curve
-      }), // Left side (curved effect)
-      Bodies.rectangle(
-        (7 * bucketWidth) / 8,
-        bucketHeight / 2,
-        20,
-        bucketHeight,
-        {
-          isStatic: true,
-          render: { visible: false },
-          angle: -Math.PI / 6, // Tilt to simulate a curve
-        }
-      ), // Right side (curved effect)
+        render: { fillStyle: "white" }, // Left wall as light gray border
+      }),
+      Bodies.rectangle(380, 200, 10, 400, {
+        isStatic: true,
+        render: { fillStyle: "white" }, // Right wall as light gray border
+      }),
     ];
 
-    World.add(world, walls);
+    World.add(world, bucketWalls);
 
-    // Function to create and drop objects in the desired flow
     const dropBodiesSequentially = () => {
-      const startX = bucketWidth / 2; // Center of the bucket
-      const initialY = 50; // Starting height for falling objects
-      const spacing = 50; // Space between stacked objects
+      const startX = 200;
+      const initialY = 50;
 
       images.forEach((src, index) => {
         setTimeout(() => {
-          let x = startX;
-          let y = initialY;
-
-          // Create the body
-          const body = Bodies.rectangle(x, y, 50, 50, {
+          const body = Bodies.rectangle(startX, initialY, 50, 50, {
             restitution: 0.7,
             friction: 0.1,
             render: {
@@ -123,49 +126,37 @@ const StackBucket = () => {
 
           World.add(world, body);
 
-          // Apply forces for OpenAI and React objects
           if (index === 2) {
-            // OpenAI: slide left
-            Body.applyForce(body, { x, y }, { x: -0.05, y: 0 }); // Leftward force
-            Body.setAngularVelocity(body, 0.1); // Smooth rotation
+            Body.applyForce(
+              body,
+              { x: startX, y: initialY },
+              { x: -0.05, y: 0 }
+            );
           } else if (index === 3) {
-            // React: slide right
-            Body.applyForce(body, { x, y }, { x: 0.05, y: 0 }); // Rightward force
-            Body.setAngularVelocity(body, -0.1); // Smooth rotation
+            Body.applyForce(
+              body,
+              { x: startX, y: initialY },
+              { x: 0.05, y: 0 }
+            );
           }
-        }, index * 1000); // Delay each drop by 1000ms for the flow
+        }, index * 500);
       });
     };
 
     dropBodiesSequentially();
 
-    // Add mouse control
-    const mouse = Mouse.create(render.canvas);
-    const mouseConstraint = MouseConstraint.create(engine, {
-      mouse: mouse,
-      constraint: {
-        stiffness: 0.2,
-        render: { visible: false },
-      },
-    });
-
-    World.add(world, mouseConstraint);
-    render.mouse = mouse;
-
     const runner = Runner.create();
     Runner.run(runner, engine);
     Render.run(render);
 
-    // Cleanup on unmount or when component goes out of view
     return () => {
       Render.stop(render);
       Runner.stop(runner);
       World.clear(world);
       Engine.clear(engine);
       render.canvas.remove();
-      render.textures = {};
     };
-  }, [inView]);
+  }, [activeSection]);
 
   const sentence = (
     <>
@@ -175,10 +166,15 @@ const StackBucket = () => {
   );
 
   return (
-    <div className={styles.StackBucketWrap}>
+    <div ref={wrapperRef} className={styles.StackBucketWrap}>
       <div className={styles.stackHead}>{sentence}</div>
 
-      <div className={styles.stackImages}>
+      {/* stackImages */}
+      <div
+        className={`${styles.stackImages} ${
+          activeSection === "stackImages" ? styles.visible : styles.hidden
+        }`}
+      >
         <Image
           src="/images/nextJS.png"
           alt="NextJS"
@@ -189,7 +185,7 @@ const StackBucket = () => {
 
         <Image
           src="/images/mongoDB.png"
-          alt="NextJS"
+          alt="MongoDB"
           className={styles.stackImg}
           width={100}
           height={100}
@@ -197,7 +193,7 @@ const StackBucket = () => {
 
         <Image
           src="/images/openai.png"
-          alt="NextJS"
+          alt="OpenAI"
           className={styles.stackImg}
           width={100}
           height={100}
@@ -205,7 +201,7 @@ const StackBucket = () => {
 
         <Image
           src="/images/react.png"
-          alt="NextJS"
+          alt="React"
           className={styles.stackImg}
           width={100}
           height={100}
@@ -213,14 +209,20 @@ const StackBucket = () => {
 
         <Image
           src="/images/vercel.png"
-          alt="NextJS"
+          alt="Vercel"
           className={styles.stackImg}
           width={100}
           height={100}
         />
       </div>
 
-      <div ref={sceneRef} className={styles.StackBucket}>
+      {/* stackBucket */}
+      <div
+        ref={sceneRef}
+        className={`${styles.StackBucket} ${
+          activeSection === "stackBucket" ? styles.visible : styles.hidden
+        }`}
+      >
         <p>Interact - Drag & Drop with cursor</p>
       </div>
     </div>
