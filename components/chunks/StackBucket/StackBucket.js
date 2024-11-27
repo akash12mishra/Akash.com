@@ -10,7 +10,6 @@ import {
   World,
   Mouse,
   MouseConstraint,
-  Body,
 } from "matter-js";
 
 const StackBucket = () => {
@@ -61,48 +60,54 @@ const StackBucket = () => {
       engine: engine,
       options: {
         width: 600,
-        height: 300,
+        height: 400,
         wireframes: false,
         background: "#fff",
       },
     });
 
     const bucketWidth = 600;
-    const bucketHeight = 300;
+    const bucketHeight = 400;
 
-    // Add bucket boundaries
+    // Add bucket boundaries to mimic a cylinder shape
     const walls = [
       Bodies.rectangle(bucketWidth / 2, bucketHeight, bucketWidth, 20, {
         isStatic: true,
         render: { visible: false },
-      }),
-      Bodies.rectangle(-10, bucketHeight / 2, 20, bucketHeight, {
+      }), // Bottom boundary
+      Bodies.rectangle(bucketWidth / 8, bucketHeight / 2, 20, bucketHeight, {
         isStatic: true,
         render: { visible: false },
-      }),
-      Bodies.rectangle(bucketWidth + 10, bucketHeight / 2, 20, bucketHeight, {
-        isStatic: true,
-        render: { visible: false },
-      }),
+        angle: Math.PI / 6, // Tilt to simulate a curve
+      }), // Left side (curved effect)
+      Bodies.rectangle(
+        (7 * bucketWidth) / 8,
+        bucketHeight / 2,
+        20,
+        bucketHeight,
+        {
+          isStatic: true,
+          render: { visible: false },
+          angle: -Math.PI / 6, // Tilt to simulate a curve
+        }
+      ), // Right side (curved effect)
     ];
 
     World.add(world, walls);
 
-    // Function to create and drop bodies sequentially
+    // Function to create and drop objects sequentially
     const dropBodiesSequentially = () => {
-      const startX = 80; // Starting X position
-      const spacing = 100; // Space between objects
+      const startX = bucketWidth / 2; // Center of the bucket
+      const spacing = 50; // Space between stacked objects
 
       images.forEach((src, index) => {
         setTimeout(() => {
-          const x = startX + index * spacing;
-          const y = 50;
+          const x = startX;
+          const y = 50; // Objects start falling from the top
 
           const body = Bodies.rectangle(x, y, 50, 50, {
-            restitution: 0.9,
-            friction: 0.2,
-            frictionAir: 0.05,
-            density: 0.01,
+            restitution: 0.7,
+            friction: 0.1,
             render: {
               sprite: {
                 texture: src,
@@ -113,7 +118,7 @@ const StackBucket = () => {
           });
 
           World.add(world, body);
-        }, index * 500); // Delay each drop by 500ms
+        }, index * 800); // Drop each object every 800ms
       });
     };
 

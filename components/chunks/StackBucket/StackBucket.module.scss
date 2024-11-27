@@ -1,9 +1,9 @@
 .StackBucket {
   width: 600px;
-  height: 300px;
+  height: 400px;
   margin: 0 auto;
   background: #fff;
-  border-radius: 20px;
+  border-radius: 50% / 20%; // Simulate the top of a cylinder
   position: relative;
   overflow: hidden; // Ensure objects stay within the bucket
   margin: 100px auto;
