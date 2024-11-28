@@ -4,11 +4,11 @@ import styles from "./MovingHeadline.module.scss";
 const MovingHeadline = () => {
   const sentence = (
     <>
-      <span className={`${styles.word} ${styles.filled}`}>NEXT</span>
+      <span className={`${styles.word} ${styles.filled}`}></span>
       <span className={`${styles.word} ${styles.bordered}`}>APPLICATION</span>
       <span className={`${styles.word} ${styles.filled}`}>DEVELOPMENT</span>
       <span className={`${styles.word} ${styles.bordered}`}>DESIGN</span>
-      <span className={`${styles.word} ${styles.filled}`}>PLATFORM</span>
+      <span className={`${styles.word} ${styles.filled}`}>AI</span>
     </>
   );
 

@@ -6,6 +6,7 @@ import FounderInfo from "../../chunks/FounderInfo/FounderInfo";
 import StackBucket from "../../chunks/StackBucket/StackBucket";
 import Hero from "../../chunks/Hero/Hero";
 import Showcase from "../../chunks/Showcase/Showcase";
+import ChatBubble from "../../chunks/ChatBubble/ChatBubble";
 
 const Home = () => {
   return (
@@ -13,10 +14,11 @@ const Home = () => {
       <Navbar />
       <Hero />
       <Showcase />
-      {/* <MovingHeadline />
-      <OnboardIntro />
+      <StackBucket />
+      <MovingHeadline />
       <FounderInfo />
-      <StackBucket /> */}
+      {/* <OnboardIntro /> */}
+      <ChatBubble />
     </div>
   );
 };
