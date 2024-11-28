@@ -38,6 +38,14 @@ const Stack = () => {
       />
 
       <Image
+        src="/images/node.png"
+        alt="React"
+        className={styles.stackImg}
+        width={100}
+        height={100}
+      />
+
+      <Image
         src="/images/vercel.png"
         alt="Vercel"
         className={styles.stackImg}
