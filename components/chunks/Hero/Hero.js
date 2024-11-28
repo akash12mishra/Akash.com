@@ -39,6 +39,8 @@ const Hero = () => {
           Book a call <CiVideoOn className={styles.HeroBtnIcon} />{" "}
         </button>
       </div>
+
+      <div className={styles.HeroChatbot}></div>
     </div>
   );
 };

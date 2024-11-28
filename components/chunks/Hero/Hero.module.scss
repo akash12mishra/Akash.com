@@ -1,10 +1,11 @@
 .Hero {
   margin-top: 200px;
+  margin-bottom: 80px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 30px;
+  gap: 40px;
 
   .HeroTitle {
     h2 {
@@ -58,5 +59,15 @@
         }
       }
     }
+  }
+
+  .HeroChatbot {
+    border: none;
+    outline: none;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+    border-radius: 20px;
+    padding: 10px;
+    height: 500px;
+    width: 350px;
   }
 }
