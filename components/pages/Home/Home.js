@@ -4,15 +4,17 @@ import MovingHeadline from "../../chunks/MovingHeadline/MovingHeadline";
 import OnboardIntro from "../../chunks/OnboardIntro/OnboardIntro";
 import FounderInfo from "../../chunks/FounderInfo/FounderInfo";
 import StackBucket from "../../chunks/StackBucket/StackBucket";
+import Hero from "../../chunks/Hero/Hero";
 
 const Home = () => {
   return (
     <div>
       <Navbar />
-      <MovingHeadline />
+      <Hero />
+      {/* <MovingHeadline />
       <OnboardIntro />
       <FounderInfo />
-      <StackBucket />
+      <StackBucket /> */}
     </div>
   );
 };
