@@ -4,6 +4,7 @@ import React from "react";
 import styles from "./Hero.module.scss";
 import { CiVideoOn } from "react-icons/ci";
 import Typewriter from "../../../utils/Typewriter";
+import Chatbot from "../Chatbot/Chatbot";
 
 const Hero = () => {
   return (
@@ -14,7 +15,7 @@ const Hero = () => {
           <span>
             {" "}
             <Typewriter
-              words={["AI Powered", "High Performance", "Communities"]}
+              words={["AI Powered", "High Performance", "SEO Optimized"]}
               typeSpeed={70}
               deleteSpeed={50}
               delaySpeed={2000}
@@ -40,7 +41,7 @@ const Hero = () => {
         </button>
       </div>
 
-      <div className={styles.HeroChatbot}></div>
+      <Chatbot />
     </div>
   );
 };
