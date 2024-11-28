@@ -30,7 +30,7 @@ const Stack = () => {
       />
 
       <Image
-        src="/images/react.png"
+        src="/images/react.webp"
         alt="React"
         className={styles.stackImg}
         width={100}
