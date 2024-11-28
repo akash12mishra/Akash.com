@@ -13,8 +13,8 @@ const Home = () => {
     <div>
       <Navbar />
       <Hero />
-      <Showcase />
       <Stack />
+      <Showcase />
       <FounderInfo />
       <MovingHeadline />
       {/* <OnboardIntro /> */}
