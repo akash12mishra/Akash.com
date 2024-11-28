@@ -1,0 +1,12 @@
+.Stack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+
+  .stackImg {
+    height: auto;
+    object-fit: contain;
+    width: 150px;
+  }
+}
