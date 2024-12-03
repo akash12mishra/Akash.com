@@ -1,0 +1,90 @@
+.Services {
+  width: 90%;
+  margin: 200px auto 100px auto;
+
+  .ServicesTitle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+
+    h2 {
+      font-size: 40px;
+      text-align: center;
+    }
+
+    p {
+      text-align: center;
+      font-size: 20px;
+      line-height: 30px;
+      color: #6c757d;
+    }
+  }
+
+  .ServicesGrid {
+    margin-top: 60px;
+
+    .ServicesGridOne {
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+
+      .ServicesGridItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        border-top: 2px solid #e9ecef;
+        border-left: 2px solid #e9ecef;
+        border-right: 2px solid #e9ecef;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        padding: 15px;
+
+        &:nth-child(2) {
+          .ServicesGridItemIcons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+
+            .ServicesGridIcon {
+              font-size: 80px;
+            }
+          }
+        }
+
+        .ServicesGridItemTitle {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          justify-content: center;
+
+          h3 {
+            font-size: 25px;
+            color: rgb(52, 52, 52);
+            font-weight: normal;
+          }
+
+          p {
+            font-size: 15px;
+            color: #6c757d;
+          }
+
+          .ServicesGridIcon {
+            font-size: 30px;
+          }
+        }
+
+        .ServicesGridItemIcons {
+          .serviceGridWebImg {
+            height: auto;
+            object-fit: contain;
+            width: 500px;
+          }
+        }
+      }
+    }
+  }
+}

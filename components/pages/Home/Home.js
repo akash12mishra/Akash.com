@@ -7,6 +7,7 @@ import Hero from "../../chunks/Hero/Hero";
 import Showcase from "../../chunks/Showcase/Showcase";
 import ChatBubble from "../../chunks/ChatBubble/ChatBubble";
 import Stack from "../../chunks/Stack/Stack";
+import Services from "../../chunks/Services/Services";
 
 const Home = () => {
   return (
@@ -18,6 +19,7 @@ const Home = () => {
       <FounderInfo />
       <MovingHeadline />
       {/* <OnboardIntro /> */}
+      <Services />
       <ChatBubble />
     </div>
   );
