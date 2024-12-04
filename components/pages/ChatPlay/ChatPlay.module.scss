@@ -1,0 +1,74 @@
+.ChatPlay {
+  .chatPlayBox {
+    border: 1px solid black;
+    width: 90%;
+    height: 40rem;
+    margin: 50px auto;
+    overflow-y: auto; /* Scrollable chat box */
+    padding: 20px;
+    border-radius: 8px;
+
+    .userMessage {
+      text-align: right;
+      color: #007bff; /* Blue for user messages */
+      margin-bottom: 10px;
+    }
+
+    .aiMessage {
+      text-align: left;
+      color: #333; /* Dark color for AI messages */
+      margin-bottom: 10px;
+    }
+
+    .box {
+      background-color: #e0e0e0;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #555;
+      text-align: center;
+      margin: 10px 0;
+    }
+  }
+
+  .chatPlayInput {
+    width: 80%;
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    display: flex;
+    justify-content: center;
+
+    form {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+
+      input {
+        flex-grow: 1;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        outline: none;
+
+        &:disabled {
+          background-color: #cccccc;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
