@@ -5,6 +5,13 @@ import discoWebImg from "../../../assets/images/discoWeb.png";
 import Image from "next/image";
 import { IoCodeSlash } from "react-icons/io5";
 import { IoLogoVercel } from "react-icons/io5";
+import codeImg from "../../../assets/images/codeService.png";
+import vercelImg from "../../../assets/images/vercelService.png";
+import deployImg from "../../../assets/images/deployService.png";
+import { GrDeploy } from "react-icons/gr";
+import aiAutoImg from "../../../assets/images/AIAutomation.jpeg";
+import { BsRobot } from "react-icons/bs";
+import { IoSparklesOutline } from "react-icons/io5";
 
 const Services = () => {
   return (
@@ -40,7 +47,7 @@ const Services = () => {
 
           <div className={styles.ServicesGridItem}>
             <div className={styles.ServicesGridItemTitle}>
-              <MdWeb className={styles.ServicesGridIcon} />
+              <GrDeploy className={styles.ServicesGridIcon} />
               <h3>Full Deployment and Maintenance</h3>
               <p>
                 We will build you a website that is so good, it will make <br />{" "}
@@ -49,8 +56,47 @@ const Services = () => {
             </div>
 
             <div className={styles.ServicesGridItemIcons}>
-              <IoCodeSlash className={styles.ServicesGridIcon} />
-              <IoLogoVercel className={styles.ServicesGridIcon} />
+              <Image alt="" src={codeImg} className={styles.ServicesGridIcon} />
+
+              <Image
+                alt=""
+                src={vercelImg}
+                className={styles.ServicesGridIcon}
+              />
+
+              <Image
+                alt=""
+                src={deployImg}
+                className={styles.ServicesGridIcon}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.ServicesGridTwo}>
+          <div className={styles.ServicesGridItem}>
+            <div className={styles.ServicesGridItemTitle}>
+              <BsRobot className={styles.ServicesGridIcon} />
+
+              <h3>Custom AI Automations & Integrations</h3>
+
+              <p>
+                We will build you a website that is so good, it will make <br />{" "}
+                all the other websites jealous. Trust me, <br /> not kidding.
+              </p>
+
+              <button>
+                View Demo{" "}
+                <IoSparklesOutline className={styles.demoSparkleService} />{" "}
+              </button>
+            </div>
+
+            <div className={styles.ServicesGridItemIcons}>
+              <Image
+                alt=""
+                src={aiAutoImg}
+                className={styles.ServicesGridIcon}
+              />
             </div>
           </div>
         </div>
