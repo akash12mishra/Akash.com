@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import styles from "./Services.module.scss";
 import { MdWeb } from "react-icons/md";
@@ -12,8 +14,11 @@ import { GrDeploy } from "react-icons/gr";
 import aiAutoImg from "../../../assets/images/AIAutomation.jpeg";
 import { BsRobot } from "react-icons/bs";
 import { IoSparklesOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 const Services = () => {
+  const router = useRouter();
+
   return (
     <div className={styles.Services}>
       <div className={styles.ServicesTitle}>
@@ -85,7 +90,7 @@ const Services = () => {
                 all the other websites jealous. Trust me, <br /> not kidding.
               </p>
 
-              <button>
+              <button onClick={() => router.push("/chatPlay")}>
                 View Demo{" "}
                 <IoSparklesOutline className={styles.demoSparkleService} />{" "}
               </button>
