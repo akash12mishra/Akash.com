@@ -3,6 +3,8 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import styles from "./ChatPlay.module.scss";
 import axios from "../../../axios/api"; // Backend API
+import SkeletonBox from "../../SkeletonBox/SkeletonBox";
+import Box from "../../Box/Box";
 
 const ChatPlay = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
@@ -48,15 +50,29 @@ const ChatPlay = () => {
         const functionCall = aiMessage.function_call;
 
         if (functionCall.name === "render_box_component") {
-          // Simulate box rendering
+          // Add SkeletonBox as a placeholder while loading
           setChatHistory((prev) => [
             ...prev.slice(0, -1), // Remove the loader
             {
               role: "assistant",
               content: "",
-              boxData: "This is an AI-rendered box component!",
+              boxData: null, // Box data is null initially
+              isLoading: true, // Indicate loading state for the box
             },
           ]);
+
+          // Simulate box rendering delay
+          setTimeout(() => {
+            setChatHistory((prev) => [
+              ...prev.slice(0, -1), // Remove the SkeletonBox
+              {
+                role: "assistant",
+                content: "",
+                boxData: "This is an AI-rendered box component!", // Render box data
+                isLoading: false, // Box has finished loading
+              },
+            ]);
+          }, 3000); // Simulated 3-second delay
         } else if (functionCall.name === "get_training_data") {
           // Fetch training data from API
           const trainingData = await axios.get("train");
@@ -97,8 +113,13 @@ const ChatPlay = () => {
               message.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {message.boxData ? (
-              <div className={styles.box}>{message.boxData}</div>
+            {/* Handle conditional rendering for box components */}
+            {message.boxData !== undefined ? (
+              message.isLoading ? (
+                <SkeletonBox /> // Render SkeletonBox during loading
+              ) : (
+                <Box data={message.boxData} /> // Render Box after loading
+              )
             ) : (
               <p>{message.content || "Loading..."}</p>
             )}
