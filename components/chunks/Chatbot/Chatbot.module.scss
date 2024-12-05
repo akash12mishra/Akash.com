@@ -17,15 +17,39 @@
     background-color: transparent;
 
     .userMessage {
-      text-align: right;
-      color: #007bff;
+      display: flex;
+      justify-content: flex-end; /* Align message to the right */
       margin-bottom: 10px;
+
+      p {
+        background-color: black; /* Background color for user messages */
+        color: white; /* Text color for user messages */
+        border-radius: 10px;
+        padding: 6px;
+        max-width: 70%; /* Ensure messages do not take full width */
+        word-wrap: break-word; /* Break words if too long */
+      }
     }
 
     .aiMessage {
       text-align: left;
       color: #333;
       margin-bottom: 10px;
+
+      p {
+        background-color: #f0f0f0; /* Background color for AI messages */
+        color: #333; /* Text color for AI messages */
+        border-radius: 10px;
+        padding: 6px;
+        max-width: 70%; /* Ensure messages do not take full width */
+        word-wrap: break-word; /* Break words if too long */
+      }
+    }
+
+    .loaderContainer {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
     }
   }
 

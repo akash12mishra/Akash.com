@@ -5,6 +5,7 @@ import styles from "./Chatbot.module.scss";
 import axios from "../../../axios/api"; // Backend API
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
 import Box from "../../Box/Box";
+import { RingLoader } from "react-spinners"; // Import RingLoader
 
 const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
@@ -26,17 +27,8 @@ const Chatbot = () => {
   }, [chatHistory]);
 
   // Add a message to chat history
-  const addMessage = (role, content) => {
-    setChatHistory((prev) => [...prev, { role, content }]);
-  };
-
-  // Add progressively rendered messages
-  const addProgressiveMessage = (role, contentArray) => {
-    contentArray.forEach((content, index) => {
-      setTimeout(() => {
-        addMessage(role, content);
-      }, index * 500); // Display each chunk with a delay
-    });
+  const addMessage = (role, content, isLoading = false, boxData = null) => {
+    setChatHistory((prev) => [...prev, { role, content, isLoading, boxData }]);
   };
 
   // Handle input submission
@@ -51,10 +43,7 @@ const Chatbot = () => {
     setInput(""); // Clear the input field
 
     // Add loading message for AI
-    setChatHistory((prev) => [
-      ...prev,
-      { role: "assistant", content: "", isLoading: true },
-    ]);
+    addMessage("assistant", "", true);
     setIsLoading(true);
 
     try {
@@ -70,50 +59,62 @@ const Chatbot = () => {
         const functionCall = aiMessage.function_call;
 
         if (functionCall.name === "render_box_component") {
-          setChatHistory((prev) => [
-            ...prev.slice(0, -1),
-            {
-              role: "assistant",
-              content: "",
-              boxData: null,
-              isLoading: true,
-            },
-          ]);
+          // Show SkeletonBox initially
+          setChatHistory((prev) =>
+            prev.map((msg, index) =>
+              index === prev.length - 1
+                ? { ...msg, isLoading: true, boxData: null }
+                : msg
+            )
+          );
 
           // Simulate box rendering delay
           setTimeout(() => {
-            setChatHistory((prev) => [
-              ...prev.slice(0, -1),
-              {
-                role: "assistant",
-                content: "",
-                boxData: "This is an AI-rendered box component!",
-                isLoading: false,
-              },
-            ]);
-          }, 3000);
+            setChatHistory((prev) =>
+              prev.map((msg, index) =>
+                index === prev.length - 1
+                  ? {
+                      ...msg,
+                      isLoading: false,
+                      boxData: "This is an AI-rendered box component!",
+                    }
+                  : msg
+              )
+            );
+          }, 3000); // Simulated 3-second delay
         } else if (functionCall.name === "get_training_data") {
           const trainingData = await axios.get("train");
-          setChatHistory((prev) => [
-            ...prev.slice(0, -1),
-            {
-              role: "assistant",
-              content: `Training data: ${trainingData.data.message}`,
-            },
-          ]);
+          setChatHistory((prev) =>
+            prev.map((msg, index) =>
+              index === prev.length - 1
+                ? {
+                    ...msg,
+                    isLoading: false,
+                    content: `Training data: ${trainingData.data.message}`,
+                  }
+                : msg
+            )
+          );
         }
       } else {
         // Normal AI response - split into chunks
         const responseChunks = aiMessage.content.split("\n\n");
         setChatHistory((prev) => prev.slice(0, -1)); // Remove loader
-        addProgressiveMessage("assistant", responseChunks);
+        responseChunks.forEach((chunk, index) => {
+          setTimeout(() => {
+            addMessage("assistant", chunk);
+          }, index * 500); // Progressive rendering
+        });
       }
     } catch (error) {
       console.error("Error fetching AI response:", error);
-      setChatHistory((prev) => [
-        ...prev.slice(0, -1),
-        { role: "assistant", content: "Error. Please try again." },
-      ]);
+      setChatHistory((prev) =>
+        prev.map((msg, index) =>
+          index === prev.length - 1
+            ? { ...msg, isLoading: false, content: "Error. Please try again." }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -130,12 +131,16 @@ const Chatbot = () => {
               message.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {message.boxData !== undefined ? (
-              message.isLoading ? (
-                <SkeletonBox />
+            {message.boxData !== null ? (
+              message.boxData === null ? (
+                <SkeletonBox /> // Render SkeletonBox during loading
               ) : (
-                <Box data={message.boxData} />
+                <Box data={message.boxData} /> // Render Box after loading
               )
+            ) : message.isLoading ? (
+              <div className={styles.loaderContainer}>
+                <RingLoader color="#000000" size={30} />
+              </div>
             ) : (
               <p>{message.content}</p>
             )}
