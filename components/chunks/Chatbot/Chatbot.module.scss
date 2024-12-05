@@ -43,6 +43,7 @@
         padding: 6px;
         max-width: 70%; /* Ensure messages do not take full width */
         word-wrap: break-word; /* Break words if too long */
+        white-space: pre-wrap;
       }
     }
 
@@ -92,4 +93,11 @@
       }
     }
   }
+}
+
+.formattedMessage {
+  white-space: pre-line; /* Preserve line breaks */
+  word-wrap: break-word; /* Ensure long words wrap properly */
+  line-height: 1.5; /* Improve readability */
+  font-size: 1rem;
 }

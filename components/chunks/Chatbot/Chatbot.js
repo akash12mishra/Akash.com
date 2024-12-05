@@ -106,14 +106,14 @@ const Chatbot = () => {
           );
         }
       } else {
-        // Normal AI response - split into chunks
-        const responseChunks = aiMessage.content.split("\n\n");
-        setChatHistory((prev) => prev.slice(0, -1)); // Remove loader
-        responseChunks.forEach((chunk, index) => {
-          setTimeout(() => {
-            addMessage("assistant", chunk);
-          }, index * 500); // Progressive rendering
-        });
+        // Normal AI response
+        setChatHistory((prev) =>
+          prev.map((msg, index) =>
+            index === prev.length - 1
+              ? { ...msg, isLoading: false, content: aiMessage.content }
+              : msg
+          )
+        );
       }
     } catch (error) {
       console.error("Error fetching AI response:", error);
@@ -149,7 +149,7 @@ const Chatbot = () => {
                 <RingLoader color="#000000" size={30} />
               </div> // Render RingLoader for normal loading
             ) : (
-              <p>{message.content}</p>
+              <p>{message.content}</p> // Display entire response at once
             )}
           </div>
         ))}
