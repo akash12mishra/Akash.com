@@ -1,9 +1,108 @@
 .Chatbot {
   border: none;
   outline: none;
-  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 28px 28px 36px #000, -28px -28px 36px #fff;
+
   border-radius: 20px;
   padding: 10px;
   height: 500px;
   width: 350px;
+  background-color: #ffffff;
+  position: relative;
+
+  .chatbotBox {
+    height: 88%;
+    overflow-y: auto; /* Independent scrolling */
+    padding: 10px;
+    border-radius: 10px;
+    background-color: transparent;
+
+    .userMessage {
+      display: flex;
+      justify-content: flex-end; /* Align message to the right */
+      margin-bottom: 10px;
+
+      p {
+        background-color: black; /* Background color for user messages */
+        color: white; /* Text color for user messages */
+        border-radius: 10px;
+        padding: 6px;
+        max-width: 70%; /* Ensure messages do not take full width */
+        word-wrap: break-word; /* Break words if too long */
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+      }
+    }
+
+    .aiMessage {
+      text-align: left;
+      color: #333;
+      margin-bottom: 10px;
+
+      p {
+        background-color: #f0f0f0; /* Background color for AI messages */
+        color: #333; /* Text color for AI messages */
+        border-radius: 10px;
+        padding: 6px;
+        max-width: 70%; /* Ensure messages do not take full width */
+        word-wrap: break-word; /* Break words if too long */
+        white-space: pre-wrap;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+      }
+    }
+
+    .loaderContainer {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+  }
+
+  .chatbotInput {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+
+    form {
+      display: flex;
+      width: 100%;
+      gap: 10px;
+
+      input {
+        flex-grow: 1;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        outline: none;
+      }
+
+      button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        background-color: black;
+        color: #fff;
+        outline: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+
+        &:hover {
+          background-color: white;
+          color: black;
+        }
+
+        &:disabled {
+          background-color: #cccccc;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
 }

@@ -8,10 +8,12 @@
   h3 {
     font-size: 18px;
     color: #333;
+    background-color: transparent;
   }
 
   p {
     font-size: 14px;
     color: #666;
+    box-shadow: none !important;
   }
 }
