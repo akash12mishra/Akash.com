@@ -10,7 +10,7 @@ import { RingLoader } from "react-spinners"; // Import RingLoader
 const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
   const [input, setInput] = useState(""); // User input
-  const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
+  const [isLoading, setIsLoading] = useState(false); // Global loader state
   const messagesEndRef = useRef(null); // For scrolling to the bottom
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
@@ -68,8 +68,14 @@ const Chatbot = () => {
         const functionCall = aiMessage.function_call;
 
         if (functionCall.name === "render_box_component") {
-          // Add SkeletonBox as placeholder
-          addMessage("assistant", "", true, null, true);
+          // Replace the RingLoader with SkeletonBox for this response
+          setChatHistory((prev) =>
+            prev.map((msg, index) =>
+              index === prev.length - 1
+                ? { ...msg, isLoading: false, boxData: null, isRenderBox: true }
+                : msg
+            )
+          );
 
           // Simulate box rendering delay
           setTimeout(() => {
@@ -78,7 +84,6 @@ const Chatbot = () => {
                 index === prev.length - 1 && msg.isRenderBox
                   ? {
                       ...msg,
-                      isLoading: false,
                       boxData: "This is an AI-rendered box component!",
                       isRenderBox: false,
                     }
@@ -135,7 +140,7 @@ const Chatbot = () => {
               message.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {message.isRenderBox && message.isLoading ? (
+            {message.isRenderBox && message.boxData === null ? (
               <SkeletonBox /> // Render SkeletonBox only for render_box_component
             ) : message.boxData !== null ? (
               <Box data={message.boxData} /> // Render actual Box after loading
