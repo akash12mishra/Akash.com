@@ -166,7 +166,7 @@ const Chatbot = () => {
             placeholder="Type your query..."
           />
           <button type="submit" disabled={isLoading}>
-            {isLoading ? "Loading..." : "Send"}
+            Send
           </button>
         </form>
       </div>
