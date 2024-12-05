@@ -1,7 +1,7 @@
 .Chatbot {
   border: none;
   outline: none;
-  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
   border-radius: 20px;
   padding: 10px;
   height: 500px;
@@ -28,6 +28,7 @@
         padding: 6px;
         max-width: 70%; /* Ensure messages do not take full width */
         word-wrap: break-word; /* Break words if too long */
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
       }
     }
 
@@ -44,6 +45,7 @@
         max-width: 70%; /* Ensure messages do not take full width */
         word-wrap: break-word; /* Break words if too long */
         white-space: pre-wrap;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
       }
     }
 
@@ -62,6 +64,7 @@
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    width: 90%;
 
     form {
       display: flex;
@@ -86,6 +89,13 @@
         background-color: black;
         color: #fff;
         outline: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+
+        &:hover {
+          background-color: white;
+          color: black;
+        }
 
         &:disabled {
           background-color: #cccccc;
