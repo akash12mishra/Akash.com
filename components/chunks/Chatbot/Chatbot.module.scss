@@ -2,7 +2,6 @@
   border: none;
   outline: none;
   box-shadow: 28px 28px 36px #000, -28px -28px 36px #fff;
-
   border-radius: 20px;
   padding: 10px;
   height: 500px;
@@ -19,31 +18,35 @@
 
     .userMessage {
       display: flex;
-      justify-content: flex-end; /* Align message to the right */
+      justify-content: flex-end; /* Ensure right alignment */
       margin-bottom: 20px;
       margin-top: 20px;
+      width: 100%; /* Ensure full width for alignment */
+      word-wrap: break-word; /* Prevent text overflow */
 
       p {
-        background-color: black; /* Background color for user messages */
-        color: white; /* Text color for user messages */
+        background-color: black;
+        color: white;
         border-radius: 10px;
-        padding: 6px;
-        max-width: 70%; /* Ensure messages do not take full width */
-        word-wrap: break-word; /* Break words if too long */
-        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+        padding: 8px 12px; /* Add padding for better spacing */
+        word-wrap: break-word; /* Ensure long text breaks into multiple lines */
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
+        text-align: right; /* Align text within the bubble to the right */
+        margin: 0; /* Prevent margin conflict */
       }
     }
 
     .aiMessage {
       text-align: left;
-      color: #333;
       margin-bottom: 10px;
+      color: #333;
 
       p {
         color: #333; /* Text color for AI messages */
         max-width: 90%; /* Ensure messages do not take full width */
         word-wrap: break-word; /* Break words if too long */
-        white-space: pre-wrap;
+        white-space: pre-wrap; /* Preserve spaces and line breaks */
+        margin: 0; /* Prevent margin conflict */
       }
     }
 
@@ -51,6 +54,37 @@
       display: flex;
       align-items: center;
       margin: 10px 0;
+    }
+
+    .formattedMessage {
+      margin-bottom: 1rem;
+
+      .headingLine {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: bold;
+
+        .number {
+          font-size: 1rem;
+          font-weight: bold;
+        }
+
+        .heading {
+          font-size: 1rem;
+          font-weight: bold;
+        }
+
+        .colon {
+          font-size: 1rem;
+        }
+      }
+
+      .description {
+        margin-left: 1.5rem; /* Indent description */
+        font-size: 0.9rem;
+        color: #555;
+      }
     }
   }
 
@@ -102,44 +136,32 @@
       }
     }
   }
-}
 
-.smallHeading {
-  font-size: 0.9rem; // Adjust size for small headings
-  font-weight: bold;
-  margin: 0.5rem 0;
-  display: block;
-  background: transparent;
-  color: #333; // Heading color
-}
-
-.formattedMessage {
-  margin-bottom: 1rem;
-
-  .headingLine {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  .h2 {
+    font-size: 1.5rem; /* Adjust font size for h2 */
     font-weight: bold;
-
-    .number {
-      font-size: 1rem;
-      font-weight: bold;
-    }
-
-    .heading {
-      font-size: 1rem;
-      font-weight: bold;
-    }
-
-    .colon {
-      font-size: 1rem;
-    }
+    margin: 1rem 0;
+    color: #333;
   }
 
-  .description {
-    margin-left: 1.5rem; /* Indent description */
-    font-size: 0.9rem;
+  .h3 {
+    font-size: 1.25rem; /* Adjust font size for h3 */
+    font-weight: bold;
+    margin: 0.75rem 0;
     color: #555;
+  }
+
+  .bold {
+    font-weight: bold;
+    color: #000;
+  }
+
+  .smallHeading {
+    font-size: 0.9rem; /* Adjust size for small headings */
+    font-weight: bold;
+    margin: 0.5rem 0;
+    display: block;
+    background: transparent;
+    color: #333; /* Heading color */
   }
 }

@@ -133,16 +133,34 @@ const Chatbot = () => {
 
   // Function to parse and render formatted AI messages
   const renderFormattedMessage = (content) => {
-    const parts = content.split(/(\*\*.*?\*\*)/g); // Split on **text**
+    const parts = content.split(/(\*\*.*?\*\*|##.*|###.*)/g); // Split on **text**, ##, ###
+
     return parts.map((part, index) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
+      if (part.startsWith("###")) {
+        // Render h3 headings
         return (
-          <strong key={index} className={styles.smallHeading}>
-            {part.slice(2, -2)} {/* Remove ** */}
+          <h3 key={index} className={styles.h3}>
+            {part.replace("###", "").trim()}
+          </h3>
+        );
+      }
+      if (part.startsWith("##")) {
+        // Render h2 headings
+        return (
+          <h2 key={index} className={styles.h2}>
+            {part.replace("##", "").trim()}
+          </h2>
+        );
+      }
+      if (part.startsWith("**") && part.endsWith("**")) {
+        // Render bold text
+        return (
+          <strong key={index} className={styles.bold}>
+            {part.replace(/\*\*/g, "").trim()}
           </strong>
         );
       }
-      return part; // Render normal text
+      return <p key={index}>{part.trim()}</p>; // Render normal text
     });
   };
 
@@ -164,7 +182,7 @@ const Chatbot = () => {
             ) : message.isLoading ? (
               <div className={styles.loaderContainer}>typing...</div> // Render typing loader
             ) : (
-              <p>{renderFormattedMessage(message.content)}</p> // Render formatted message
+              <div>{renderFormattedMessage(message.content)}</div> // Render formatted message
             )}
           </div>
         ))}
