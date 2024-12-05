@@ -112,3 +112,34 @@
   background: transparent;
   color: #333; // Heading color
 }
+
+.formattedMessage {
+  margin-bottom: 1rem;
+
+  .headingLine {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+
+    .number {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .heading {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .colon {
+      font-size: 1rem;
+    }
+  }
+
+  .description {
+    margin-left: 1.5rem; /* Indent description */
+    font-size: 0.9rem;
+    color: #555;
+  }
+}
