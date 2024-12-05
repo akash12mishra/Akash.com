@@ -40,14 +40,10 @@
       margin-bottom: 10px;
 
       p {
-        background-color: #f0f0f0; /* Background color for AI messages */
         color: #333; /* Text color for AI messages */
-        border-radius: 10px;
-        padding: 6px;
-        max-width: 70%; /* Ensure messages do not take full width */
+        max-width: 90%; /* Ensure messages do not take full width */
         word-wrap: break-word; /* Break words if too long */
         white-space: pre-wrap;
-        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
       }
     }
 
@@ -106,4 +102,13 @@
       }
     }
   }
+}
+
+.smallHeading {
+  font-size: 0.9rem; // Adjust size for small headings
+  font-weight: bold;
+  margin: 0.5rem 0;
+  display: block;
+  background: transparent;
+  color: #333; // Heading color
 }

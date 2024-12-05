@@ -131,6 +131,21 @@ const Chatbot = () => {
     }
   };
 
+  // Function to parse and render formatted AI messages
+  const renderFormattedMessage = (content) => {
+    const parts = content.split(/(\*\*.*?\*\*)/g); // Split on **text**
+    return parts.map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={index} className={styles.smallHeading}>
+            {part.slice(2, -2)} {/* Remove ** */}
+          </strong>
+        );
+      }
+      return part; // Render normal text
+    });
+  };
+
   return (
     <div className={styles.Chatbot}>
       {/* Chat Box */}
@@ -149,7 +164,7 @@ const Chatbot = () => {
             ) : message.isLoading ? (
               <div className={styles.loaderContainer}>typing...</div> // Render typing loader
             ) : (
-              <p>{message.content}</p> // Display entire response at once
+              <p>{renderFormattedMessage(message.content)}</p> // Render formatted message
             )}
           </div>
         ))}
