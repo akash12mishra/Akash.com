@@ -5,7 +5,6 @@ import styles from "./Chatbot.module.scss";
 import axios from "../../../axios/api"; // Backend API
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
 import Box from "../../Box/Box";
-import { RingLoader } from "react-spinners"; // Import RingLoader
 
 const Chatbot = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
@@ -145,9 +144,7 @@ const Chatbot = () => {
             ) : message.boxData !== null ? (
               <Box data={message.boxData} /> // Render actual Box after loading
             ) : message.isLoading ? (
-              <div className={styles.loaderContainer}>
-                <RingLoader color="#000000" size={30} />
-              </div> // Render RingLoader for normal loading
+              <div className={styles.loaderContainer}>typing...</div> // Render RingLoader for normal loading
             ) : (
               <p>{message.content}</p> // Display entire response at once
             )}
