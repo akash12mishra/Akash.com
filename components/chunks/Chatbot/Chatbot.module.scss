@@ -20,7 +20,8 @@
     .userMessage {
       display: flex;
       justify-content: flex-end; /* Align message to the right */
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      margin-top: 20px;
 
       p {
         background-color: black; /* Background color for user messages */

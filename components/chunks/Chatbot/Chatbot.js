@@ -13,10 +13,13 @@ const Chatbot = () => {
   const messagesEndRef = useRef(null); // For scrolling to the bottom
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Scroll to the bottom of chatbot box
+  // Scroll to the bottom of chatbot box smoothly
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
-      chatbotBoxRef.current.scrollTop = chatbotBoxRef.current.scrollHeight;
+      chatbotBoxRef.current.scrollTo({
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "smooth", // Enables smooth scrolling
+      });
     }
   };
 
@@ -144,7 +147,7 @@ const Chatbot = () => {
             ) : message.boxData !== null ? (
               <Box data={message.boxData} /> // Render actual Box after loading
             ) : message.isLoading ? (
-              <div className={styles.loaderContainer}>typing...</div> // Render RingLoader for normal loading
+              <div className={styles.loaderContainer}>typing...</div> // Render typing loader
             ) : (
               <p>{message.content}</p> // Display entire response at once
             )}
