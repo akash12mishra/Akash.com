@@ -81,8 +81,7 @@
         .emojiOrColon {
           font-size: 1rem;
           flex-shrink: 0; /* Prevent emoji/colon from shrinking */
-          // text-align: left; /* Align to the left */
-          // margin-left: 0.25rem; /* Add small spacing if necessary */
+          margin-left: 0.25rem; /* Add small spacing if necessary */
         }
       }
     }
