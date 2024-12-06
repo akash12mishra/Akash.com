@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
 import axios from "../../../axios/api"; // Backend API
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
@@ -11,15 +11,36 @@ const ChatPlay = () => {
   const [input, setInput] = useState(""); // User input
   const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
   const messagesEndRef = useRef(null); // For scrolling to the bottom
+  const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Scroll to the bottom when chat history updates
-  useLayoutEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  // Scroll to the bottom of chatbot box smoothly
+  const scrollToBottom = () => {
+    if (chatbotBoxRef.current) {
+      chatbotBoxRef.current.scrollTo({
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "smooth", // Enables smooth scrolling
+      });
     }
+  };
+
+  // Scroll to bottom on chat history update
+  useEffect(() => {
+    scrollToBottom();
   }, [chatHistory]);
 
-  // Handle input submission
+  const addMessage = (
+    role,
+    content,
+    isLoading = false,
+    boxData = null,
+    isRenderBox = false
+  ) => {
+    setChatHistory((prev) => [
+      ...prev,
+      { role, content, isLoading, boxData, isRenderBox },
+    ]);
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const userMessage = input.trim();
@@ -27,14 +48,11 @@ const ChatPlay = () => {
     if (!userMessage) return; // Prevent empty messages
 
     // Add user's message to chat history
-    setChatHistory((prev) => [...prev, { role: "user", content: userMessage }]);
+    addMessage("user", userMessage);
     setInput(""); // Clear the input field
 
     // Add loading message for AI
-    setChatHistory((prev) => [
-      ...prev,
-      { role: "assistant", content: "", isLoading: true },
-    ]);
+    addMessage("assistant", "", true);
     setIsLoading(true);
 
     try {
@@ -50,62 +68,112 @@ const ChatPlay = () => {
         const functionCall = aiMessage.function_call;
 
         if (functionCall.name === "render_box_component") {
-          // Add SkeletonBox as a placeholder while loading
-          setChatHistory((prev) => [
-            ...prev.slice(0, -1), // Remove the loader
-            {
-              role: "assistant",
-              content: "",
-              boxData: null, // Box data is null initially
-              isLoading: true, // Indicate loading state for the box
-            },
-          ]);
+          // Replace the RingLoader with SkeletonBox for this response
+          setChatHistory((prev) =>
+            prev.map((msg, index) =>
+              index === prev.length - 1
+                ? { ...msg, isLoading: false, boxData: null, isRenderBox: true }
+                : msg
+            )
+          );
 
           // Simulate box rendering delay
           setTimeout(() => {
-            setChatHistory((prev) => [
-              ...prev.slice(0, -1), // Remove the SkeletonBox
-              {
-                role: "assistant",
-                content: "",
-                boxData: "This is an AI-rendered box component!", // Render box data
-                isLoading: false, // Box has finished loading
-              },
-            ]);
+            setChatHistory((prev) =>
+              prev.map((msg, index) =>
+                index === prev.length - 1 && msg.isRenderBox
+                  ? {
+                      ...msg,
+                      boxData: "This is an AI-rendered box component!",
+                      isRenderBox: false,
+                    }
+                  : msg
+              )
+            );
           }, 3000); // Simulated 3-second delay
         } else if (functionCall.name === "get_training_data") {
-          // Fetch training data from API
           const trainingData = await axios.get("train");
-          setChatHistory((prev) => [
-            ...prev.slice(0, -1),
-            {
-              role: "assistant",
-              content: `Training data: ${trainingData.data.message}`,
-            },
-          ]);
+          setChatHistory((prev) =>
+            prev.map((msg, index) =>
+              index === prev.length - 1
+                ? {
+                    ...msg,
+                    isLoading: false,
+                    content: `Training data: ${trainingData.data.message}`,
+                  }
+                : msg
+            )
+          );
         }
       } else {
         // Normal AI response
-        setChatHistory((prev) => [
-          ...prev.slice(0, -1),
-          { role: "assistant", content: aiMessage.content },
-        ]);
+        setChatHistory((prev) =>
+          prev.map((msg, index) =>
+            index === prev.length - 1
+              ? { ...msg, isLoading: false, content: aiMessage.content }
+              : msg
+          )
+        );
       }
     } catch (error) {
       console.error("Error fetching AI response:", error);
-      setChatHistory((prev) => [
-        ...prev.slice(0, -1),
-        { role: "assistant", content: "Error. Please try again." },
-      ]);
+      setChatHistory((prev) =>
+        prev.map((msg, index) =>
+          index === prev.length - 1
+            ? { ...msg, isLoading: false, content: "Error. Please try again." }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Function to parse and render formatted AI messages
+  const renderFormattedMessage = (content) => {
+    const lines = content.split("\n"); // Split by lines
+    const elements = [];
+
+    lines.forEach((line, index) => {
+      const match = line.match(/^(\d+)\.\s\*\*(.*?)\*\*(.*)/); // Match numbered headings with optional emoji/colon
+      if (match) {
+        const [, number, heading, emojiOrColon] = match;
+        elements.push(
+          <div key={index} className={styles.formattedMessage}>
+            <div className={styles.headingLine}>
+              <span className={styles.number}>{number}.</span>
+              <span className={styles.heading}>{heading}</span>
+              {emojiOrColon && (
+                <span className={styles.emojiOrColon}>
+                  {emojiOrColon.trim()}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      } else if (line.startsWith("-")) {
+        // Handle bullet points
+        elements.push(
+          <ul key={index} className={styles.description}>
+            <li>{line.replace("-", "").trim()}</li>
+          </ul>
+        );
+      } else {
+        // Handle normal paragraphs or other text
+        elements.push(
+          <p key={index} className={styles.description}>
+            {line.trim()}
+          </p>
+        );
+      }
+    });
+
+    return elements;
+  };
+
   return (
     <div className={styles.ChatPlay}>
-      {/* Chat Box */}
-      <div className={styles.chatPlayBox}>
+      <div className={styles.chatPlayBox} ref={chatbotBoxRef}>
         {chatHistory.map((message, index) => (
           <div
             key={index}
@@ -113,22 +181,20 @@ const ChatPlay = () => {
               message.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {/* Handle conditional rendering for box components */}
-            {message.boxData !== undefined ? (
-              message.isLoading ? (
-                <SkeletonBox /> // Render SkeletonBox during loading
-              ) : (
-                <Box data={message.boxData} /> // Render Box after loading
-              )
+            {message.isRenderBox && message.boxData === null ? (
+              <SkeletonBox /> // Render SkeletonBox only for render_box_component
+            ) : message.boxData !== null ? (
+              <Box data={message.boxData} /> // Render actual Box after loading
+            ) : message.isLoading ? (
+              <div className={styles.loaderContainer}>typing...</div> // Render typing loader
             ) : (
-              <p>{message.content || "Loading..."}</p>
+              <div>{renderFormattedMessage(message.content)}</div> // Render formatted message
             )}
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Chat Input */}
       <div className={styles.chatPlayInput}>
         <form onSubmit={handleFormSubmit}>
           <input
@@ -138,7 +204,7 @@ const ChatPlay = () => {
             placeholder="Type your query..."
           />
           <button type="submit" disabled={isLoading}>
-            {isLoading ? "Loading..." : "Submit"}
+            Send
           </button>
         </form>
       </div>

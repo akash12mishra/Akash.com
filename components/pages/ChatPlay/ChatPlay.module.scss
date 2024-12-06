@@ -1,68 +1,149 @@
 .ChatPlay {
+  background-color: #fff;
+  position: relative;
+  height: 100vh;
+  padding-top: 40px;
+
   .chatPlayBox {
-    border: 1px solid black;
-    width: 90%;
+    width: 80%;
     height: 40rem;
-    margin: 50px auto;
-    overflow-y: auto; /* Scrollable chat box */
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 12px;
     padding: 20px;
-    border-radius: 8px;
+    box-shadow: 28px 28px 36px #000, -28px -28px 36px #fff;
+    margin: 0 auto;
+
+    @media (max-width: 380px) {
+      height: 30rem;
+    }
 
     .userMessage {
-      text-align: right;
-      color: #007bff; /* Blue for user messages */
-      margin-bottom: 10px;
+      display: flex;
+      justify-content: flex-end; /* Ensure right alignment */
+      margin-bottom: 20px;
+      margin-top: 20px;
+      width: 100%; /* Ensure full width for alignment */
+      word-wrap: break-word; /* Prevent text overflow */
+
+      p {
+        background-color: black;
+        color: white;
+        border-radius: 10px;
+        padding: 8px 12px; /* Add padding for better spacing */
+        word-wrap: break-word; /* Ensure long text breaks into multiple lines */
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
+        text-align: right; /* Align text within the bubble to the right */
+        margin: 0; /* Prevent margin conflict */
+      }
     }
 
     .aiMessage {
       text-align: left;
-      color: #333; /* Dark color for AI messages */
       margin-bottom: 10px;
+      color: #333;
+
+      p {
+        color: #333; /* Text color for AI messages */
+        max-width: 90%; /* Ensure messages do not take full width */
+        word-wrap: break-word; /* Break words if too long */
+        white-space: pre-wrap; /* Preserve spaces and line breaks */
+        margin: 0; /* Prevent margin conflict */
+      }
     }
 
-    .box {
-      background-color: #e0e0e0;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      color: #555;
-      text-align: center;
-      margin: 10px 0;
+    .formattedMessage {
+      margin-bottom: 0.9rem;
+
+      .headingLine {
+        font-weight: bold;
+        margin-top: 10px;
+
+        .number {
+          font-size: 1rem;
+          font-weight: bold;
+          flex-shrink: 0; /* Prevent shrinking of the number */
+          text-align: right; /* Align number to the right */
+          min-width: 2rem; /* Fixed width for consistent alignment */
+        }
+
+        .heading {
+          font-size: 1rem;
+          font-weight: bold;
+          flex-grow: 1; /* Allow heading to take remaining space */
+          text-align: left; /* Align heading text to the left */
+        }
+
+        .emojiOrColon {
+          font-size: 1rem;
+          flex-shrink: 0; /* Prevent emoji/colon from shrinking */
+          margin-left: 0.25rem; /* Add small spacing if necessary */
+        }
+      }
+    }
+  }
+
+  .description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5; /* Add some spacing for readability */
+
+    ul {
+      list-style-type: disc; /* Use bullet points */
+      padding-left: 1.5rem; /* Add space between bullet points and text */
+
+      li {
+        font-size: 0.9rem; /* Font size for bullet points */
+        color: #555;
+        line-height: 1.5; /* Add line spacing */
+      }
     }
   }
 
   .chatPlayInput {
-    width: 80%;
-    position: fixed;
-    bottom: 40px;
+    width: 50%;
+    position: absolute;
+    bottom: 25px;
+    background: transparent;
     left: 50%;
-    transform: translate(-50%, 0);
-    display: flex;
-    justify-content: center;
+    transform: translateX(-50%);
+
+    @media (max-width: 600px) {
+      width: 80%;
+    }
 
     form {
       display: flex;
-      gap: 10px;
+      gap: 20px;
       width: 100%;
+      background: transparent;
 
       input {
         flex-grow: 1;
-        padding: 0.5rem;
+        padding: 0.8rem;
         font-size: 1rem;
         border: 1px solid #ccc;
-        border-radius: 5px;
+        border-radius: 8px;
         outline: none;
       }
 
       button {
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 2rem;
         font-size: 1rem;
         cursor: pointer;
         border: none;
-        border-radius: 5px;
-        background-color: #007bff;
+        border-radius: 10px;
+        background-color: black;
         color: #fff;
         outline: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+
+        &:hover {
+          background-color: white;
+          color: black;
+        }
 
         &:disabled {
           background-color: #cccccc;
