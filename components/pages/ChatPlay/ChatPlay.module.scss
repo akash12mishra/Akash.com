@@ -7,10 +7,6 @@
   align-items: center; /* Center the chat box horizontally */
   padding-top: 40px;
 
-  @media (max-width: 480px) {
-    padding-top: 0;
-  }
-
   .chatPlayBox {
     width: 90%;
     max-width: 800px; /* Ensure web view fits well */
@@ -28,7 +24,8 @@
     @media (max-width: 480px) {
       max-width: 90%;
       height: calc(100vh - 100px);
-      padding: 8px;
+      padding: 20px 8px;
+      margin-top: 20px;
     }
 
     .userMessage {
