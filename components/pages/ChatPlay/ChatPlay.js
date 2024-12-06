@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useLayoutEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
 import axios from "../../../axios/api"; // Backend API
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
@@ -10,16 +10,52 @@ const ChatPlay = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
   const [input, setInput] = useState(""); // User input
   const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
-  const messagesEndRef = useRef(null); // For scrolling to the bottom
+  const [isFirstMessage, setIsFirstMessage] = useState(true); // Track if it's the first message
+  const inputRef = useRef(null); // Reference to the input field
+  const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Scroll to the bottom when chat history updates
-  useLayoutEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  // Detect clicks outside input to hide the keyboard (mobile-specific)
+  const handleClickOutside = (event) => {
+    if (
+      window.innerWidth <= 480 &&
+      inputRef.current &&
+      !inputRef.current.contains(event.target)
+    ) {
+      inputRef.current.blur(); // Hide the keyboard by blurring the input
     }
-  }, [chatHistory]);
+  };
 
-  // Handle input submission
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside); // Add event listener for clicks outside input
+    return () => {
+      document.removeEventListener("click", handleClickOutside); // Clean up event listener
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isFirstMessage) {
+      chatbotBoxRef.current.scrollTo(0, 0); // Ensure the first message is visible
+    } else {
+      chatbotBoxRef.current.scrollTo({
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [chatHistory, isFirstMessage]);
+
+  const addMessage = (
+    role,
+    content,
+    isLoading = false,
+    boxData = null,
+    isRenderBox = false
+  ) => {
+    setChatHistory((prev) => [
+      ...prev,
+      { role, content, isLoading, boxData, isRenderBox },
+    ]);
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const userMessage = input.trim();
@@ -27,14 +63,16 @@ const ChatPlay = () => {
     if (!userMessage) return; // Prevent empty messages
 
     // Add user's message to chat history
-    setChatHistory((prev) => [...prev, { role: "user", content: userMessage }]);
+    addMessage("user", userMessage);
     setInput(""); // Clear the input field
 
+    // Handle first message scroll behavior
+    if (isFirstMessage) {
+      setIsFirstMessage(false);
+    }
+
     // Add loading message for AI
-    setChatHistory((prev) => [
-      ...prev,
-      { role: "assistant", content: "", isLoading: true },
-    ]);
+    addMessage("assistant", "", true);
     setIsLoading(true);
 
     try {
@@ -46,66 +84,116 @@ const ChatPlay = () => {
       const aiMessage = response.data;
 
       if (aiMessage.function_call) {
-        // Handle AI function calls
         const functionCall = aiMessage.function_call;
 
         if (functionCall.name === "render_box_component") {
-          // Add SkeletonBox as a placeholder while loading
-          setChatHistory((prev) => [
-            ...prev.slice(0, -1), // Remove the loader
-            {
-              role: "assistant",
-              content: "",
-              boxData: null, // Box data is null initially
-              isLoading: true, // Indicate loading state for the box
-            },
-          ]);
+          setChatHistory((prev) =>
+            prev.map((msg, index) =>
+              index === prev.length - 1
+                ? { ...msg, isLoading: false, boxData: null, isRenderBox: true }
+                : msg
+            )
+          );
 
-          // Simulate box rendering delay
           setTimeout(() => {
-            setChatHistory((prev) => [
-              ...prev.slice(0, -1), // Remove the SkeletonBox
-              {
-                role: "assistant",
-                content: "",
-                boxData: "This is an AI-rendered box component!", // Render box data
-                isLoading: false, // Box has finished loading
-              },
-            ]);
-          }, 3000); // Simulated 3-second delay
+            setChatHistory((prev) =>
+              prev.map((msg, index) =>
+                index === prev.length - 1 && msg.isRenderBox
+                  ? {
+                      ...msg,
+                      boxData: "This is an AI-rendered box component!",
+                      isRenderBox: false,
+                    }
+                  : msg
+              )
+            );
+          }, 3000);
         } else if (functionCall.name === "get_training_data") {
-          // Fetch training data from API
           const trainingData = await axios.get("train");
-          setChatHistory((prev) => [
-            ...prev.slice(0, -1),
-            {
-              role: "assistant",
-              content: `Training data: ${trainingData.data.message}`,
-            },
-          ]);
+          setChatHistory((prev) =>
+            prev.map((msg, index) =>
+              index === prev.length - 1
+                ? {
+                    ...msg,
+                    isLoading: false,
+                    content: `Training data: ${trainingData.data.message}`,
+                  }
+                : msg
+            )
+          );
         }
       } else {
-        // Normal AI response
-        setChatHistory((prev) => [
-          ...prev.slice(0, -1),
-          { role: "assistant", content: aiMessage.content },
-        ]);
+        setChatHistory((prev) =>
+          prev.map((msg, index) =>
+            index === prev.length - 1
+              ? { ...msg, isLoading: false, content: aiMessage.content }
+              : msg
+          )
+        );
       }
     } catch (error) {
       console.error("Error fetching AI response:", error);
-      setChatHistory((prev) => [
-        ...prev.slice(0, -1),
-        { role: "assistant", content: "Error. Please try again." },
-      ]);
+      setChatHistory((prev) =>
+        prev.map((msg, index) =>
+          index === prev.length - 1
+            ? { ...msg, isLoading: false, content: "Error. Please try again." }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (window.innerWidth <= 480 && e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent form submission on Enter
+      setInput((prev) => prev + "\n"); // Add a new line to the input
+    }
+  };
+
+  const renderFormattedMessage = (content) => {
+    const lines = content.split("\n");
+    const elements = [];
+
+    lines.forEach((line, index) => {
+      const match = line.match(/^(\d+)\.\s\*\*(.*?)\*\*(.*)/); // Match numbered headings with optional emoji/colon
+      if (match) {
+        const [, number, heading, emojiOrColon] = match;
+        elements.push(
+          <div key={index} className={styles.formattedMessage}>
+            <div className={styles.headingLine}>
+              <span className={styles.number}>{number}.</span>
+              <span className={styles.heading}>{heading}</span>
+              {emojiOrColon && (
+                <span className={styles.emojiOrColon}>
+                  {emojiOrColon.trim()}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      } else if (line.startsWith("-")) {
+        elements.push(
+          <ul key={index} className={styles.description}>
+            <li>{line.replace("-", "").trim()}</li>
+          </ul>
+        );
+      } else {
+        elements.push(
+          <p key={index} className={styles.description}>
+            {line.trim()}
+          </p>
+        );
+      }
+    });
+
+    return elements;
+  };
+
   return (
     <div className={styles.ChatPlay}>
-      {/* Chat Box */}
-      <div className={styles.chatPlayBox}>
+      <div className={styles.chatPlayBox} ref={chatbotBoxRef}>
         {chatHistory.map((message, index) => (
           <div
             key={index}
@@ -113,32 +201,31 @@ const ChatPlay = () => {
               message.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {/* Handle conditional rendering for box components */}
-            {message.boxData !== undefined ? (
-              message.isLoading ? (
-                <SkeletonBox /> // Render SkeletonBox during loading
-              ) : (
-                <Box data={message.boxData} /> // Render Box after loading
-              )
+            {message.isRenderBox && message.boxData === null ? (
+              <SkeletonBox />
+            ) : message.boxData !== null ? (
+              <Box data={message.boxData} />
+            ) : message.isLoading ? (
+              <div className={styles.loaderContainer}>typing...</div>
             ) : (
-              <p>{message.content || "Loading..."}</p>
+              <div>{renderFormattedMessage(message.content)}</div>
             )}
           </div>
         ))}
-        <div ref={messagesEndRef} />
       </div>
 
-      {/* Chat Input */}
       <div className={styles.chatPlayInput}>
         <form onSubmit={handleFormSubmit}>
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Type your query..."
           />
           <button type="submit" disabled={isLoading}>
-            {isLoading ? "Loading..." : "Submit"}
+            Send
           </button>
         </form>
       </div>

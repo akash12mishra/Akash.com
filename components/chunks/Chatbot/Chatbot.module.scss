@@ -2,7 +2,6 @@
   border: none;
   outline: none;
   box-shadow: 28px 28px 36px #000, -28px -28px 36px #fff;
-
   border-radius: 20px;
   padding: 10px;
   height: 500px;
@@ -19,34 +18,35 @@
 
     .userMessage {
       display: flex;
-      justify-content: flex-end; /* Align message to the right */
-      margin-bottom: 10px;
+      justify-content: flex-end; /* Ensure right alignment */
+      margin-bottom: 20px;
+      margin-top: 20px;
+      width: 100%; /* Ensure full width for alignment */
+      word-wrap: break-word; /* Prevent text overflow */
 
       p {
-        background-color: black; /* Background color for user messages */
-        color: white; /* Text color for user messages */
+        background-color: black;
+        color: white;
         border-radius: 10px;
-        padding: 6px;
-        max-width: 70%; /* Ensure messages do not take full width */
-        word-wrap: break-word; /* Break words if too long */
-        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+        padding: 8px 12px; /* Add padding for better spacing */
+        word-wrap: break-word; /* Ensure long text breaks into multiple lines */
+        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
+        text-align: right; /* Align text within the bubble to the right */
+        margin: 0; /* Prevent margin conflict */
       }
     }
 
     .aiMessage {
       text-align: left;
-      color: #333;
       margin-bottom: 10px;
+      color: #333;
 
       p {
-        background-color: #f0f0f0; /* Background color for AI messages */
         color: #333; /* Text color for AI messages */
-        border-radius: 10px;
-        padding: 6px;
-        max-width: 70%; /* Ensure messages do not take full width */
+        max-width: 90%; /* Ensure messages do not take full width */
         word-wrap: break-word; /* Break words if too long */
-        white-space: pre-wrap;
-        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+        white-space: pre-wrap; /* Preserve spaces and line breaks */
+        margin: 0; /* Prevent margin conflict */
       }
     }
 
@@ -54,6 +54,53 @@
       display: flex;
       align-items: center;
       margin: 10px 0;
+    }
+
+    .formattedMessage {
+      margin-bottom: 0.9rem;
+
+      .headingLine {
+        font-weight: bold;
+        margin-top: 10px;
+
+        .number {
+          font-size: 1rem;
+          font-weight: bold;
+          flex-shrink: 0; /* Prevent shrinking of the number */
+          text-align: right; /* Align number to the right */
+          min-width: 2rem; /* Fixed width for consistent alignment */
+        }
+
+        .heading {
+          font-size: 1rem;
+          font-weight: bold;
+          flex-grow: 1; /* Allow heading to take remaining space */
+          text-align: left; /* Align heading text to the left */
+        }
+
+        .emojiOrColon {
+          font-size: 1rem;
+          flex-shrink: 0; /* Prevent emoji/colon from shrinking */
+          margin-left: 0.25rem; /* Add small spacing if necessary */
+        }
+      }
+    }
+  }
+
+  .description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5; /* Add some spacing for readability */
+
+    ul {
+      list-style-type: disc; /* Use bullet points */
+      padding-left: 1.5rem; /* Add space between bullet points and text */
+
+      li {
+        font-size: 0.9rem; /* Font size for bullet points */
+        color: #555;
+        line-height: 1.5; /* Add line spacing */
+      }
     }
   }
 
@@ -104,5 +151,24 @@
         }
       }
     }
+  }
+
+  .h2 {
+    font-size: 1.5rem; /* Adjust font size for h2 */
+    font-weight: bold;
+    margin: 1rem 0;
+    color: #333;
+  }
+
+  .h3 {
+    font-size: 1.25rem; /* Adjust font size for h3 */
+    font-weight: bold;
+    margin: 0.75rem 0;
+    color: #555;
+  }
+
+  .bold {
+    font-weight: bold;
+    color: #000;
   }
 }
