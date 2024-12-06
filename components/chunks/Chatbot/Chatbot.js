@@ -133,35 +133,44 @@ const Chatbot = () => {
 
   // Function to parse and render formatted AI messages
   const renderFormattedMessage = (content) => {
-    const parts = content.split(/(\*\*.*?\*\*|##.*|###.*)/g); // Split on **text**, ##, ###
+    const lines = content.split("\n"); // Split by lines
+    const elements = [];
 
-    return parts.map((part, index) => {
-      if (part.startsWith("###")) {
-        // Render h3 headings
-        return (
-          <h3 key={index} className={styles.h3}>
-            {part.replace("###", "").trim()}
-          </h3>
+    lines.forEach((line, index) => {
+      const match = line.match(/^(\d+)\.\s\*\*(.*?)\*\*(.*)/); // Match numbered headings with optional emoji/colon
+      if (match) {
+        const [, number, heading, emojiOrColon] = match;
+        elements.push(
+          <div key={index} className={styles.formattedMessage}>
+            <div className={styles.headingLine}>
+              <span className={styles.number}>{number}.</span>
+              <span className={styles.heading}>{heading}</span>
+              {emojiOrColon && (
+                <span className={styles.emojiOrColon}>
+                  {emojiOrColon.trim()}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      } else if (line.startsWith("-")) {
+        // Handle bullet points
+        elements.push(
+          <ul key={index} className={styles.description}>
+            <li>{line.replace("-", "").trim()}</li>
+          </ul>
+        );
+      } else {
+        // Handle normal paragraphs or other text
+        elements.push(
+          <p key={index} className={styles.description}>
+            {line.trim()}
+          </p>
         );
       }
-      if (part.startsWith("##")) {
-        // Render h2 headings
-        return (
-          <h2 key={index} className={styles.h2}>
-            {part.replace("##", "").trim()}
-          </h2>
-        );
-      }
-      if (part.startsWith("**") && part.endsWith("**")) {
-        // Render bold text
-        return (
-          <strong key={index} className={styles.bold}>
-            {part.replace(/\*\*/g, "").trim()}
-          </strong>
-        );
-      }
-      return <p key={index}>{part.trim()}</p>; // Render normal text
     });
+
+    return elements;
   };
 
   return (

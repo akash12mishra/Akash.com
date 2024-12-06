@@ -57,33 +57,50 @@
     }
 
     .formattedMessage {
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
 
       .headingLine {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
         font-weight: bold;
+        margin-top: 10px;
 
         .number {
           font-size: 1rem;
           font-weight: bold;
+          flex-shrink: 0; /* Prevent shrinking of the number */
+          text-align: right; /* Align number to the right */
+          min-width: 2rem; /* Fixed width for consistent alignment */
         }
 
         .heading {
           font-size: 1rem;
           font-weight: bold;
+          flex-grow: 1; /* Allow heading to take remaining space */
+          text-align: left; /* Align heading text to the left */
         }
 
-        .colon {
+        .emojiOrColon {
           font-size: 1rem;
+          flex-shrink: 0; /* Prevent emoji/colon from shrinking */
+          // text-align: left; /* Align to the left */
+          // margin-left: 0.25rem; /* Add small spacing if necessary */
         }
       }
+    }
+  }
 
-      .description {
-        margin-left: 1.5rem; /* Indent description */
-        font-size: 0.9rem;
+  .description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5; /* Add some spacing for readability */
+
+    ul {
+      list-style-type: disc; /* Use bullet points */
+      padding-left: 1.5rem; /* Add space between bullet points and text */
+
+      li {
+        font-size: 0.9rem; /* Font size for bullet points */
         color: #555;
+        line-height: 1.5; /* Add line spacing */
       }
     }
   }
@@ -154,14 +171,5 @@
   .bold {
     font-weight: bold;
     color: #000;
-  }
-
-  .smallHeading {
-    font-size: 0.9rem; /* Adjust size for small headings */
-    font-weight: bold;
-    margin: 0.5rem 0;
-    display: block;
-    background: transparent;
-    color: #333; /* Heading color */
   }
 }
