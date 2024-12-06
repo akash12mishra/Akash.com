@@ -11,15 +11,14 @@ const ChatPlay = () => {
   const [input, setInput] = useState(""); // User input
   const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
   const [isFirstMessage, setIsFirstMessage] = useState(true); // Track if it's the first message
-  const messagesEndRef = useRef(null); // For scrolling to the bottom
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Scroll to the top for the first message
-  const scrollToTopForFirstMessage = () => {
+  // Ensure the first message stays in view
+  const scrollToFirstMessage = () => {
     if (chatbotBoxRef.current) {
       chatbotBoxRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth", // Smooth scrolling
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "auto", // Ensure it is immediately visible
       });
     }
   };
@@ -29,7 +28,7 @@ const ChatPlay = () => {
     if (chatbotBoxRef.current) {
       chatbotBoxRef.current.scrollTo({
         top: chatbotBoxRef.current.scrollHeight,
-        behavior: "smooth", // Smooth scrolling
+        behavior: "smooth", // Smooth scrolling for subsequent messages
       });
     }
   };
@@ -37,7 +36,7 @@ const ChatPlay = () => {
   // Scroll behavior based on chat history updates
   useEffect(() => {
     if (isFirstMessage) {
-      scrollToTopForFirstMessage(); // Scroll to the top for the first message
+      scrollToFirstMessage(); // Ensure the first message is immediately visible
     } else {
       scrollToBottom(); // Smooth scrolling for other messages
     }
@@ -205,7 +204,6 @@ const ChatPlay = () => {
             )}
           </div>
         ))}
-        <div ref={messagesEndRef} />
       </div>
 
       <div className={styles.chatPlayInput}>
