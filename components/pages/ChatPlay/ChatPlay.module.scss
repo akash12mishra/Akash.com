@@ -121,6 +121,7 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         outline: none;
+        -webkit-text-size-adjust: 100%; /* Prevent text resizing */
 
         @media (max-width: 480px) {
           padding: 0.6rem;
