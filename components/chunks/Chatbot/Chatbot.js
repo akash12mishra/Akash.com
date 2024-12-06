@@ -13,10 +13,13 @@ const Chatbot = () => {
   const messagesEndRef = useRef(null); // For scrolling to the bottom
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Scroll to the bottom of chatbot box
+  // Scroll to the bottom of chatbot box smoothly
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
-      chatbotBoxRef.current.scrollTop = chatbotBoxRef.current.scrollHeight;
+      chatbotBoxRef.current.scrollTo({
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "smooth", // Enables smooth scrolling
+      });
     }
   };
 
@@ -128,6 +131,48 @@ const Chatbot = () => {
     }
   };
 
+  // Function to parse and render formatted AI messages
+  const renderFormattedMessage = (content) => {
+    const lines = content.split("\n"); // Split by lines
+    const elements = [];
+
+    lines.forEach((line, index) => {
+      const match = line.match(/^(\d+)\.\s\*\*(.*?)\*\*(.*)/); // Match numbered headings with optional emoji/colon
+      if (match) {
+        const [, number, heading, emojiOrColon] = match;
+        elements.push(
+          <div key={index} className={styles.formattedMessage}>
+            <div className={styles.headingLine}>
+              <span className={styles.number}>{number}.</span>
+              <span className={styles.heading}>{heading}</span>
+              {emojiOrColon && (
+                <span className={styles.emojiOrColon}>
+                  {emojiOrColon.trim()}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      } else if (line.startsWith("-")) {
+        // Handle bullet points
+        elements.push(
+          <ul key={index} className={styles.description}>
+            <li>{line.replace("-", "").trim()}</li>
+          </ul>
+        );
+      } else {
+        // Handle normal paragraphs or other text
+        elements.push(
+          <p key={index} className={styles.description}>
+            {line.trim()}
+          </p>
+        );
+      }
+    });
+
+    return elements;
+  };
+
   return (
     <div className={styles.Chatbot}>
       {/* Chat Box */}
@@ -144,9 +189,9 @@ const Chatbot = () => {
             ) : message.boxData !== null ? (
               <Box data={message.boxData} /> // Render actual Box after loading
             ) : message.isLoading ? (
-              <div className={styles.loaderContainer}>typing...</div> // Render RingLoader for normal loading
+              <div className={styles.loaderContainer}>typing...</div> // Render typing loader
             ) : (
-              <p>{message.content}</p> // Display entire response at once
+              <div>{renderFormattedMessage(message.content)}</div> // Render formatted message
             )}
           </div>
         ))}
