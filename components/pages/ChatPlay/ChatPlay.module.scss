@@ -9,10 +9,8 @@
     height: 40rem;
     overflow-y: auto;
     background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 12px;
+    border: 1px solid black;
     padding: 20px;
-    box-shadow: 28px 28px 36px #000, -28px -28px 36px #fff;
     margin: 0 auto;
 
     @media (max-width: 380px) {
@@ -104,7 +102,7 @@
   .chatPlayInput {
     width: 50%;
     position: absolute;
-    bottom: 25px;
+    bottom: 30px;
     background: transparent;
     left: 50%;
     transform: translateX(-50%);
