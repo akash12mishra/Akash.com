@@ -1,0 +1,49 @@
+.FounderInfo {
+  margin: 350px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  width: 60%;
+
+  .founderImage {
+    .founderImg {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  .founderDetails {
+    p {
+      font-size: 22px;
+      color: lightgray; // Default color for entire paragraph
+      text-align: center;
+      line-height: 1.5;
+
+      span {
+        display: inline-block; // Ensure smooth letter-by-letter animation
+        color: lightgray; // Default letter color
+      }
+
+      br {
+        display: block; // Ensure proper spacing for line breaks
+        margin: 10px 0; // Add space between lines
+      }
+    }
+  }
+
+  .founderSignature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    h6 {
+      font-size: 16px;
+    }
+  }
+}

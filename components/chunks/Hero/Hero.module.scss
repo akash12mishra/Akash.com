@@ -1,0 +1,63 @@
+.Hero {
+  margin-top: 200px;
+  margin-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+
+  .HeroTitle {
+    h2 {
+      font-size: 50px;
+      text-align: center;
+
+      span {
+        background-color: black;
+        color: white;
+        margin-right: 5px;
+        padding-left: 4px;
+      }
+    }
+  }
+
+  .HeroDesc {
+    p {
+      color: gray;
+      font-size: 20px;
+      text-align: center;
+    }
+  }
+
+  .HeroBtn {
+    button {
+      background-color: black;
+      padding: 20px 40px;
+      color: white;
+      border-radius: 30px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      transition: all 0.2s ease-in-out;
+
+      .HeroBtnIcon {
+        background: transparent;
+      }
+
+      &:hover {
+        background-color: white;
+        color: black;
+
+        .HeroBtnIcon {
+          color: black;
+        }
+      }
+    }
+  }
+}

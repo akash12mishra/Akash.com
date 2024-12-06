@@ -1,0 +1,17 @@
+// components/Typewriter.module.scss
+.typewriter {
+  display: inline;
+  background: transparent;
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 0.7s step-end infinite;
+  background: transparent;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
