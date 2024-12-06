@@ -13,7 +13,7 @@
     height: calc(100vh - 150px); /* Adjusted for input and header space */
     overflow-y: auto;
     background-color: #fff;
-    padding: 10px 5px;
+    padding: 0 5px;
 
     @media (max-width: 768px) {
       max-width: 600px; /* Restrict size on tablets */
@@ -31,6 +31,7 @@
       display: flex;
       justify-content: flex-end; /* Ensure right alignment */
       margin-bottom: 20px;
+      margin-top: 10px;
 
       p {
         background-color: black;
