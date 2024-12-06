@@ -11,17 +11,28 @@ const ChatPlay = () => {
   const [input, setInput] = useState(""); // User input
   const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
   const [isFirstMessage, setIsFirstMessage] = useState(true); // Track if it's the first message
+  const inputRef = useRef(null); // Reference to the input field
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Ensure scroll padding for mobile
-  const adjustScrollForMobile = () => {
-    if (window.innerWidth <= 480 && chatbotBoxRef.current) {
-      chatbotBoxRef.current.style.scrollPaddingBottom = "120px"; // Matches mobile padding
+  // Detect clicks outside input to hide the keyboard (mobile-specific)
+  const handleClickOutside = (event) => {
+    if (
+      window.innerWidth <= 480 &&
+      inputRef.current &&
+      !inputRef.current.contains(event.target)
+    ) {
+      inputRef.current.blur(); // Hide the keyboard by blurring the input
     }
   };
 
   useEffect(() => {
-    adjustScrollForMobile();
+    document.addEventListener("click", handleClickOutside); // Add event listener for clicks outside input
+    return () => {
+      document.removeEventListener("click", handleClickOutside); // Clean up event listener
+    };
+  }, []);
+
+  useEffect(() => {
     if (isFirstMessage) {
       chatbotBoxRef.current.scrollTo(0, 0); // Ensure the first message is visible
     } else {
@@ -134,6 +145,13 @@ const ChatPlay = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (window.innerWidth <= 480 && e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent form submission on Enter
+      setInput((prev) => prev + "\n"); // Add a new line to the input
+    }
+  };
+
   const renderFormattedMessage = (content) => {
     const lines = content.split("\n");
     const elements = [];
@@ -199,9 +217,11 @@ const ChatPlay = () => {
       <div className={styles.chatPlayInput}>
         <form onSubmit={handleFormSubmit}>
           <input
+            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Type your query..."
           />
           <button type="submit" disabled={isLoading}>
