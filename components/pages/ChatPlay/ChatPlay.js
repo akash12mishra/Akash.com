@@ -13,34 +13,24 @@ const ChatPlay = () => {
   const [isFirstMessage, setIsFirstMessage] = useState(true); // Track if it's the first message
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Ensure the first message stays in view
-  const scrollToFirstMessage = () => {
-    if (chatbotBoxRef.current) {
-      chatbotBoxRef.current.scrollTo({
-        top: chatbotBoxRef.current.scrollHeight,
-        behavior: "auto", // Ensure it is immediately visible
-      });
+  // Ensure scroll padding for mobile
+  const adjustScrollForMobile = () => {
+    if (window.innerWidth <= 480 && chatbotBoxRef.current) {
+      chatbotBoxRef.current.style.scrollPaddingBottom = "120px"; // Matches mobile padding
     }
   };
 
-  // Scroll to the bottom of the chatbot box
-  const scrollToBottom = () => {
-    if (chatbotBoxRef.current) {
-      chatbotBoxRef.current.scrollTo({
-        top: chatbotBoxRef.current.scrollHeight,
-        behavior: "smooth", // Smooth scrolling for subsequent messages
-      });
-    }
-  };
-
-  // Scroll behavior based on chat history updates
   useEffect(() => {
+    adjustScrollForMobile();
     if (isFirstMessage) {
-      scrollToFirstMessage(); // Ensure the first message is immediately visible
+      chatbotBoxRef.current.scrollTo(0, 0); // Ensure the first message is visible
     } else {
-      scrollToBottom(); // Smooth scrolling for other messages
+      chatbotBoxRef.current.scrollTo({
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
-  }, [chatHistory]);
+  }, [chatHistory, isFirstMessage]);
 
   const addMessage = (
     role,
