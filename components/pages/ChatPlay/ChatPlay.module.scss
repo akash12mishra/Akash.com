@@ -14,6 +14,9 @@
     overflow-y: auto;
     background-color: #fff;
     padding: 0 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 
     @media (max-width: 768px) {
       max-width: 600px; /* Restrict size on tablets */
@@ -25,14 +28,12 @@
       max-width: 90%;
       height: calc(100vh - 100px);
       padding: 20px 8px;
-      margin-top: 20px;
     }
 
     .userMessage {
-      display: flex;
-      justify-content: flex-end; /* Ensure right alignment */
-      margin-bottom: 20px;
-      margin-top: 10px;
+      align-self: flex-end;
+      width: fit-content;
+      max-width: 80%;
 
       p {
         background-color: black;
@@ -40,20 +41,21 @@
         border-radius: 10px;
         padding: 8px 12px;
         box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
-        text-align: right; /* Ensure text is aligned correctly */
+        text-align: left; /* Ensure text is aligned correctly */
       }
     }
 
     .aiMessage {
-      display: flex;
-      justify-content: flex-start;
-      margin-bottom: 10px;
+      text-align: left;
+      align-self: flex-start;
+      color: #333;
 
       p {
-        color: #333;
-        max-width: 80%; /* Limit bubble width */
-        text-align: left; /* Ensure text is aligned correctly */
-        margin: 0; /* Prevent margin conflicts */
+        color: #333; /* Text color for AI messages */
+        max-width: 90%; /* Ensure messages do not take full width */
+        word-wrap: break-word; /* Break words if too long */
+        white-space: pre-wrap; /* Preserve spaces and line breaks */
+        margin: 0; /* Prevent margin conflict */
       }
     }
 
