@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
 import axios from "../../../axios/api"; // Backend API
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
@@ -10,22 +10,37 @@ const ChatPlay = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
   const [input, setInput] = useState(""); // User input
   const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
+  const [isFirstMessage, setIsFirstMessage] = useState(true); // Track if it's the first message
   const messagesEndRef = useRef(null); // For scrolling to the bottom
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Scroll to the bottom of chatbot box smoothly
-  const scrollToBottom = () => {
+  // Scroll to the top for the first message
+  const scrollToTopForFirstMessage = () => {
     if (chatbotBoxRef.current) {
       chatbotBoxRef.current.scrollTo({
-        top: chatbotBoxRef.current.scrollHeight,
-        behavior: "smooth", // Enables smooth scrolling
+        top: 0,
+        behavior: "smooth", // Smooth scrolling
       });
     }
   };
 
-  // Scroll to bottom on chat history update
+  // Scroll to the bottom of the chatbot box
+  const scrollToBottom = () => {
+    if (chatbotBoxRef.current) {
+      chatbotBoxRef.current.scrollTo({
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "smooth", // Smooth scrolling
+      });
+    }
+  };
+
+  // Scroll behavior based on chat history updates
   useEffect(() => {
-    scrollToBottom();
+    if (isFirstMessage) {
+      scrollToTopForFirstMessage(); // Scroll to the top for the first message
+    } else {
+      scrollToBottom(); // Smooth scrolling for other messages
+    }
   }, [chatHistory]);
 
   const addMessage = (
@@ -51,6 +66,11 @@ const ChatPlay = () => {
     addMessage("user", userMessage);
     setInput(""); // Clear the input field
 
+    // Handle first message scroll behavior
+    if (isFirstMessage) {
+      setIsFirstMessage(false);
+    }
+
     // Add loading message for AI
     addMessage("assistant", "", true);
     setIsLoading(true);
@@ -64,11 +84,9 @@ const ChatPlay = () => {
       const aiMessage = response.data;
 
       if (aiMessage.function_call) {
-        // Handle AI function calls
         const functionCall = aiMessage.function_call;
 
         if (functionCall.name === "render_box_component") {
-          // Replace the RingLoader with SkeletonBox for this response
           setChatHistory((prev) =>
             prev.map((msg, index) =>
               index === prev.length - 1
@@ -77,7 +95,6 @@ const ChatPlay = () => {
             )
           );
 
-          // Simulate box rendering delay
           setTimeout(() => {
             setChatHistory((prev) =>
               prev.map((msg, index) =>
@@ -90,7 +107,7 @@ const ChatPlay = () => {
                   : msg
               )
             );
-          }, 3000); // Simulated 3-second delay
+          }, 3000);
         } else if (functionCall.name === "get_training_data") {
           const trainingData = await axios.get("train");
           setChatHistory((prev) =>
@@ -106,7 +123,6 @@ const ChatPlay = () => {
           );
         }
       } else {
-        // Normal AI response
         setChatHistory((prev) =>
           prev.map((msg, index) =>
             index === prev.length - 1
@@ -129,9 +145,8 @@ const ChatPlay = () => {
     }
   };
 
-  // Function to parse and render formatted AI messages
   const renderFormattedMessage = (content) => {
-    const lines = content.split("\n"); // Split by lines
+    const lines = content.split("\n");
     const elements = [];
 
     lines.forEach((line, index) => {
@@ -152,14 +167,12 @@ const ChatPlay = () => {
           </div>
         );
       } else if (line.startsWith("-")) {
-        // Handle bullet points
         elements.push(
           <ul key={index} className={styles.description}>
             <li>{line.replace("-", "").trim()}</li>
           </ul>
         );
       } else {
-        // Handle normal paragraphs or other text
         elements.push(
           <p key={index} className={styles.description}>
             {line.trim()}
@@ -182,13 +195,13 @@ const ChatPlay = () => {
             }
           >
             {message.isRenderBox && message.boxData === null ? (
-              <SkeletonBox /> // Render SkeletonBox only for render_box_component
+              <SkeletonBox />
             ) : message.boxData !== null ? (
-              <Box data={message.boxData} /> // Render actual Box after loading
+              <Box data={message.boxData} />
             ) : message.isLoading ? (
-              <div className={styles.loaderContainer}>typing...</div> // Render typing loader
+              <div className={styles.loaderContainer}>typing...</div>
             ) : (
-              <div>{renderFormattedMessage(message.content)}</div> // Render formatted message
+              <div>{renderFormattedMessage(message.content)}</div>
             )}
           </div>
         ))}
