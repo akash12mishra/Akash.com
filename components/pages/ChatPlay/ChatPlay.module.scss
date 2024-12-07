@@ -6,6 +6,7 @@
   justify-content: center;
   height: 100vh; /* Occupy the full height of the parent container */
   padding-top: 10px;
+  overflow-y: hidden;
 
   .chatPlayBox {
     width: 90%;
