@@ -1,34 +1,31 @@
 .ChatPlay {
   background-color: #fff;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center; /* Center the chat box horizontally */
-  padding-top: 40px;
-  height: 100vh;
+  justify-content: center;
+  height: 100svh; /* Occupy the full height of the parent container */
+  padding-top: 10px;
 
   .chatPlayBox {
     width: 90%;
     max-width: 800px; /* Ensure web view fits well */
-    height: calc(100vh - 150px); /* Adjusted for input and header space */
+    flex-grow: 1; /* Allow the chat box to grow and fill the remaining vertical space */
     overflow-y: auto;
     background-color: #fff;
-    padding: 0 5px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 20px;
 
     @media (max-width: 768px) {
       max-width: 600px; /* Restrict size on tablets */
-      height: calc(100vh - 120px);
       padding: 10px;
     }
 
     @media (max-width: 480px) {
-      max-width: 90%;
-      height: calc(100vh - 100px);
-      padding: 20px 8px;
-      margin-top: 20px;
+      max-width: 100%;
+      padding: 10px;
     }
 
     .userMessage {
@@ -96,20 +93,17 @@
     max-width: 800px; /* Ensure web view fits well */
     margin: 0 auto;
     padding: 10px;
-    position: fixed;
-    bottom: 20px;
     background-color: transparent;
+    flex-shrink: 0; /* Prevent input from shrinking */
 
     @media (max-width: 768px) {
       max-width: 600px; /* Restrict size on tablets */
       padding: 8px;
-      bottom: 0;
     }
 
     @media (max-width: 480px) {
-      max-width: 90%;
+      max-width: 100%;
       padding: 8px;
-      bottom: 0;
     }
 
     form {
