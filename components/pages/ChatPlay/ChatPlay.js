@@ -10,38 +10,42 @@ const ChatPlay = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
   const [input, setInput] = useState(""); // User input
   const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
-  const [isFirstMessage, setIsFirstMessage] = useState(true); // Track if it's the first message
-  const inputRef = useRef(null); // Reference to the input field
+  const [isFirstMessage, setIsFirstMessage] = useState(true); // Track the first message
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
-  // Detect clicks outside input to hide the keyboard (mobile-specific)
-  const handleClickOutside = (event) => {
-    if (
-      window.innerWidth <= 480 &&
-      inputRef.current &&
-      !inputRef.current.contains(event.target)
-    ) {
-      inputRef.current.blur(); // Hide the keyboard by blurring the input
+  // Scroll to the bottom of the chat box
+  const scrollToBottom = () => {
+    if (chatbotBoxRef.current) {
+      chatbotBoxRef.current.scrollTo({
+        top: chatbotBoxRef.current.scrollHeight,
+        behavior: "smooth", // Smooth scrolling for new messages
+      });
     }
   };
 
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside); // Add event listener for clicks outside input
-    return () => {
-      document.removeEventListener("click", handleClickOutside); // Clean up event listener
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isFirstMessage) {
-      chatbotBoxRef.current.scrollTo(0, 0); // Ensure the first message is visible
-    } else {
+  // Scroll to the top of the chat box
+  const scrollToTop = () => {
+    if (chatbotBoxRef.current) {
       chatbotBoxRef.current.scrollTo({
-        top: chatbotBoxRef.current.scrollHeight,
-        behavior: "smooth",
+        top: 0,
+        behavior: "smooth", // Smooth scrolling to the top
       });
     }
-  }, [chatHistory, isFirstMessage]);
+  };
+
+  // Initial scroll when the component mounts (for mobile devices)
+  useEffect(() => {
+    if (window.innerWidth <= 480) {
+      setTimeout(scrollToBottom, 100); // Scroll to the bottom initially
+    }
+  }, []);
+
+  // Scroll to bottom when chat history updates (after the first message)
+  useEffect(() => {
+    if (!isFirstMessage || window.innerWidth > 480) {
+      scrollToBottom();
+    }
+  }, [chatHistory]);
 
   const addMessage = (
     role,
@@ -66,9 +70,10 @@ const ChatPlay = () => {
     addMessage("user", userMessage);
     setInput(""); // Clear the input field
 
-    // Handle first message scroll behavior
-    if (isFirstMessage) {
-      setIsFirstMessage(false);
+    if (isFirstMessage && window.innerWidth <= 480) {
+      // On mobile, scroll to the top for the first message
+      setIsFirstMessage(false); // Mark that the first message has been sent
+      scrollToTop();
     }
 
     // Add loading message for AI
@@ -146,9 +151,10 @@ const ChatPlay = () => {
   };
 
   const handleKeyDown = (e) => {
+    // Prevent form submission on mobile when Enter is pressed
     if (window.innerWidth <= 480 && e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent form submission on Enter
-      setInput((prev) => prev + "\n"); // Add a new line to the input
+      e.preventDefault();
+      setInput((prev) => prev + "\n"); // Add a new line instead
     }
   };
 
@@ -217,7 +223,6 @@ const ChatPlay = () => {
       <div className={styles.chatPlayInput}>
         <form onSubmit={handleFormSubmit}>
           <input
-            ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}

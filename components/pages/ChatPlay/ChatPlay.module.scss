@@ -26,8 +26,9 @@
 
     @media (max-width: 480px) {
       max-width: 90%;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 100px);
       padding: 20px 8px;
+      margin-top: 20px;
     }
 
     .userMessage {
