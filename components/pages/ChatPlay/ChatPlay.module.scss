@@ -1,7 +1,7 @@
 .ChatPlay {
   background-color: #fff;
   position: relative;
-  height: 100vh;
+  // height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center; /* Center the chat box horizontally */
@@ -17,6 +17,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    border: 1px solid black;
 
     @media (max-width: 768px) {
       max-width: 600px; /* Restrict size on tablets */
@@ -27,8 +28,8 @@
     @media (max-width: 480px) {
       max-width: 90%;
       height: calc(100vh - 100px);
-      padding: 20px 8px;
-      margin-top: 20px;
+      padding: 8px;
+      // margin-top: 20px;
     }
 
     .userMessage {
