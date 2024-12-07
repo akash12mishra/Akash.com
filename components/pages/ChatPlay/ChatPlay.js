@@ -10,6 +10,7 @@ const ChatPlay = () => {
   const [chatHistory, setChatHistory] = useState([]); // Chat messages
   const [input, setInput] = useState(""); // User input
   const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
+  const [isFirstMessage, setIsFirstMessage] = useState(true); // Track the first message
   const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
 
   // Scroll to the bottom of the chat box
@@ -22,16 +23,28 @@ const ChatPlay = () => {
     }
   };
 
+  // Scroll to the top of the chat box
+  const scrollToTop = () => {
+    if (chatbotBoxRef.current) {
+      chatbotBoxRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth", // Smooth scrolling to the top
+      });
+    }
+  };
+
   // Initial scroll when the component mounts (for mobile devices)
   useEffect(() => {
     if (window.innerWidth <= 480) {
-      setTimeout(scrollToBottom, 100); // Ensure the scroll is triggered after render
+      setTimeout(scrollToBottom, 100); // Scroll to the bottom initially
     }
   }, []);
 
-  // Scroll to bottom when chat history updates
+  // Scroll to bottom when chat history updates (after the first message)
   useEffect(() => {
-    scrollToBottom();
+    if (!isFirstMessage || window.innerWidth > 480) {
+      scrollToBottom();
+    }
   }, [chatHistory]);
 
   const addMessage = (
@@ -56,6 +69,12 @@ const ChatPlay = () => {
     // Add user's message to chat history
     addMessage("user", userMessage);
     setInput(""); // Clear the input field
+
+    if (isFirstMessage && window.innerWidth <= 480) {
+      // On mobile, scroll to the top for the first message
+      setIsFirstMessage(false); // Mark that the first message has been sent
+      scrollToTop();
+    }
 
     // Add loading message for AI
     addMessage("assistant", "", true);
@@ -131,6 +150,14 @@ const ChatPlay = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    // Prevent form submission on mobile when Enter is pressed
+    if (window.innerWidth <= 480 && e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      setInput((prev) => prev + "\n"); // Add a new line instead
+    }
+  };
+
   const renderFormattedMessage = (content) => {
     const lines = content.split("\n");
     const elements = [];
@@ -199,6 +226,7 @@ const ChatPlay = () => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Type your query..."
           />
           <button type="submit" disabled={isLoading}>
