@@ -2,145 +2,135 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
-import axios from "../../../axios/api"; // Backend API
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
 import Box from "../../Box/Box";
 
 const ChatPlay = () => {
-  const [chatHistory, setChatHistory] = useState([]); // Chat messages
-  const [input, setInput] = useState(""); // User input
-  const [isLoading, setIsLoading] = useState(false); // Loader state for AI response
-  const [isFirstMessage, setIsFirstMessage] = useState(true); // Track the first message
-  const chatbotBoxRef = useRef(null); // Reference to chatbot box for independent scrolling
+  const [chatHistory, setChatHistory] = useState([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const chatbotBoxRef = useRef(null);
+  const assistantMessageIndex = useRef(null); // Tracks the assistant message index
 
-  // Scroll to the bottom of the chat box
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
       chatbotBoxRef.current.scrollTo({
         top: chatbotBoxRef.current.scrollHeight,
-        behavior: "smooth", // Smooth scrolling for new messages
+        behavior: "smooth",
       });
     }
   };
 
-  // Scroll to the top of the chat box
-  const scrollToTop = () => {
-    if (chatbotBoxRef.current) {
-      chatbotBoxRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth", // Smooth scrolling to the top
-      });
-    }
-  };
-
-  // Initial scroll when the component mounts (for mobile devices)
   useEffect(() => {
-    if (window.innerWidth <= 480) {
-      setTimeout(scrollToBottom, 100); // Scroll to the bottom initially
-    }
-  }, []);
-
-  // Scroll to bottom when chat history updates (after the first message)
-  useEffect(() => {
-    if (!isFirstMessage || window.innerWidth > 480) {
-      scrollToBottom();
-    }
+    scrollToBottom();
   }, [chatHistory]);
 
-  const addMessage = (
-    role,
-    content,
-    isLoading = false,
-    boxData = null,
-    isRenderBox = false
-  ) => {
-    setChatHistory((prev) => [
-      ...prev,
-      { role, content, isLoading, boxData, isRenderBox },
-    ]);
+  const addMessage = (role, content, isLoading = false, boxData = null) => {
+    setChatHistory((prev) => [...prev, { role, content, isLoading, boxData }]);
+  };
+
+  const updateAssistantMessage = (chunk) => {
+    setChatHistory((prev) => {
+      const updatedHistory = [...prev];
+      if (assistantMessageIndex.current !== null) {
+        updatedHistory[assistantMessageIndex.current].content += chunk;
+      }
+      return updatedHistory;
+    });
+  };
+
+  const finalizeAssistantMessage = () => {
+    setChatHistory((prev) => {
+      const updatedHistory = [...prev];
+      if (assistantMessageIndex.current !== null) {
+        updatedHistory[assistantMessageIndex.current].isLoading = false;
+      }
+      return updatedHistory;
+    });
+    assistantMessageIndex.current = null; // Reset the index
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const userMessage = input.trim();
+    if (!userMessage) return;
 
-    if (!userMessage) return; // Prevent empty messages
-
-    // Add user's message to chat history
+    // Add user message
     addMessage("user", userMessage);
-    setInput(""); // Clear the input field
+    setInput("");
 
-    if (isFirstMessage && window.innerWidth <= 480) {
-      // On mobile, scroll to the top for the first message
-      setIsFirstMessage(false); // Mark that the first message has been sent
-      scrollToTop();
-    }
-
-    // Add loading message for AI
+    // Add an empty assistant message and track its index
+    const currentAssistantIndex = chatHistory.length;
+    assistantMessageIndex.current = currentAssistantIndex;
     addMessage("assistant", "", true);
     setIsLoading(true);
 
     try {
-      const response = await axios.post("chat", {
-        prompt: userMessage,
-        conversationHistory: chatHistory,
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          prompt: userMessage,
+          conversationHistory: chatHistory,
+        }),
       });
 
-      const aiMessage = response.data;
+      if (!response.body) throw new Error("No response body from API");
 
-      if (aiMessage.function_call) {
-        const functionCall = aiMessage.function_call;
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
 
-        if (functionCall.name === "render_box_component") {
-          setChatHistory((prev) =>
-            prev.map((msg, index) =>
-              index === prev.length - 1
-                ? { ...msg, isLoading: false, boxData: null, isRenderBox: true }
-                : msg
-            )
-          );
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-          setTimeout(() => {
-            setChatHistory((prev) =>
-              prev.map((msg, index) =>
-                index === prev.length - 1 && msg.isRenderBox
-                  ? {
-                      ...msg,
-                      boxData: "This is an AI-rendered box component!",
-                      isRenderBox: false,
-                    }
-                  : msg
-              )
-            );
-          }, 3000);
-        } else if (functionCall.name === "get_training_data") {
-          const trainingData = await axios.get("train");
-          setChatHistory((prev) =>
-            prev.map((msg, index) =>
-              index === prev.length - 1
-                ? {
-                    ...msg,
-                    isLoading: false,
-                    content: `Training data: ${trainingData.data.message}`,
-                  }
-                : msg
-            )
-          );
+        const chunk = decoder.decode(value);
+
+        try {
+          const parsedChunk = JSON.parse(chunk);
+          if (parsedChunk.function_call) {
+            const { name } = parsedChunk.function_call;
+
+            if (name === "render_box_component") {
+              setChatHistory((prev) =>
+                prev.map((msg, idx) =>
+                  idx === assistantMessageIndex.current
+                    ? { ...msg, isLoading: false, boxData: "AI Box Rendered" }
+                    : msg
+                )
+              );
+            } else if (name === "get_training_data") {
+              const trainingData = await fetch("/api/train").then((res) =>
+                res.json()
+              );
+              setChatHistory((prev) =>
+                prev.map((msg, idx) =>
+                  idx === assistantMessageIndex.current
+                    ? {
+                        ...msg,
+                        isLoading: false,
+                        content: `Training data: ${trainingData.message}`,
+                      }
+                    : msg
+                )
+              );
+            }
+            return; // Exit after handling function call
+          }
+        } catch {
+          // Append the chunk to the AI message
+          updateAssistantMessage(chunk.trim()); // Trim chunk to avoid trailing spaces
         }
-      } else {
-        setChatHistory((prev) =>
-          prev.map((msg, index) =>
-            index === prev.length - 1
-              ? { ...msg, isLoading: false, content: aiMessage.content }
-              : msg
-          )
-        );
+
+        scrollToBottom();
       }
+
+      finalizeAssistantMessage(); // Finalize the AI message
     } catch (error) {
-      console.error("Error fetching AI response:", error);
+      console.error("Error streaming AI response:", error);
       setChatHistory((prev) =>
-        prev.map((msg, index) =>
-          index === prev.length - 1
+        prev.map((msg, idx) =>
+          idx === assistantMessageIndex.current
             ? { ...msg, isLoading: false, content: "Error. Please try again." }
             : msg
         )
@@ -151,75 +141,47 @@ const ChatPlay = () => {
   };
 
   const handleKeyDown = (e) => {
-    // Prevent form submission on mobile when Enter is pressed
-    if (window.innerWidth <= 480 && e.key === "Enter" && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      setInput((prev) => prev + "\n"); // Add a new line instead
+      handleFormSubmit(e);
     }
   };
 
   const renderFormattedMessage = (content) => {
     const lines = content.split("\n");
-    const elements = [];
-
-    lines.forEach((line, index) => {
-      const match = line.match(/^(\d+)\.\s\*\*(.*?)\*\*(.*)/); // Match numbered headings with optional emoji/colon
-      if (match) {
-        const [, number, heading, emojiOrColon] = match;
-        elements.push(
-          <div key={index} className={styles.formattedMessage}>
-            <div className={styles.headingLine}>
-              <span className={styles.number}>{number}.</span>
-              <span className={styles.heading}>{heading}</span>
-              {emojiOrColon && (
-                <span className={styles.emojiOrColon}>
-                  {emojiOrColon.trim()}
-                </span>
-              )}
-            </div>
-          </div>
-        );
-      } else if (line.startsWith("-")) {
-        elements.push(
-          <ul key={index} className={styles.description}>
-            <li>{line.replace("-", "").trim()}</li>
-          </ul>
-        );
-      } else {
-        elements.push(
-          <p key={index} className={styles.description}>
-            {line.trim()}
-          </p>
-        );
-      }
-    });
-
-    return elements;
+    return lines.map((line, idx) => (
+      <p key={idx} className={styles.description}>
+        {line.trim()}
+      </p>
+    ));
   };
 
   return (
     <div className={styles.ChatPlay}>
       <div className={styles.chatPlayBox} ref={chatbotBoxRef}>
-        {chatHistory.map((message, index) => (
+        {chatHistory.map((msg, idx) => (
           <div
-            key={index}
+            key={idx}
             className={
-              message.role === "user" ? styles.userMessage : styles.aiMessage
+              msg.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {message.isRenderBox && message.boxData === null ? (
-              <SkeletonBox />
-            ) : message.boxData !== null ? (
-              <Box data={message.boxData} />
-            ) : message.isLoading ? (
-              <div className={styles.loaderContainer}>typing...</div>
+            {msg.isLoading ? (
+              <>
+                {msg.boxData ? (
+                  <Box data={msg.boxData} />
+                ) : (
+                  <div className={styles.loader}>
+                    <SkeletonBox />
+                  </div>
+                )}
+              </>
             ) : (
-              <div>{renderFormattedMessage(message.content)}</div>
+              renderFormattedMessage(msg.content)
             )}
           </div>
         ))}
       </div>
-
       <div className={styles.chatPlayInput}>
         <form onSubmit={handleFormSubmit}>
           <input
