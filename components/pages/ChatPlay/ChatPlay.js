@@ -11,6 +11,7 @@ const ChatPlay = () => {
   const [isLoading, setIsLoading] = useState(false);
   const chatbotBoxRef = useRef(null);
   const assistantMessageIndex = useRef(null); // Tracks the assistant message index
+  const accumulatedText = useRef(""); // Tracks accumulated AI response text to prevent duplication
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -33,7 +34,11 @@ const ChatPlay = () => {
     setChatHistory((prev) => {
       const updatedHistory = [...prev];
       if (assistantMessageIndex.current !== null) {
-        updatedHistory[assistantMessageIndex.current].content += chunk;
+        const currentMessage = updatedHistory[assistantMessageIndex.current];
+        if (!currentMessage.content.endsWith(chunk)) {
+          // Append only new content to prevent duplication
+          currentMessage.content += chunk;
+        }
       }
       return updatedHistory;
     });
@@ -48,6 +53,7 @@ const ChatPlay = () => {
       return updatedHistory;
     });
     assistantMessageIndex.current = null; // Reset the index
+    accumulatedText.current = ""; // Reset accumulated text
   };
 
   const handleFormSubmit = async (e) => {
@@ -84,10 +90,12 @@ const ChatPlay = () => {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value);
+        const chunk = decoder.decode(value).trim(); // Trim incoming chunks to avoid whitespace issues
+        console.log("chunk", chunk);
 
         try {
           const parsedChunk = JSON.parse(chunk);
+
           if (parsedChunk.function_call) {
             const { name } = parsedChunk.function_call;
 
@@ -119,7 +127,7 @@ const ChatPlay = () => {
           }
         } catch {
           // Append the chunk to the AI message
-          updateAssistantMessage(chunk.trim()); // Trim chunk to avoid trailing spaces
+          updateAssistantMessage(chunk);
         }
 
         scrollToBottom();
