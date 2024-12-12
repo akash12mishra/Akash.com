@@ -20,6 +20,7 @@ const ChatPlay = () => {
   const chatbotBoxRef = useRef(null);
   const assistantMessageIndex = useRef(null);
   const currentMessageRef = useRef("");
+  const functionCallBuffer = useRef("");
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -40,7 +41,7 @@ const ChatPlay = () => {
   };
 
   const updateAssistantMessage = (chunk) => {
-    // Directly append the chunk to the current assistant message content
+    // Just append chunk as is, no extra spacing logic.
     setChatHistory((prev) => {
       const updatedHistory = [...prev];
       const assistantIndex = updatedHistory.findIndex(
@@ -85,7 +86,6 @@ const ChatPlay = () => {
 
     const processListItems = (lineIndex) => {
       if (listItems.length > 0) {
-        // Use a unique key for the UL
         elements.push(
           <ul key={`list-${lineIndex}`} className={styles.bulletList}>
             {listItems.map((item, idx) => (
@@ -127,7 +127,7 @@ const ChatPlay = () => {
         return;
       }
 
-      // Numbered headings
+      // Numbered headings (e.g., "1. **Title**:")
       const numberedHeading = line.match(/^(\d+)\.\s*\*\*(.*?)\*\*(.*)/);
       if (numberedHeading) {
         processListItems(index);
@@ -182,7 +182,7 @@ const ChatPlay = () => {
       );
     });
 
-    // Process any remaining list items at the end
+    // Process any remaining list items
     processListItems(lines.length);
 
     return elements;
@@ -230,12 +230,23 @@ const ChatPlay = () => {
     }
   };
 
+  const tryParseFunctionCall = (jsonString) => {
+    try {
+      const parsed = JSON.parse(jsonString);
+      if (parsed.function_call) {
+        return parsed;
+      }
+    } catch {
+      return null;
+    }
+    return null;
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const userMessage = input.trim();
     if (!userMessage) return;
 
-    // Determine indices before state updates
     const assistantIndex = chatHistory.length + 1;
 
     // Add user message
@@ -265,7 +276,7 @@ const ChatPlay = () => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
-      let accumulatedFunctionCall = "";
+      functionCallBuffer.current = ""; // Reset function call buffer for this interaction
 
       while (true) {
         const { done, value } = await reader.read();
@@ -273,35 +284,66 @@ const ChatPlay = () => {
 
         const chunk = decoder.decode(value);
 
+        // First, try parsing chunk directly
+        let parsedChunk = null;
         try {
-          const parsedChunk = JSON.parse(chunk);
-
-          if (parsedChunk.function_call) {
-            if (typeof parsedChunk.function_call === "string") {
-              accumulatedFunctionCall += parsedChunk.function_call;
-            } else {
-              await handleFunctionCall(
-                parsedChunk.function_call.name,
-                parsedChunk.function_call.arguments
-              );
-            }
-          }
+          parsedChunk = JSON.parse(chunk);
         } catch {
-          if (accumulatedFunctionCall) {
-            try {
-              const parsedFunction = JSON.parse(accumulatedFunctionCall);
-              if (parsedFunction.function_call) {
-                await handleFunctionCall(
-                  parsedFunction.function_call.name,
-                  parsedFunction.function_call.arguments
-                );
-                accumulatedFunctionCall = "";
-              }
-            } catch {
-              // Not yet a complete function call, continue accumulating
+          // Not JSON. Possibly a partial function call or normal text.
+        }
+
+        if (parsedChunk && parsedChunk.function_call) {
+          // If we got a direct function call JSON
+          if (typeof parsedChunk.function_call === "string") {
+            // Accumulate and try parse again
+            functionCallBuffer.current += parsedChunk.function_call;
+            const parsedFunction = tryParseFunctionCall(
+              functionCallBuffer.current
+            );
+            if (parsedFunction) {
+              await handleFunctionCall(
+                parsedFunction.function_call.name,
+                parsedFunction.function_call.arguments
+              );
+              functionCallBuffer.current = "";
             }
+            // If still not parseable, just continue accumulating
+          } else {
+            // Fully formed function call
+            await handleFunctionCall(
+              parsedChunk.function_call.name,
+              parsedChunk.function_call.arguments
+            );
+            functionCallBuffer.current = "";
           }
-          updateAssistantMessage(chunk);
+        } else {
+          // No direct function_call in chunk
+          // Maybe it's partial function call data or normal text
+          if (functionCallBuffer.current) {
+            // We have some accumulated data, try adding this chunk to the buffer and parse
+            functionCallBuffer.current += chunk;
+            const parsedFunction = tryParseFunctionCall(
+              functionCallBuffer.current
+            );
+            if (parsedFunction) {
+              await handleFunctionCall(
+                parsedFunction.function_call.name,
+                parsedFunction.function_call.arguments
+              );
+              functionCallBuffer.current = "";
+              continue;
+            } else {
+              // Still not parseable as function call. It might be normal text after all.
+              // Since we failed to parse even after accumulation, let's treat this new chunk as text.
+              // But we must not lose previously accumulated data. Since it didn't form a valid function call,
+              // we assume it was just text. So updateAssistantMessage with the entire buffer + this chunk.
+              updateAssistantMessage(functionCallBuffer.current);
+              functionCallBuffer.current = "";
+            }
+          } else {
+            // No accumulated function call, just normal text.
+            updateAssistantMessage(chunk);
+          }
         }
 
         scrollToBottom();
@@ -321,6 +363,11 @@ const ChatPlay = () => {
       );
     } finally {
       setIsLoading(false);
+      // If there's any leftover function call buffer at the end, treat it as text.
+      if (functionCallBuffer.current) {
+        updateAssistantMessage(functionCallBuffer.current);
+        functionCallBuffer.current = "";
+      }
     }
   };
 
