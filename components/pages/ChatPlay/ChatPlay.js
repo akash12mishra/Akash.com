@@ -2,16 +2,23 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
-import SkeletonBox from "../../SkeletonBox/SkeletonBox";
 import Box from "../../Box/Box";
+
+// Typing animation component
+const TypingAnimation = () => (
+  <div className={styles.typingAnimation}>
+    <div className={styles.dot}></div>
+    <div className={styles.dot}></div>
+    <div className={styles.dot}></div>
+  </div>
+);
 
 const ChatPlay = () => {
   const [chatHistory, setChatHistory] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const chatbotBoxRef = useRef(null);
-  const assistantMessageIndex = useRef(null); // Tracks the assistant message index
-  const accumulatedText = useRef(""); // Tracks accumulated AI response text to prevent duplication
+  const assistantMessageIndex = useRef(null);
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -33,12 +40,29 @@ const ChatPlay = () => {
   const updateAssistantMessage = (chunk) => {
     setChatHistory((prev) => {
       const updatedHistory = [...prev];
-      if (assistantMessageIndex.current !== null) {
-        const currentMessage = updatedHistory[assistantMessageIndex.current];
-        if (!currentMessage.content.endsWith(chunk)) {
-          // Append only new content to prevent duplication
-          currentMessage.content += chunk;
-        }
+      const assistantIndex = updatedHistory.findIndex(
+        (msg) => msg.role === "assistant" && msg.isLoading === true
+      );
+
+      if (assistantIndex !== -1) {
+        const previousContent = updatedHistory[assistantIndex].content || "";
+        // Add space if needed between chunks
+        const needsSpace =
+          previousContent &&
+          !previousContent.endsWith(" ") &&
+          !previousContent.endsWith("\n") &&
+          !chunk.startsWith(" ") &&
+          !chunk.startsWith("\n") &&
+          !chunk.startsWith(".") &&
+          !chunk.startsWith(",") &&
+          !chunk.startsWith("!") &&
+          !chunk.startsWith("?");
+
+        updatedHistory[assistantIndex] = {
+          ...updatedHistory[assistantIndex],
+          content: previousContent + (needsSpace ? " " : "") + chunk,
+          isLoading: true,
+        };
       }
       return updatedHistory;
     });
@@ -47,28 +71,30 @@ const ChatPlay = () => {
   const finalizeAssistantMessage = () => {
     setChatHistory((prev) => {
       const updatedHistory = [...prev];
-      if (assistantMessageIndex.current !== null) {
-        updatedHistory[assistantMessageIndex.current].isLoading = false;
+      const assistantIndex = updatedHistory.findIndex(
+        (msg) => msg.role === "assistant" && msg.isLoading === true
+      );
+      if (assistantIndex !== -1) {
+        updatedHistory[assistantIndex] = {
+          ...updatedHistory[assistantIndex],
+          isLoading: false,
+        };
       }
       return updatedHistory;
     });
-    assistantMessageIndex.current = null; // Reset the index
-    accumulatedText.current = ""; // Reset accumulated text
   };
+
+  console.log("chatHistory", chatHistory);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const userMessage = input.trim();
     if (!userMessage) return;
 
-    // Add user message
     addMessage("user", userMessage);
     setInput("");
-
-    // Add an empty assistant message and track its index
-    const currentAssistantIndex = chatHistory.length;
-    assistantMessageIndex.current = currentAssistantIndex;
     addMessage("assistant", "", true);
+    assistantMessageIndex.current = chatHistory.length;
     setIsLoading(true);
 
     try {
@@ -90,7 +116,7 @@ const ChatPlay = () => {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value).trim(); // Trim incoming chunks to avoid whitespace issues
+        const chunk = decoder.decode(value).trim();
         console.log("chunk", chunk);
 
         try {
@@ -123,17 +149,16 @@ const ChatPlay = () => {
                 )
               );
             }
-            return; // Exit after handling function call
+            return;
           }
         } catch {
-          // Append the chunk to the AI message
           updateAssistantMessage(chunk);
         }
 
         scrollToBottom();
       }
 
-      finalizeAssistantMessage(); // Finalize the AI message
+      finalizeAssistantMessage();
     } catch (error) {
       console.error("Error streaming AI response:", error);
       setChatHistory((prev) =>
@@ -174,18 +199,12 @@ const ChatPlay = () => {
               msg.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {msg.isLoading ? (
+            {msg.isLoading && !msg.content ? (
               <>
-                {msg.boxData ? (
-                  <Box data={msg.boxData} />
-                ) : (
-                  <div className={styles.loader}>
-                    <SkeletonBox />
-                  </div>
-                )}
+                {msg.boxData ? <Box data={msg.boxData} /> : <TypingAnimation />}
               </>
             ) : (
-              renderFormattedMessage(msg.content)
+              renderFormattedMessage(msg.content || "")
             )}
           </div>
         ))}

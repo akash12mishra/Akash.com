@@ -153,3 +153,22 @@
     }
   }
 }
+
+.typingAnimation {
+  display: flex;
+  align-items: center;
+  column-gap: 5px;
+  padding: 8px 12px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  width: fit-content;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: #666;
+    border-radius: 50%;
+    animation: jump 1s infinite;
+    // Delayed animation for each dot
+  }
+}
