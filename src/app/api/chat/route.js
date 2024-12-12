@@ -33,7 +33,7 @@ export async function POST(req) {
     const systemMessage = {
       role: "system",
       content:
-        "You are a smart actionable chatbot. You can fetch training data or render components based on user requests. You are developed by Arka Lal Chakravarty and you are a chatbot of arkalalchakravarty.com. Be professional and precise. Use emojis where appropriate.",
+        "You are a smart actionable chatbot. You can fetch training data or render components based on user requests. So you are developed by Arka Lal Chakravarty and you are a chatbot of from arkalalchakravarty.com. You are not created by opne ai or chatGPT always remember that. The website - arkalalchakravarty.com provides services around Website planning, design and development, Full Deployment and Maintenance of the websites, building MVPs for clients from scratch and Custom AI Automations & Integrations that includes business customer support chatbots in form of texts and audio and some automations. The services also includes - Building High Performance_ Websites with Excellent Design & Speed and SEO Optimised webisites. Make sure you use emojis and be professional with the user. Make sure your answer to user queries are to the point, brief and precise.",
     };
 
     const messages = [
@@ -54,7 +54,7 @@ export async function POST(req) {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "gpt-4o-2024-05-13",
+          model: "gpt-4-0613",
           temperature: 0.9,
           max_tokens: 4090,
           stream: true,
@@ -68,10 +68,10 @@ export async function POST(req) {
     const reader = openaiResponse.body.getReader();
     const decoder = new TextDecoder("utf-8");
 
+    let accumulatedFunctionCall = null; // To accumulate partial function call data
+
     const stream = new ReadableStream({
       async start(controller) {
-        let isFunctionCall = false;
-        let functionCallPayload = "";
         let wordBuffer = "";
         let isInWord = false;
 
@@ -90,15 +90,22 @@ export async function POST(req) {
 
         while (true) {
           const { done, value } = await reader.read();
-
           if (done) {
             // Send any remaining buffered word
             if (wordBuffer) {
               controller.enqueue(new TextEncoder().encode(wordBuffer));
             }
-            if (isFunctionCall && functionCallPayload) {
-              controller.enqueue(new TextEncoder().encode(functionCallPayload));
+
+            // If we ended and there is a partial function call not yet sent (unlikely without finish_reason),
+            // we can attempt to send it now (though normally finish_reason=function_call will handle it).
+            if (accumulatedFunctionCall) {
+              controller.enqueue(
+                new TextEncoder().encode(
+                  JSON.stringify(accumulatedFunctionCall)
+                )
+              );
             }
+
             controller.close();
             break;
           }
@@ -112,6 +119,7 @@ export async function POST(req) {
               try {
                 return JSON.parse(line);
               } catch (err) {
+                // Non-JSON lines are usually just empty lines or control lines
                 console.log("Non-JSON chunk received:", line);
                 return null;
               }
@@ -121,18 +129,35 @@ export async function POST(req) {
             if (!parsedLine) continue;
 
             const { choices } = parsedLine;
-            const { delta } = choices[0];
+            const { delta, finish_reason } = choices[0];
 
+            // If we have a function call
             if (delta.function_call) {
-              isFunctionCall = true;
-              functionCallPayload = JSON.stringify({
-                function_call: delta.function_call,
-              });
-              console.log("Function call detected:", functionCallPayload);
-            } else if (delta.content) {
-              const content = delta.content;
-              console.log("Received content:", content);
+              // Initialize accumulator if this is the start of a function call
+              if (!accumulatedFunctionCall) {
+                accumulatedFunctionCall = { function_call: {} };
+              }
 
+              if (delta.function_call.name) {
+                accumulatedFunctionCall.function_call.name =
+                  delta.function_call.name;
+              }
+
+              if (delta.function_call.arguments) {
+                const args = delta.function_call.arguments;
+                if (!accumulatedFunctionCall.function_call.arguments) {
+                  accumulatedFunctionCall.function_call.arguments = args;
+                } else {
+                  // Append partial arguments
+                  accumulatedFunctionCall.function_call.arguments += args;
+                }
+              }
+
+              // For function calls, do not stream partial text tokens to the client.
+              // We only send the function call when it's complete.
+            } else if (delta.content) {
+              // If we are receiving normal content (not function call)
+              const content = delta.content;
               // Process content character by character
               for (let i = 0; i < content.length; i++) {
                 const char = content[i];
@@ -157,6 +182,19 @@ export async function POST(req) {
                   wordBuffer = "";
                   isInWord = false;
                 }
+              }
+            }
+
+            // If finish_reason indicates the function call is complete
+            if (finish_reason === "function_call") {
+              // We now have a complete function call. Send it as a full JSON string.
+              if (accumulatedFunctionCall) {
+                controller.enqueue(
+                  new TextEncoder().encode(
+                    JSON.stringify(accumulatedFunctionCall)
+                  )
+                );
+                accumulatedFunctionCall = null;
               }
             }
           }
