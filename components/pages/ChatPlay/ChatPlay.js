@@ -182,11 +182,41 @@ const ChatPlay = () => {
 
   const renderFormattedMessage = (content) => {
     const lines = content.split("\n");
-    return lines.map((line, idx) => (
-      <p key={idx} className={styles.description}>
-        {line.trim()}
-      </p>
-    ));
+    const elements = [];
+
+    lines.forEach((line, index) => {
+      const match = line.match(/^(\d+)\.\s\*\*(.*?)\*\*(.*)/); // Match numbered headings with optional emoji/colon
+      if (match) {
+        const [, number, heading, emojiOrColon] = match;
+        elements.push(
+          <div key={index} className={styles.formattedMessage}>
+            <div className={styles.headingLine}>
+              <span className={styles.number}>{number}.</span>
+              <span className={styles.heading}>{heading}</span>
+              {emojiOrColon && (
+                <span className={styles.emojiOrColon}>
+                  {emojiOrColon.trim()}
+                </span>
+              )}
+            </div>
+          </div>
+        );
+      } else if (line.startsWith("-")) {
+        elements.push(
+          <ul key={index} className={styles.description}>
+            <li>{line.replace("-", "").trim()}</li>
+          </ul>
+        );
+      } else {
+        elements.push(
+          <p key={index} className={styles.description}>
+            {line.trim()}
+          </p>
+        );
+      }
+    });
+
+    return elements;
   };
 
   return (
