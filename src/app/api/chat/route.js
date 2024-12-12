@@ -11,7 +11,6 @@ export async function POST(req) {
       });
     }
 
-    // Define the functions the AI can call
     const functions = [
       {
         name: "get_training_data",
@@ -73,16 +72,31 @@ export async function POST(req) {
       async start(controller) {
         let isFunctionCall = false;
         let functionCallPayload = "";
+        let wordBuffer = "";
+        let isInWord = false;
+
+        // Helper to check if char is part of a word
+        const isWordChar = (char) => /[a-zA-Z0-9']/.test(char);
+
+        // Helper to check if we should send the buffer
+        const shouldSendBuffer = (char) => {
+          return (
+            char === " " ||
+            char === "\n" ||
+            /[.,!?:;]/.test(char) ||
+            wordBuffer.length > 20
+          );
+        };
 
         while (true) {
           const { done, value } = await reader.read();
 
           if (done) {
+            // Send any remaining buffered word
+            if (wordBuffer) {
+              controller.enqueue(new TextEncoder().encode(wordBuffer));
+            }
             if (isFunctionCall && functionCallPayload) {
-              console.log(
-                "Sending function call payload:",
-                functionCallPayload
-              ); // Debugging
               controller.enqueue(new TextEncoder().encode(functionCallPayload));
             }
             controller.close();
@@ -98,7 +112,7 @@ export async function POST(req) {
               try {
                 return JSON.parse(line);
               } catch (err) {
-                console.log("Non-JSON chunk received:", line); // Debugging
+                console.log("Non-JSON chunk received:", line);
                 return null;
               }
             });
@@ -114,10 +128,36 @@ export async function POST(req) {
               functionCallPayload = JSON.stringify({
                 function_call: delta.function_call,
               });
-              console.log("Function call detected:", functionCallPayload); // Debugging
+              console.log("Function call detected:", functionCallPayload);
             } else if (delta.content) {
-              console.log("Streaming content:", delta.content); // Debugging
-              controller.enqueue(new TextEncoder().encode(delta.content));
+              const content = delta.content;
+              console.log("Received content:", content);
+
+              // Process content character by character
+              for (let i = 0; i < content.length; i++) {
+                const char = content[i];
+
+                if (isWordChar(char)) {
+                  wordBuffer += char;
+                  isInWord = true;
+                } else {
+                  // If we were in a word, send the buffered word first
+                  if (isInWord && wordBuffer) {
+                    controller.enqueue(new TextEncoder().encode(wordBuffer));
+                    wordBuffer = "";
+                  }
+                  // Send the non-word character immediately
+                  controller.enqueue(new TextEncoder().encode(char));
+                  isInWord = false;
+                }
+
+                // Send buffer if it's getting too long
+                if (wordBuffer && shouldSendBuffer(char)) {
+                  controller.enqueue(new TextEncoder().encode(wordBuffer));
+                  wordBuffer = "";
+                  isInWord = false;
+                }
+              }
             }
           }
         }
