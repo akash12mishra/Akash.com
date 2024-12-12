@@ -157,18 +157,53 @@
 .typingAnimation {
   display: flex;
   align-items: center;
-  column-gap: 5px;
-  padding: 8px 12px;
+  column-gap: 4px;
+  padding: 12px 16px;
   background: #f0f0f0;
-  border-radius: 10px;
+  border-radius: 20px;
   width: fit-content;
 
   .dot {
-    width: 8px;
-    height: 8px;
-    background: #666;
+    width: 6px;
+    height: 6px;
+    background: #888;
     border-radius: 50%;
-    animation: jump 1s infinite;
-    // Delayed animation for each dot
+    animation: typing 1.4s infinite;
+    opacity: 0.4;
+
+    &:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+}
+
+@keyframes typing {
+  0% {
+    transform: translateY(0px);
+    opacity: 0.4;
+  }
+  25% {
+    transform: translateY(-3px);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(1px);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translateY(-1px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(0px);
+    opacity: 0.4;
   }
 }
