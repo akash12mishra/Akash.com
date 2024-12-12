@@ -3,8 +3,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
 import Box from "../../Box/Box";
+import SkeletonBox from "../../SkeletonBox/SkeletonBox";
 
-// Typing animation component
 const TypingAnimation = () => (
   <div className={styles.typingAnimation}>
     <div className={styles.dot}></div>
@@ -19,6 +19,7 @@ const ChatPlay = () => {
   const [isLoading, setIsLoading] = useState(false);
   const chatbotBoxRef = useRef(null);
   const assistantMessageIndex = useRef(null);
+  const currentMessageRef = useRef("");
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -35,6 +36,7 @@ const ChatPlay = () => {
 
   const addMessage = (role, content, isLoading = false, boxData = null) => {
     setChatHistory((prev) => [...prev, { role, content, isLoading, boxData }]);
+    currentMessageRef.current = "";
   };
 
   const updateAssistantMessage = (chunk) => {
@@ -46,7 +48,6 @@ const ChatPlay = () => {
 
       if (assistantIndex !== -1) {
         const previousContent = updatedHistory[assistantIndex].content || "";
-        // Add space if needed between chunks
         const needsSpace =
           previousContent &&
           !previousContent.endsWith(" ") &&
@@ -58,9 +59,12 @@ const ChatPlay = () => {
           !chunk.startsWith("!") &&
           !chunk.startsWith("?");
 
+        currentMessageRef.current =
+          previousContent + (needsSpace ? " " : "") + chunk;
+
         updatedHistory[assistantIndex] = {
           ...updatedHistory[assistantIndex],
-          content: previousContent + (needsSpace ? " " : "") + chunk,
+          content: currentMessageRef.current,
           isLoading: true,
         };
       }
@@ -82,9 +86,155 @@ const ChatPlay = () => {
       }
       return updatedHistory;
     });
+    currentMessageRef.current = "";
   };
 
-  console.log("chatHistory", chatHistory);
+  const renderFormattedMessage = (content) => {
+    if (!content) return null;
+
+    const lines = content.split("\n");
+    const elements = [];
+    let inList = false;
+    let listItems = [];
+
+    const processListItems = () => {
+      if (listItems.length > 0) {
+        elements.push(
+          <ul key={elements.length} className={styles.bulletList}>
+            {listItems.map((item, idx) => (
+              <li key={idx} className={styles.bulletItem}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        );
+        listItems = [];
+      }
+    };
+
+    lines.forEach((line, index) => {
+      // Empty line - add spacing
+      if (!line.trim()) {
+        processListItems();
+        inList = false;
+        elements.push(
+          <div key={`space-${index}`} className={styles.emptyLine} />
+        );
+        return;
+      }
+
+      // Headers using markdown
+      if (line.startsWith("#")) {
+        processListItems();
+        inList = false;
+        const level = line.match(/^#+/)[0].length;
+        const text = line.replace(/^#+\s+/, "");
+        elements.push(
+          <div key={index} className={styles[`heading${level}`]}>
+            {text}
+          </div>
+        );
+        return;
+      }
+
+      // Numbered headings (e.g., "1. **Title**:")
+      const numberedHeading = line.match(/^(\d+)\.\s*\*\*(.*?)\*\*(.*)/);
+      if (numberedHeading) {
+        processListItems();
+        inList = false;
+        const [, number, heading, rest] = numberedHeading;
+        elements.push(
+          <div key={index} className={styles.numberedHeading}>
+            <span className={styles.number}>{number}.</span>
+            <span className={styles.heading}>{heading}</span>
+            <span className={styles.rest}>{rest}</span>
+          </div>
+        );
+        return;
+      }
+
+      // Bullet points
+      if (line.trim().startsWith("-") || line.trim().startsWith("*")) {
+        inList = true;
+        listItems.push(line.substring(1).trim());
+        return;
+      }
+
+      // Bold text
+      const parts = line.split(/(\*\*.*?\*\*)/g);
+      if (parts.length > 1) {
+        processListItems();
+        inList = false;
+        elements.push(
+          <p key={index} className={styles.paragraph}>
+            {parts.map((part, idx) => {
+              if (part.startsWith("**") && part.endsWith("**")) {
+                return <strong key={idx}>{part.slice(2, -2)}</strong>;
+              }
+              return part;
+            })}
+          </p>
+        );
+        return;
+      }
+
+      // Regular text
+      processListItems();
+      inList = false;
+      elements.push(
+        <p key={index} className={styles.paragraph}>
+          {line.trim()}
+        </p>
+      );
+    });
+
+    // Process any remaining list items
+    processListItems();
+
+    return elements;
+  };
+
+  const handleFunctionCall = async (name, args) => {
+    switch (name) {
+      case "get_training_data":
+        try {
+          const trainingData = await fetch("/api/train").then((res) =>
+            res.json()
+          );
+          updateAssistantMessage(`Training data: ${trainingData.message}`);
+          finalizeAssistantMessage();
+        } catch (error) {
+          console.error("Error fetching training data:", error);
+          updateAssistantMessage(
+            "Error fetching training data. Please try again."
+          );
+          finalizeAssistantMessage();
+        }
+        break;
+
+      case "render_box_component":
+        // Show skeleton loader first
+        setChatHistory((prev) =>
+          prev.map((msg, idx) =>
+            idx === assistantMessageIndex.current
+              ? { ...msg, isLoading: false, boxData: "loading" }
+              : msg
+          )
+        );
+
+        // Simulate loading time
+        setTimeout(() => {
+          setChatHistory((prev) =>
+            prev.map((msg, idx) =>
+              idx === assistantMessageIndex.current
+                ? { ...msg, boxData: "AI Box Rendered" }
+                : msg
+            )
+          );
+        }, 2000);
+        break;
+    }
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -112,53 +262,52 @@ const ChatPlay = () => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
+      let accumulatedFunctionCall = "";
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value).trim();
+        const chunk = decoder.decode(value);
         console.log("chunk", chunk);
 
         try {
           const parsedChunk = JSON.parse(chunk);
 
           if (parsedChunk.function_call) {
-            const { name } = parsedChunk.function_call;
-
-            if (name === "render_box_component") {
-              setChatHistory((prev) =>
-                prev.map((msg, idx) =>
-                  idx === assistantMessageIndex.current
-                    ? { ...msg, isLoading: false, boxData: "AI Box Rendered" }
-                    : msg
-                )
-              );
-            } else if (name === "get_training_data") {
-              const trainingData = await fetch("/api/train").then((res) =>
-                res.json()
-              );
-              setChatHistory((prev) =>
-                prev.map((msg, idx) =>
-                  idx === assistantMessageIndex.current
-                    ? {
-                        ...msg,
-                        isLoading: false,
-                        content: `Training data: ${trainingData.message}`,
-                      }
-                    : msg
-                )
+            if (typeof parsedChunk.function_call === "string") {
+              accumulatedFunctionCall += parsedChunk.function_call;
+            } else {
+              await handleFunctionCall(
+                parsedChunk.function_call.name,
+                parsedChunk.function_call.arguments
               );
             }
-            return;
           }
         } catch {
-          updateAssistantMessage(chunk);
+          if (accumulatedFunctionCall) {
+            try {
+              const parsedFunction = JSON.parse(accumulatedFunctionCall);
+              if (parsedFunction.function_call) {
+                await handleFunctionCall(
+                  parsedFunction.function_call.name,
+                  parsedFunction.function_call.arguments
+                );
+                accumulatedFunctionCall = "";
+              }
+            } catch {
+              // Not a complete function call yet, continue accumulating
+            }
+          }
+          updateAssistantMessage(chunk.trim());
         }
 
         scrollToBottom();
       }
 
-      finalizeAssistantMessage();
+      if (!isLoading) {
+        finalizeAssistantMessage();
+      }
     } catch (error) {
       console.error("Error streaming AI response:", error);
       setChatHistory((prev) =>
@@ -180,45 +329,6 @@ const ChatPlay = () => {
     }
   };
 
-  const renderFormattedMessage = (content) => {
-    const lines = content.split("\n");
-    const elements = [];
-
-    lines.forEach((line, index) => {
-      const match = line.match(/^(\d+)\.\s\*\*(.*?)\*\*(.*)/); // Match numbered headings with optional emoji/colon
-      if (match) {
-        const [, number, heading, emojiOrColon] = match;
-        elements.push(
-          <div key={index} className={styles.formattedMessage}>
-            <div className={styles.headingLine}>
-              <span className={styles.number}>{number}.</span>
-              <span className={styles.heading}>{heading}</span>
-              {emojiOrColon && (
-                <span className={styles.emojiOrColon}>
-                  {emojiOrColon.trim()}
-                </span>
-              )}
-            </div>
-          </div>
-        );
-      } else if (line.startsWith("-")) {
-        elements.push(
-          <ul key={index} className={styles.description}>
-            <li>{line.replace("-", "").trim()}</li>
-          </ul>
-        );
-      } else {
-        elements.push(
-          <p key={index} className={styles.description}>
-            {line.trim()}
-          </p>
-        );
-      }
-    });
-
-    return elements;
-  };
-
   return (
     <div className={styles.ChatPlay}>
       <div className={styles.chatPlayBox} ref={chatbotBoxRef}>
@@ -231,7 +341,17 @@ const ChatPlay = () => {
           >
             {msg.isLoading && !msg.content ? (
               <>
-                {msg.boxData ? <Box data={msg.boxData} /> : <TypingAnimation />}
+                {msg.boxData ? (
+                  msg.boxData === "loading" ? (
+                    <div className={styles.boxLoader}>
+                      <SkeletonBox />
+                    </div>
+                  ) : (
+                    <Box data={msg.boxData} />
+                  )
+                ) : (
+                  <TypingAnimation />
+                )}
               </>
             ) : (
               renderFormattedMessage(msg.content || "")
