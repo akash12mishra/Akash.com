@@ -40,31 +40,17 @@ const ChatPlay = () => {
   };
 
   const updateAssistantMessage = (chunk) => {
+    // Directly append the chunk to the current assistant message content
     setChatHistory((prev) => {
       const updatedHistory = [...prev];
       const assistantIndex = updatedHistory.findIndex(
         (msg) => msg.role === "assistant" && msg.isLoading === true
       );
-
       if (assistantIndex !== -1) {
         const previousContent = updatedHistory[assistantIndex].content || "";
-        const needsSpace =
-          previousContent &&
-          !previousContent.endsWith(" ") &&
-          !previousContent.endsWith("\n") &&
-          !chunk.startsWith(" ") &&
-          !chunk.startsWith("\n") &&
-          !chunk.startsWith(".") &&
-          !chunk.startsWith(",") &&
-          !chunk.startsWith("!") &&
-          !chunk.startsWith("?");
-
-        currentMessageRef.current =
-          previousContent + (needsSpace ? " " : "") + chunk;
-
         updatedHistory[assistantIndex] = {
           ...updatedHistory[assistantIndex],
-          content: currentMessageRef.current,
+          content: previousContent + chunk,
           isLoading: true,
         };
       }
@@ -97,12 +83,16 @@ const ChatPlay = () => {
     let inList = false;
     let listItems = [];
 
-    const processListItems = () => {
+    const processListItems = (lineIndex) => {
       if (listItems.length > 0) {
+        // Use a unique key for the UL
         elements.push(
-          <ul key={elements.length} className={styles.bulletList}>
+          <ul key={`list-${lineIndex}`} className={styles.bulletList}>
             {listItems.map((item, idx) => (
-              <li key={idx} className={styles.bulletItem}>
+              <li
+                key={`line-${lineIndex}-item-${idx}`}
+                className={styles.bulletItem}
+              >
                 {item}
               </li>
             ))}
@@ -115,22 +105,22 @@ const ChatPlay = () => {
     lines.forEach((line, index) => {
       // Empty line
       if (!line.trim()) {
-        processListItems();
+        processListItems(index);
         inList = false;
         elements.push(
-          <div key={`space-${index}`} className={styles.emptyLine} />
+          <div key={`empty-${index}`} className={styles.emptyLine} />
         );
         return;
       }
 
       // Headers
       if (line.startsWith("#")) {
-        processListItems();
+        processListItems(index);
         inList = false;
         const level = line.match(/^#+/)[0].length;
         const text = line.replace(/^#+\s+/, "");
         elements.push(
-          <div key={index} className={styles[`heading${level}`]}>
+          <div key={`heading-${index}`} className={styles[`heading${level}`]}>
             {text}
           </div>
         );
@@ -140,11 +130,11 @@ const ChatPlay = () => {
       // Numbered headings
       const numberedHeading = line.match(/^(\d+)\.\s*\*\*(.*?)\*\*(.*)/);
       if (numberedHeading) {
-        processListItems();
+        processListItems(index);
         inList = false;
         const [, number, heading, rest] = numberedHeading;
         elements.push(
-          <div key={index} className={styles.numberedHeading}>
+          <div key={`numHeading-${index}`} className={styles.numberedHeading}>
             <span className={styles.number}>{number}.</span>
             <span className={styles.heading}>{heading}</span>
             <span className={styles.rest}>{rest}</span>
@@ -163,13 +153,17 @@ const ChatPlay = () => {
       // Bold text
       const parts = line.split(/(\*\*.*?\*\*)/g);
       if (parts.length > 1) {
-        processListItems();
+        processListItems(index);
         inList = false;
         elements.push(
-          <p key={index} className={styles.paragraph}>
+          <p key={`paragraph-bold-${index}`} className={styles.paragraph}>
             {parts.map((part, idx) => {
               if (part.startsWith("**") && part.endsWith("**")) {
-                return <strong key={idx}>{part.slice(2, -2)}</strong>;
+                return (
+                  <strong key={`bold-${index}-${idx}`}>
+                    {part.slice(2, -2)}
+                  </strong>
+                );
               }
               return part;
             })}
@@ -179,17 +173,17 @@ const ChatPlay = () => {
       }
 
       // Regular text
-      processListItems();
+      processListItems(index);
       inList = false;
       elements.push(
-        <p key={index} className={styles.paragraph}>
+        <p key={`paragraph-${index}`} className={styles.paragraph}>
           {line.trim()}
         </p>
       );
     });
 
-    // Process remaining list items
-    processListItems();
+    // Process any remaining list items at the end
+    processListItems(lines.length);
 
     return elements;
   };
@@ -241,10 +235,7 @@ const ChatPlay = () => {
     const userMessage = input.trim();
     if (!userMessage) return;
 
-    // Determine indices before state updates:
-    // After adding a user message, it will be placed at current length.
-    // The next assistant message will be at current length + 1.
-    const userIndex = chatHistory.length;
+    // Determine indices before state updates
     const assistantIndex = chatHistory.length + 1;
 
     // Add user message
@@ -253,7 +244,7 @@ const ChatPlay = () => {
     // Add assistant "loading" message
     addMessage("assistant", "", true);
 
-    // Now set the assistant message index
+    // Set the assistant message index
     assistantMessageIndex.current = assistantIndex;
 
     setInput("");
@@ -281,7 +272,6 @@ const ChatPlay = () => {
         if (done) break;
 
         const chunk = decoder.decode(value);
-        console.log("chunk", chunk);
 
         try {
           const parsedChunk = JSON.parse(chunk);
@@ -311,7 +301,7 @@ const ChatPlay = () => {
               // Not yet a complete function call, continue accumulating
             }
           }
-          updateAssistantMessage(chunk.trim());
+          updateAssistantMessage(chunk);
         }
 
         scrollToBottom();
