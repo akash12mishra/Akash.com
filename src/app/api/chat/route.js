@@ -54,7 +54,7 @@ export async function POST(req) {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "gpt-4-0613",
+          model: "gpt-4o-2024-05-13",
           temperature: 0.9,
           max_tokens: 4090,
           stream: true,
@@ -96,8 +96,7 @@ export async function POST(req) {
               controller.enqueue(new TextEncoder().encode(wordBuffer));
             }
 
-            // If we ended and there is a partial function call not yet sent (unlikely without finish_reason),
-            // we can attempt to send it now (though normally finish_reason=function_call will handle it).
+            // If we ended and there is a partial function call not yet sent
             if (accumulatedFunctionCall) {
               controller.enqueue(
                 new TextEncoder().encode(
@@ -119,7 +118,7 @@ export async function POST(req) {
               try {
                 return JSON.parse(line);
               } catch (err) {
-                // Non-JSON lines are usually just empty lines or control lines
+                // Non-JSON lines could appear
                 console.log("Non-JSON chunk received:", line);
                 return null;
               }
@@ -131,7 +130,6 @@ export async function POST(req) {
             const { choices } = parsedLine;
             const { delta, finish_reason } = choices[0];
 
-            // If we have a function call
             if (delta.function_call) {
               // Initialize accumulator if this is the start of a function call
               if (!accumulatedFunctionCall) {
@@ -152,13 +150,8 @@ export async function POST(req) {
                   accumulatedFunctionCall.function_call.arguments += args;
                 }
               }
-
-              // For function calls, do not stream partial text tokens to the client.
-              // We only send the function call when it's complete.
             } else if (delta.content) {
-              // If we are receiving normal content (not function call)
               const content = delta.content;
-              // Process content character by character
               for (let i = 0; i < content.length; i++) {
                 const char = content[i];
 
@@ -187,7 +180,7 @@ export async function POST(req) {
 
             // If finish_reason indicates the function call is complete
             if (finish_reason === "function_call") {
-              // We now have a complete function call. Send it as a full JSON string.
+              // Send the entire function call as a full JSON object
               if (accumulatedFunctionCall) {
                 controller.enqueue(
                   new TextEncoder().encode(

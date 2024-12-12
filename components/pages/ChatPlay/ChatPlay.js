@@ -113,7 +113,7 @@ const ChatPlay = () => {
     };
 
     lines.forEach((line, index) => {
-      // Empty line - add spacing
+      // Empty line
       if (!line.trim()) {
         processListItems();
         inList = false;
@@ -123,7 +123,7 @@ const ChatPlay = () => {
         return;
       }
 
-      // Headers using markdown
+      // Headers
       if (line.startsWith("#")) {
         processListItems();
         inList = false;
@@ -137,7 +137,7 @@ const ChatPlay = () => {
         return;
       }
 
-      // Numbered headings (e.g., "1. **Title**:")
+      // Numbered headings
       const numberedHeading = line.match(/^(\d+)\.\s*\*\*(.*?)\*\*(.*)/);
       if (numberedHeading) {
         processListItems();
@@ -188,7 +188,7 @@ const ChatPlay = () => {
       );
     });
 
-    // Process any remaining list items
+    // Process remaining list items
     processListItems();
 
     return elements;
@@ -213,7 +213,7 @@ const ChatPlay = () => {
         break;
 
       case "render_box_component":
-        // Show skeleton loader first
+        // Immediately show skeleton loader
         setChatHistory((prev) =>
           prev.map((msg, idx) =>
             idx === assistantMessageIndex.current
@@ -222,7 +222,7 @@ const ChatPlay = () => {
           )
         );
 
-        // Simulate loading time
+        // Simulate loading time, then show actual box
         setTimeout(() => {
           setChatHistory((prev) =>
             prev.map((msg, idx) =>
@@ -241,10 +241,22 @@ const ChatPlay = () => {
     const userMessage = input.trim();
     if (!userMessage) return;
 
+    // Determine indices before state updates:
+    // After adding a user message, it will be placed at current length.
+    // The next assistant message will be at current length + 1.
+    const userIndex = chatHistory.length;
+    const assistantIndex = chatHistory.length + 1;
+
+    // Add user message
     addMessage("user", userMessage);
-    setInput("");
+
+    // Add assistant "loading" message
     addMessage("assistant", "", true);
-    assistantMessageIndex.current = chatHistory.length;
+
+    // Now set the assistant message index
+    assistantMessageIndex.current = assistantIndex;
+
+    setInput("");
     setIsLoading(true);
 
     try {
@@ -296,7 +308,7 @@ const ChatPlay = () => {
                 accumulatedFunctionCall = "";
               }
             } catch {
-              // Not a complete function call yet, continue accumulating
+              // Not yet a complete function call, continue accumulating
             }
           }
           updateAssistantMessage(chunk.trim());
@@ -339,23 +351,28 @@ const ChatPlay = () => {
               msg.role === "user" ? styles.userMessage : styles.aiMessage
             }
           >
-            {msg.isLoading && !msg.content ? (
-              <>
-                {msg.boxData ? (
-                  msg.boxData === "loading" ? (
+            {(() => {
+              // If we have boxData
+              if (msg.boxData) {
+                if (msg.boxData === "loading") {
+                  // Show skeleton loader
+                  return (
                     <div className={styles.boxLoader}>
                       <SkeletonBox />
                     </div>
-                  ) : (
-                    <Box data={msg.boxData} />
-                  )
-                ) : (
-                  <TypingAnimation />
-                )}
-              </>
-            ) : (
-              renderFormattedMessage(msg.content || "")
-            )}
+                  );
+                } else {
+                  // Render the box with the data
+                  return <Box data={msg.boxData} />;
+                }
+              } else if (msg.isLoading && !msg.content) {
+                // No boxData yet, isLoading and no content => show typing animation
+                return <TypingAnimation />;
+              } else {
+                // Show the formatted message if content is available
+                return renderFormattedMessage(msg.content || "");
+              }
+            })()}
           </div>
         ))}
       </div>
