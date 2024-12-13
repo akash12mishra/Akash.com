@@ -30,6 +30,15 @@ export async function POST(req) {
           properties: {},
         },
       },
+      {
+        name: "schedule_meeting",
+        description:
+          "Render a meeting scheduler component when user wants to book a call.",
+        parameters: {
+          type: "object",
+          properties: {},
+        },
+      },
     ];
 
     const systemMessage = {
