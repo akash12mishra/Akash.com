@@ -293,6 +293,14 @@ const ChatPlay = () => {
         }
 
         if (parsedChunk && parsedChunk.function_call) {
+          if (!parsedChunk.function_call.name) {
+            updateAssistantMessage(
+              "Sorry, I did not understand your request. Can you type it again?"
+            );
+            finalizeAssistantMessage();
+            return;
+          }
+
           // If we got a direct function call JSON
           if (typeof parsedChunk.function_call === "string") {
             // Accumulate and try parse again

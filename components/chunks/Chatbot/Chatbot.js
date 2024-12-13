@@ -40,6 +40,8 @@ const Chatbot = () => {
     currentMessageRef.current = "";
   };
 
+  console.log("chatHistory", chatHistory);
+
   const updateAssistantMessage = (chunk) => {
     // Just append chunk as is, no extra spacing logic.
     setChatHistory((prev) => {
@@ -284,6 +286,8 @@ const Chatbot = () => {
 
         const chunk = decoder.decode(value);
 
+        console.log("chunk", chunk);
+
         // First, try parsing chunk directly
         let parsedChunk = null;
         try {
@@ -293,6 +297,14 @@ const Chatbot = () => {
         }
 
         if (parsedChunk && parsedChunk.function_call) {
+          if (!parsedChunk.function_call.name) {
+            updateAssistantMessage(
+              "Sorry, I did not understand your request. Can you type it again?"
+            );
+            finalizeAssistantMessage();
+            return;
+          }
+
           // If we got a direct function call JSON
           if (typeof parsedChunk.function_call === "string") {
             // Accumulate and try parse again
