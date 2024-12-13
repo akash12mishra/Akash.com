@@ -14,7 +14,8 @@ export async function POST(req) {
     const functions = [
       {
         name: "get_training_data",
-        description: "Fetch training data for the user.",
+        description:
+          "Fetch and give the training data to the user if he asks for it.",
         parameters: {
           type: "object",
           properties: {},
@@ -22,7 +23,8 @@ export async function POST(req) {
       },
       {
         name: "render_box_component",
-        description: "Render a box component with some data.",
+        description:
+          "Render a box component with some data and give it to the user if he asks.",
         parameters: {
           type: "object",
           properties: {},
