@@ -8,6 +8,7 @@ import Showcase from "../../chunks/Showcase/Showcase";
 import ChatBubble from "../../chunks/ChatBubble/ChatBubble";
 import Stack from "../../chunks/Stack/Stack";
 import Services from "../../chunks/Services/Services";
+import BuildInPublic from "../../chunks/BuildInPublic/BuildInPublic";
 
 const Home = () => {
   return (
@@ -21,6 +22,7 @@ const Home = () => {
       {/* <OnboardIntro /> */}
       <Services />
       <ChatBubble />
+      <BuildInPublic />
     </div>
   );
 };
