@@ -9,7 +9,7 @@ const testimonials = [
     handle: "@jacksmith",
     content:
       "The dating profile photos I received transformed my online presence and boosted my matches significantly. Truly a game changer!",
-    image: null,
+    image: "/.",
     link: "https://twitter.com/demo1",
   },
   {
@@ -18,7 +18,7 @@ const testimonials = [
     handle: "@jillsmith",
     content:
       "I was completely blown away by the results. This service exceeded all my expectations. Absolutely amazing!",
-    image: null,
+    image: "/.",
     link: "https://twitter.com/demo2",
   },
   {
@@ -27,7 +27,7 @@ const testimonials = [
     handle: "@johndoe",
     content:
       "Using Photo AI for my LinkedIn profile was a fantastic decision. The quality was outstanding, and I got multiple job offers!",
-    image: null,
+    image: "/.",
     link: "https://twitter.com/demo3",
   },
   // Duplicated for continuous scroll
@@ -40,7 +40,7 @@ const bottomTestimonials = [
     handle: "@janedoe",
     content:
       "Words can't express how thrilled I am with the results. This service is simply phenomenal. I love it!",
-    image: null,
+    image: "/.",
     link: "https://twitter.com/demo4",
   },
   {
@@ -49,7 +49,7 @@ const bottomTestimonials = [
     handle: "@jennymandell",
     content:
       "I can't find the words to describe how impressed I am. This service is truly remarkable. I love it!",
-    image: null,
+    image: "/.",
     link: "https://twitter.com/demo5",
   },
   {
@@ -58,7 +58,7 @@ const bottomTestimonials = [
     handle: "@jamescameron",
     content:
       "I am genuinely amazed by the quality of the photos. This service is a game changer for anyone looking to enhance their profile!",
-    image: null,
+    image: "/.",
     link: "https://twitter.com/demo6",
   },
   // Duplicated for continuous scroll
