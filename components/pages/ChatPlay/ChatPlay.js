@@ -365,7 +365,7 @@ const ChatPlay = () => {
         if (parsedChunk && parsedChunk.function_call) {
           if (!parsedChunk.function_call.name) {
             updateAssistantMessage(
-              "Sorry, I did not understand your request. Can you type it again?"
+              "Sorry, I did a mistake 👀. Can you type it again?"
             );
             finalizeAssistantMessage();
             return;
@@ -455,6 +455,18 @@ const ChatPlay = () => {
       handleFormSubmit(e);
     }
   };
+
+  const initialMessageShown = useRef(false);
+
+  useEffect(() => {
+    if (!initialMessageShown.current) {
+      addMessage(
+        "assistant",
+        "Hey! So you want me to book a call with Arka Lal Chakravarty right? Let me know 👋👀"
+      );
+      initialMessageShown.current = true;
+    }
+  }, []);
 
   return (
     <div className={styles.ChatPlay}>

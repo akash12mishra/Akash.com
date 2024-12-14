@@ -229,6 +229,74 @@ const Chatbot = () => {
           );
         }, 2000);
         break;
+
+        case "schedule_meeting":
+        // Instead of updating the existing message, create a new complete state
+        setChatHistory((prev) => {
+          const lastIndex = prev.length;
+          return [
+            ...prev.map((msg, idx) =>
+              idx === assistantMessageIndex.current
+                ? {
+                    role: "assistant",
+                    content:
+                      "Here is the scheduling box where you can book the call below:",
+                    isLoading: false,
+                  }
+                : msg
+            ),
+            {
+              role: "assistant",
+              content: "",
+              isLoading: false,
+              boxData: "loading",
+            },
+          ];
+        });
+
+        // After delay, update only the component message
+        setTimeout(() => {
+          setChatHistory((prev) => {
+            const lastIndex = prev.length - 1;
+            return prev.map((msg, idx) =>
+              idx === lastIndex
+                ? {
+                    ...msg,
+                    boxData: {
+                      type: "meeting",
+                      onSave: async (meetingData) => {
+                        try {
+                          const response = await fetch("/api/meeting", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(meetingData),
+                          });
+
+                          if (response.ok) {
+                            addMessage(
+                              "assistant",
+                              "Your call has been scheduled with Arka Lal Chakravarty. Please check your email."
+                            );
+                          } else {
+                            addMessage(
+                              "assistant",
+                              "Sorry, there was an error scheduling your call. Please try again."
+                            );
+                          }
+                        } catch (error) {
+                          addMessage(
+                            "assistant",
+                            "Sorry, there was an error scheduling your call. Please try again."
+                          );
+                        }
+                      },
+                    },
+                  }
+                : msg
+            );
+          });
+        }, 2000);
+        break;
     }
   };
 
@@ -299,7 +367,7 @@ const Chatbot = () => {
         if (parsedChunk && parsedChunk.function_call) {
           if (!parsedChunk.function_call.name) {
             updateAssistantMessage(
-              "Sorry, I did not understand your request. Can you type it again?"
+              "Sorry, I did a mistake 👀. Can you type it again?"
             );
             finalizeAssistantMessage();
             return;
@@ -389,6 +457,18 @@ const Chatbot = () => {
       handleFormSubmit(e);
     }
   };
+
+  const initialMessageShown = useRef(false);
+
+  useEffect(() => {
+    if (!initialMessageShown.current) {
+      addMessage(
+        "assistant",
+        "Hey! So you want me to book a call with Arka Lal Chakravarty right? Let me know 👋👀"
+      );
+      initialMessageShown.current = true;
+    }
+  }, []);
 
   return (
     <div className={styles.Chatbot}>
