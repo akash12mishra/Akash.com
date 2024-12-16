@@ -41,13 +41,14 @@ const Home = () => {
       { threshold: 0.1 }
     ); // Adjust threshold as needed
 
-    if (servicesRef.current) {
-      observer.observe(servicesRef.current);
+    const currentServicesRef = servicesRef.current;
+    if (currentServicesRef) {
+      observer.observe(currentServicesRef);
     }
 
     return () => {
-      if (servicesRef.current) {
-        observer.unobserve(servicesRef.current);
+      if (currentServicesRef) {
+        observer.unobserve(currentServicesRef);
       }
     };
   }, []);
