@@ -14,23 +14,65 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 
   .ChatBubbleImg {
     object-fit: cover;
     height: 100%;
     width: 100%;
     border-radius: 50%;
+    animation: fadeIn 0.3s ease-in-out;
   }
 
   .ChatBubbleClose {
     font-size: 25px;
     background: transparent;
     color: white;
+    animation: fadeRotate 0.3s ease-in-out;
   }
 
   .ChatBubbleChatbox {
     position: absolute;
     bottom: 50px;
     right: 50px;
+    animation: slideIn 0.4s ease-in-out;
+    transform-origin: bottom right;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeRotate {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
