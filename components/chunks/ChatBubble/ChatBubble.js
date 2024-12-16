@@ -24,12 +24,22 @@ const ChatBubble = () => {
     };
   }, [IsBubbl]);
 
+  const handleOpen = () => {
+    // Only open if currently closed
+    if (!IsBubbl) setIsBubbl(true);
+  };
+
+  const handleClose = (e) => {
+    e.stopPropagation(); // Prevent click from bubbling up
+    if (IsBubbl) setIsBubbl(false);
+  };
+
   return (
-    <div onClick={() => setIsBubbl(!IsBubbl)} className={styles.ChatBubble}>
+    <div className={styles.ChatBubble}>
       {IsBubbl ? (
         <>
           {" "}
-          <IoMdClose className={styles.ChatBubbleClose} />
+          <IoMdClose className={styles.ChatBubbleClose} onClick={handleClose} />
         </>
       ) : (
         <>
@@ -37,6 +47,7 @@ const ChatBubble = () => {
             className={styles.ChatBubbleImg}
             src={arkImg}
             alt="Chat bubble"
+            onClick={handleOpen}
           />
         </>
       )}
