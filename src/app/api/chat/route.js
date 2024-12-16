@@ -15,7 +15,7 @@ export async function POST(req) {
       {
         name: "get_training_data",
         description:
-          "Fetch and provide the training data when the user explicitly requests it by asking for training data.",
+          "Fetch and provide the training data when the user explicitly asking for the training data.",
         parameters: {
           type: "object",
           properties: {},
@@ -33,7 +33,7 @@ export async function POST(req) {
       {
         name: "schedule_meeting",
         description:
-          "Render a meeting scheduler component when user wants to book a call.",
+          "Render a meeting scheduler component when the user explicitly wants to book or schedule a call or a meeting.",
         parameters: {
           type: "object",
           properties: {},
