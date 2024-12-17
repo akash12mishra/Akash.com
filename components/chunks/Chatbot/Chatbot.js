@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./Chatbot.module.scss";
 import Box from "../../Box/Box";
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
+import ChatbotVideo from "../../ChatbotVideo/ChatbotVideo";
 
 const TypingAnimation = () => (
   <div className={styles.typingAnimation}>
@@ -13,7 +14,7 @@ const TypingAnimation = () => (
   </div>
 );
 
-const Chatbot = () => {
+const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
   const [chatHistory, setChatHistory] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -473,56 +474,65 @@ const Chatbot = () => {
   }, []);
 
   return (
-    <div className={styles.Chatbot}>
-      <div className={styles.chatbotBox} ref={chatbotBoxRef}>
-        {chatHistory.map((msg, idx) => (
-          <div
-            key={idx}
-            className={
-              msg.role === "user" ? styles.userMessage : styles.aiMessage
-            }
-          >
-            {(() => {
-              // If we have boxData
-              if (msg.boxData) {
-                if (msg.boxData === "loading") {
-                  // Show skeleton loader
-                  return (
-                    <div className={styles.boxLoader}>
-                      <SkeletonBox />
-                    </div>
-                  );
-                } else {
-                  // Render the box with the data
-                  return <Box data={msg.boxData} />;
+    <div ref={ref} className={styles.Chatbot}>
+      {showVideo ? (
+        <>
+          {" "}
+          <ChatbotVideo />{" "}
+        </>
+      ) : (
+        <>
+          <div className={styles.chatbotBox} ref={chatbotBoxRef}>
+            {chatHistory.map((msg, idx) => (
+              <div
+                key={idx}
+                className={
+                  msg.role === "user" ? styles.userMessage : styles.aiMessage
                 }
-              } else if (msg.isLoading && !msg.content) {
-                // No boxData yet, isLoading and no content => show typing animation
-                return <TypingAnimation />;
-              } else {
-                // Show the formatted message if content is available
-                return renderFormattedMessage(msg.content || "");
-              }
-            })()}
+              >
+                {(() => {
+                  // If we have boxData
+                  if (msg.boxData) {
+                    if (msg.boxData === "loading") {
+                      // Show skeleton loader
+                      return (
+                        <div className={styles.boxLoader}>
+                          <SkeletonBox />
+                        </div>
+                      );
+                    } else {
+                      // Render the box with the data
+                      return <Box data={msg.boxData} />;
+                    }
+                  } else if (msg.isLoading && !msg.content) {
+                    // No boxData yet, isLoading and no content => show typing animation
+                    return <TypingAnimation />;
+                  } else {
+                    // Show the formatted message if content is available
+                    return renderFormattedMessage(msg.content || "");
+                  }
+                })()}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className={styles.chatbotInput}>
-        <form onSubmit={handleFormSubmit}>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Type your query..."
-          />
-          <button type="submit" disabled={isLoading}>
-            Send
-          </button>
-        </form>
-      </div>
+          <div className={styles.chatbotInput}>
+            <form onSubmit={handleFormSubmit}>
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type your query..."
+              />
+              <button type="submit" disabled={isLoading}>
+                Send
+              </button>
+            </form>
+          </div>
+        </>
+      )}
     </div>
   );
-};
+});
 
 export default Chatbot;
