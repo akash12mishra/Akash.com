@@ -230,7 +230,7 @@ const Chatbot = () => {
         }, 2000);
         break;
 
-        case "schedule_meeting":
+      case "schedule_meeting":
         // Instead of updating the existing message, create a new complete state
         setChatHistory((prev) => {
           const lastIndex = prev.length;
@@ -395,6 +395,8 @@ const Chatbot = () => {
               parsedChunk.function_call.arguments
             );
             functionCallBuffer.current = "";
+
+            console.log("parsedChunk", parsedChunk);
           }
         } else {
           // No direct function_call in chunk

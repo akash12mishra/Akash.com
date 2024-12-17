@@ -33,7 +33,7 @@ export async function POST(req) {
       {
         name: "schedule_meeting",
         description:
-          "Render a meeting scheduler component when the user explicitly wants to book or schedule a call or a meeting.",
+          "Render a meeting scheduler component when the user explicitly asks to book or schedule a call or a meeting or else not.",
         parameters: {
           type: "object",
           properties: {},
