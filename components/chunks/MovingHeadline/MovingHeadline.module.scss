@@ -7,6 +7,10 @@
   color: white;
   margin-bottom: 100px;
 
+  @media (max-width: 600px) {
+    font-size: 60px; /* Adjust size as per your design */
+  }
+
   .movingText {
     display: inline-flex; /* Use flex for perfect alignment */
     animation: moveLeft 20s linear infinite; /* Infinite leftward motion */

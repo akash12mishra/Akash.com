@@ -5,9 +5,18 @@
   gap: 80px;
   margin: 200px 0;
 
+  @media (max-width: 600px) {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
   .stackImg {
     height: auto;
     object-fit: contain;
     width: 120px;
+
+    @media (max-width: 600px) {
+      width: 100px;
+    }
   }
 }
