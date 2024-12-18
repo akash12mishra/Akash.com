@@ -7,4 +7,9 @@
   border-radius: 20px; /* Match parent container's border radius */
   display: block; /* Remove any default spacing */
   background: transparent; /* Match background color */
+
+  @media (max-width: 600px) {
+    width: 100%;
+    object-fit: contain;
+  }
 }

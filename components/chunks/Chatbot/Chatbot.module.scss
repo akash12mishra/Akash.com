@@ -9,6 +9,10 @@
   background-color: #ffffff;
   position: relative;
 
+  @media (max-width: 600px) {
+    width: 350px;
+  }
+
   .chatbotBox {
     height: 88%;
     overflow-y: auto; /* Independent scrolling */
