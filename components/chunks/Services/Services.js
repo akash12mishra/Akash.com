@@ -16,11 +16,11 @@ import { BsRobot } from "react-icons/bs";
 import { IoSparklesOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 
-const Services = ({ servicesRef }) => {
+const Services = () => {
   const router = useRouter();
 
   return (
-    <div ref={servicesRef} className={styles.Services}>
+    <div className={styles.Services}>
       <div className={styles.ServicesTitle}>
         <h2>We Engineer everything on your behalf!</h2>
         <p>

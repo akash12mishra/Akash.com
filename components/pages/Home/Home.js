@@ -62,9 +62,9 @@ const Home = () => {
       <FounderInfo />
       <MovingHeadline />
       {/* <OnboardIntro /> */}
-      <Services servicesRef={servicesRef} />
+      <Services />
       <ChatBubble />
-      <BuildInPublic />
+      <BuildInPublic servicesRef={servicesRef} />
     </div>
   );
 };
