@@ -39,36 +39,8 @@ const Showcase = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const wrapper = document.querySelector(`.${styles.cardWrapper}`);
-      const cards = document.querySelectorAll(`.${styles.cardContainer}`);
-
-      if (!wrapper || !cards.length) return;
-
-      const wrapperRect = wrapper.getBoundingClientRect();
-      const scrollProgress =
-        (window.innerHeight - wrapperRect.top) / window.innerHeight;
-
-      if (scrollProgress > 0.5 && scrollProgress < 1.5) {
-        cards[0].style.opacity = "0";
-        cards[1].style.opacity = "1";
-        cards[1].style.pointerEvents = "auto";
-        cards[1].style.transform = "translateX(-50%) translateY(0)";
-      } else {
-        cards[0].style.opacity = "1";
-        cards[1].style.opacity = "0";
-        cards[1].style.pointerEvents = "none";
-        cards[1].style.transform = "translateX(-50%) translateY(100%)";
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <>
+    <div className={styles.Showcase}>
       <div className={styles.titleContainer}>
         <h2>
           <span>Applications</span> that we have built.
@@ -76,28 +48,26 @@ const Showcase = () => {
       </div>
 
       <div className={styles.showcaseContainer}>
-        <div className={styles.cardWrapper}>
-          <div className={styles.ShowcaseCards}>
-            <div className={styles.cardContainer}>
-              <Image
-                src={discoImg}
-                className={styles.ShowcaseCard}
-                alt=""
-                data-tilt
-              />
-            </div>
-            <div className={styles.cardContainer}>
-              <Image
-                src={genfunnelsImg}
-                className={styles.ShowcaseCard}
-                alt=""
-                data-tilt
-              />
-            </div>
+        <div className={styles.ShowcaseCards}>
+          <div className={styles.cardContainer}>
+            <Image
+              src={discoImg}
+              className={styles.ShowcaseCard}
+              alt=""
+              data-tilt
+            />
+          </div>
+          <div className={styles.cardContainer}>
+            <Image
+              src={genfunnelsImg}
+              className={styles.ShowcaseCard}
+              alt=""
+              data-tilt
+            />
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

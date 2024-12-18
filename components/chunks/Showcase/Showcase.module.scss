@@ -1,50 +1,32 @@
-.titleContainer {
-  width: 100%;
-  background-color: white;
+.Showcase {
+  .titleContainer {
+    width: 100%;
+    background-color: white;
 
-  h2 {
-    text-align: center;
-    font-size: 40px;
+    h2 {
+      text-align: center;
+      font-size: 40px;
 
-    span {
-      background-color: black;
-      color: white;
-      padding: 0 10px;
+      span {
+        background-color: black;
+        color: white;
+        padding: 0 10px;
+      }
     }
   }
-}
 
-.showcaseContainer {
-  margin-top: 400px; // Space for fixed title
-
-  .cardWrapper {
-    min-height: 120svh;
-    position: relative;
+  .showcaseContainer {
+    margin-top: 80px;
 
     .ShowcaseCards {
-      position: sticky;
-      top: 50%;
-      transform: translateY(-50%);
-      height: 600px;
-      perspective: 1000px;
+      display: flex;
+      flex-direction: column;
+      gap: 150px;
+      align-items: center;
+      justify-content: center;
 
       .cardContainer {
-        position: absolute;
         width: 700px;
-        left: 50%;
-        transform: translateX(-50%);
-        transition: all 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-        opacity: 0;
-        pointer-events: none;
-
-        &:first-child {
-          opacity: 1;
-          pointer-events: auto;
-        }
-
-        &:nth-child(2) {
-          margin-top: 150px;
-        }
 
         .ShowcaseCard {
           width: 700px;
