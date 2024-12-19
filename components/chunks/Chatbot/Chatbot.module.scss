@@ -4,10 +4,14 @@
   box-shadow: 28px 28px 36px #000, -28px -28px 36px #fff;
   border-radius: 20px;
   padding: 10px;
-  height: 500px;
-  width: 350px;
+  height: 550px;
+  width: 400px;
   background-color: #ffffff;
   position: relative;
+
+  @media (max-width: 600px) {
+    width: 350px;
+  }
 
   .chatbotBox {
     height: 88%;
@@ -30,7 +34,8 @@
         border-radius: 10px;
         padding: 8px 12px;
         box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
-        text-align: left; /* Ensure text is aligned correctly */
+        text-align: left;
+        margin: 0; /* Ensure no extra margin on user messages */
       }
     }
 
@@ -38,13 +43,118 @@
       text-align: left;
       align-self: flex-start;
       color: #333;
+      max-width: 90%;
+      width: 100%;
 
-      p {
-        color: #333; /* Text color for AI messages */
-        max-width: 90%; /* Ensure messages do not take full width */
-        word-wrap: break-word; /* Break words if too long */
-        white-space: pre-wrap; /* Preserve spaces and line breaks */
-        margin: 0; /* Prevent margin conflict */
+      // Headings
+      .heading1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 24px 0 16px;
+        color: #1a1a1a;
+        line-height: 1.3;
+      }
+
+      .heading2 {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 20px 0 12px;
+        color: #1a1a1a;
+        line-height: 1.3;
+      }
+
+      .heading3 {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 16px 0 10px;
+        color: #1a1a1a;
+        line-height: 1.3;
+      }
+
+      // Numbered sections
+      .numberedHeading {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin: 16px 0 8px;
+        line-height: 1.5;
+
+        .number {
+          color: #1a1a1a;
+          min-width: 24px;
+          font-weight: 600;
+        }
+
+        .heading {
+          color: #1a1a1a;
+          font-weight: 600;
+        }
+
+        .rest {
+          color: #333;
+          margin-left: 4px;
+        }
+      }
+
+      // Lists
+      .bulletList {
+        margin: 12px 0;
+        padding-left: 24px;
+        list-style-type: disc;
+
+        .bulletItem {
+          margin: 8px 0;
+          line-height: 1.6;
+          color: #333;
+          padding-left: 4px;
+
+          &::marker {
+            color: #666;
+          }
+        }
+      }
+
+      // Regular paragraphs
+      .paragraph {
+        margin: 12px 0;
+        line-height: 1.6;
+        color: #333;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+
+        strong {
+          color: #1a1a1a;
+          font-weight: 600;
+        }
+      }
+
+      // Spacing
+      .emptyLine {
+        height: 16px;
+      }
+
+      // Code blocks if needed
+      pre {
+        background-color: #f5f5f5;
+        padding: 12px;
+        border-radius: 6px;
+        margin: 12px 0;
+        overflow-x: auto;
+
+        code {
+          font-family: monospace;
+          font-size: 14px;
+          line-height: 1.4;
+        }
+      }
+
+      // Inline code if needed
+      code {
+        background-color: #f5f5f5;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.9em;
       }
     }
 
@@ -64,22 +174,22 @@
         .number {
           font-size: 1rem;
           font-weight: bold;
-          flex-shrink: 0; /* Prevent shrinking of the number */
-          text-align: right; /* Align number to the right */
-          min-width: 2rem; /* Fixed width for consistent alignment */
+          flex-shrink: 0;
+          text-align: right;
+          min-width: 2rem;
         }
 
         .heading {
           font-size: 1rem;
           font-weight: bold;
-          flex-grow: 1; /* Allow heading to take remaining space */
-          text-align: left; /* Align heading text to the left */
+          flex-grow: 1;
+          text-align: left;
         }
 
         .emojiOrColon {
           font-size: 1rem;
-          flex-shrink: 0; /* Prevent emoji/colon from shrinking */
-          margin-left: 0.25rem; /* Add small spacing if necessary */
+          flex-shrink: 0;
+          margin-left: 0.25rem;
         }
       }
     }
@@ -88,16 +198,16 @@
   .description {
     font-size: 1rem;
     color: #555;
-    line-height: 1.5; /* Add some spacing for readability */
+    line-height: 1.5;
 
     ul {
-      list-style-type: disc; /* Use bullet points */
-      padding-left: 1.5rem; /* Add space between bullet points and text */
+      list-style-type: disc;
+      padding-left: 1.5rem;
 
       li {
-        font-size: 0.9rem; /* Font size for bullet points */
+        font-size: 0.9rem;
         color: #555;
-        line-height: 1.5; /* Add line spacing */
+        line-height: 1.5;
       }
     }
   }
@@ -124,6 +234,7 @@
         border: 1px solid #ccc;
         border-radius: 5px;
         outline: none;
+        font-size: 16px;
       }
 
       button {
@@ -152,14 +263,14 @@
   }
 
   .h2 {
-    font-size: 1.5rem; /* Adjust font size for h2 */
+    font-size: 1.5rem;
     font-weight: bold;
     margin: 1rem 0;
     color: #333;
   }
 
   .h3 {
-    font-size: 1.25rem; /* Adjust font size for h3 */
+    font-size: 1.25rem;
     font-weight: bold;
     margin: 0.75rem 0;
     color: #555;
@@ -168,5 +279,60 @@
   .bold {
     font-weight: bold;
     color: #000;
+  }
+
+  // Typing animation
+  .typingAnimation {
+    display: flex;
+    align-items: center;
+    column-gap: 4px;
+    padding: 12px 16px;
+    background: #f5f5f5;
+    border-radius: 20px;
+    width: fit-content;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: #666;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+      opacity: 0.4;
+
+      &:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+    }
+  }
+
+  @keyframes typing {
+    0% {
+      transform: translateY(0px);
+      opacity: 0.4;
+    }
+    25% {
+      transform: translateY(-3px);
+      opacity: 0.9;
+    }
+    50% {
+      transform: translateY(1px);
+      opacity: 0.4;
+    }
+    75% {
+      transform: translateY(-1px);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(0px);
+      opacity: 0.4;
+    }
   }
 }

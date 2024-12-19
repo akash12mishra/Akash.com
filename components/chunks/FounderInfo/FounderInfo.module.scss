@@ -1,5 +1,5 @@
 .FounderInfo {
-  margin: 350px auto;
+  margin: 300px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7,12 +7,23 @@
   gap: 40px;
   width: 60%;
 
+  @media (max-width: 1030px) {
+    width: 90%; // Increased width on mobile
+    margin: 150px auto; // Reduced margin on mobile
+    padding: 0 10px; // Added padding
+  }
+
   .founderImage {
     .founderImg {
       width: 60px;
       height: 60px;
       border-radius: 50%;
       object-fit: cover;
+
+      @media (max-width: 600px) {
+        width: 40px; // Reduced size on mobile
+        height: 40px; // Reduced size on mobile
+      }
     }
   }
 
@@ -22,9 +33,33 @@
       color: lightgray; // Default color for entire paragraph
       text-align: center;
       line-height: 1.5;
+      width: 100%; // Added this
+      word-wrap: break-word; // Added this
+      white-space: pre-wrap; // Added this
+
+      @media (max-width: 600px) {
+        font-size: 16px;
+        line-height: 1.4;
+        width: 100%; // Ensure full width on mobile
+        padding: 0 10px; // Added padding
+        word-break: normal; // Added this
+        overflow-wrap: break-word; // Added this
+
+        span {
+          display: inline;
+          white-space: pre-wrap;
+          word-break: normal;
+        }
+
+        br {
+          display: block;
+          content: "";
+          margin: 8px 0;
+        }
+      }
 
       span {
-        display: inline-block; // Ensure smooth letter-by-letter animation
+        display: inline; // Ensure smooth letter-by-letter animation
         color: lightgray; // Default letter color
       }
 
