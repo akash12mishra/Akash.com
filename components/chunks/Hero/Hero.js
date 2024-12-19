@@ -1,12 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import styles from "./Hero.module.scss";
 import { CiVideoOn } from "react-icons/ci";
 import Typewriter from "../../../utils/Typewriter";
 import Chatbot from "../Chatbot/Chatbot";
 
 const Hero = () => {
+  const [showVideo, setShowVideo] = useState(true);
+  const chatbotRef = useRef(null);
+
+  const handleCallButtonClick = () => {
+    setShowVideo(false);
+    setTimeout(() => {
+      chatbotRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center", // This will center the element in viewport
+      });
+    }, 100); // Small delay to ensure state update completes
+  };
+
   return (
     <div className={styles.Hero}>
       <div className={styles.HeroTitle}>
@@ -36,12 +49,16 @@ const Hero = () => {
       </div>
 
       <div className={styles.HeroBtn}>
-        <button>
+        <button onClick={handleCallButtonClick}>
           Book a call <CiVideoOn className={styles.HeroBtnIcon} />{" "}
         </button>
       </div>
 
-      <Chatbot />
+      <Chatbot
+        ref={chatbotRef}
+        showVideo={showVideo}
+        setShowVideo={setShowVideo}
+      />
     </div>
   );
 };

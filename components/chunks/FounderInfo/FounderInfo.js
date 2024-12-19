@@ -57,16 +57,17 @@ const FounderInfo = () => {
         Math.max(scrollProgress * totalCharacters - progressIndex, 0),
         1
       );
-
       return (
         <span
           key={progressIndex}
           style={{
-            color: opacity > 0 ? `rgba(0, 0, 0, ${opacity})` : "lightgray", // Transition to black, start as lightgray
-            transition: "color 0.1s ease-out", // Smooth color transition
+            color: opacity > 0 ? `rgba(0, 0, 0, ${opacity})` : "lightgray",
+            transition: "color 0.1s ease-out",
+            display: "inline", // Changed from inline-block
+            whiteSpace: "pre-wrap", // Added this
           }}
         >
-          {char === " " ? "\u00A0" : char} {/* Preserve spaces */}
+          {char}
         </span>
       );
     });
