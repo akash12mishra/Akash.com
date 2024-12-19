@@ -5,9 +5,11 @@
   gap: 80px;
   margin: 200px 0;
 
-  @media (max-width: 600px) {
+  @media (max-width: 1030px) {
     gap: 20px;
     flex-wrap: wrap;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 
   .stackImg {
