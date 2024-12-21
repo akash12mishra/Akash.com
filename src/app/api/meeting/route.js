@@ -1,24 +1,35 @@
+import { auth } from "../../../../auth";
 import { google } from "googleapis";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Google Calendar setup
-const calendar = google.calendar({
-  version: "v3",
-  auth: new google.auth.GoogleAuth({
-    credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
-    scopes: ["https://www.googleapis.com/auth/calendar"],
-  }),
-});
-
 export async function POST(req) {
   try {
+    // Get session
+    const session = await auth();
+    if (!session) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const { date, time, email } = await req.json();
 
-    // Create Google Meet event
+    // Get OAuth tokens from session
+    const oauth2Client = new google.auth.OAuth2(
+      process.env.GOOGLE_CLIENT_ID,
+      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_REDIRECT_URI
+    );
+    oauth2Client.setCredentials(session.accessToken);
+
+    const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+
+    // Create event
     const event = {
-      summary: "Meeting with Client",
+      summary: "Meeting with Arka Lal Chakravarty",
       description: "Scheduled meeting via website",
       start: {
         dateTime: `${date.split("T")[0]}T${time}:00`,
@@ -30,7 +41,7 @@ export async function POST(req) {
       },
       attendees: [{ email }],
       conferenceData: {
-        createRequest: { requestId: `${Date.now()}` },
+        createRequest: { requestId: Date.now().toString() },
       },
     };
 
@@ -42,19 +53,24 @@ export async function POST(req) {
 
     const meetLink = meetingResponse.data.hangoutLink;
 
-    // Send emails using Resend
+    // Send confirmation emails
     await resend.emails.send({
-      from: "you@yourdomain.com",
-      to: [email, "your-email@domain.com"],
-      subject: "Meeting Scheduled",
-      html: `Your meeting has been scheduled. Join using this link: ${meetLink}`,
+      from: process.env.RESEND_FROM_EMAIL,
+      to: [email, process.env.ADMIN_EMAIL],
+      subject: "Meeting Scheduled with Arka Lal Chakravarty",
+      html: `
+        <h2>Your meeting has been scheduled!</h2>
+        <p>Time: ${time}</p>
+        <p>Date: ${new Date(date).toLocaleDateString()}</p>
+        <p>Join using this link: ${meetLink}</p>
+      `,
     });
 
     return new Response(JSON.stringify({ success: true, meetLink }), {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Meeting scheduling error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
