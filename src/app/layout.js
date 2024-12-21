@@ -1,5 +1,6 @@
 import localFont from "next/font/local";
 import "./globals.scss";
+import { Provider } from "../../Providers";
 
 export const metadata = {
   title: "Arka Lal Chakravarty",
@@ -45,7 +46,9 @@ const CustomFont = localFont({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={CustomFont.className}>{children}</body>
+      <body className={CustomFont.className}>
+        <Provider>{children}</Provider>
+      </body>
     </html>
   );
 }
