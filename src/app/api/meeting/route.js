@@ -84,27 +84,58 @@ export async function POST(req) {
 
     // After successful meeting creation, send emails
     if (meetingResponse?.data?.hangoutLink) {
-      await resend.emails.send({
-        from: "Arka Lal Chakravarty <onboarding@resend.dev>", // Update with your verified domain
-        to: [email, "admin@arkalalchakravarty.com"], // User's email and your email
-        subject: "Meeting Scheduled - Arka Lal Chakravarty",
-        html: `
-          <h2>Your meeting has been scheduled!</h2>
-          <p>Details:</p>
-          <ul>
-            <li>Date: ${formattedStartTime.toLocaleDateString()}</li>
-            <li>Time: ${time}</li>
-            <li>Duration: 1 hour</li>
-          </ul>
-          <p>Join the meeting using this link: <a href="${
+      try {
+        // Send email to the user
+        await resend.emails.send({
+          from: "admin@arkalalchakravarty.com",
+          to: [email],
+          subject: "Meeting Scheduled - Arka Lal Chakravarty",
+          html: `
+        <h2>Your meeting has been scheduled!</h2>
+        <p>Details:</p>
+        <ul>
+          <li>Date: ${formattedStartTime.toLocaleDateString()}</li>
+          <li>Time: ${time}</li>
+          <li>Duration: 1 hour</li>
+        </ul>
+        <p>Join the meeting using this link: <a href="${
+          meetingResponse.data.hangoutLink
+        }">${meetingResponse.data.hangoutLink}</a></p>
+        <p>The meeting link will also be added to your Google Calendar.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p>Arka Lal Chakravarty</p>
+      `,
+        });
+
+        // Send separate notification email to admin
+        await resend.emails.send({
+          from: "admin@arkalalchakravarty.com",
+          to: ["admin@arkalalchakravarty.com"],
+          subject: `New Meeting Scheduled - ${email}`,
+          html: `
+        <h2>New Meeting Scheduled</h2>
+        <p>A new meeting has been scheduled by: ${email}</p>
+        <p>Details:</p>
+        <ul>
+          <li>Date: ${formattedStartTime.toLocaleDateString()}</li>
+          <li>Time: ${time}</li>
+          <li>Duration: 1 hour</li>
+        </ul>
+        <p>Meeting link: <a href="${meetingResponse.data.hangoutLink}">${
             meetingResponse.data.hangoutLink
-          }">${meetingResponse.data.hangoutLink}</a></p>
-          <p>The meeting link will also be added to your Google Calendar.</p>
-          <br/>
-          <p>Best regards,</p>
-          <p>Arka Lal Chakravarty</p>
-        `,
-      });
+          }</a></p>
+        <br/>
+        <p>You can now continue the conversation with the client via email.</p>
+      `,
+        });
+
+        console.log("Emails sent successfully");
+      } catch (emailError) {
+        console.error("Error sending emails:", emailError);
+        // Continue with the success response even if email fails
+        // but log the error for monitoring
+      }
     }
 
     return new Response(
