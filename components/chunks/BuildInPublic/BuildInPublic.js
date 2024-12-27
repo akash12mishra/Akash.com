@@ -64,9 +64,9 @@ const bottomTestimonials = [
   // Duplicated for continuous scroll
 ];
 
-const BuildInPublic = ({ servicesRef }) => {
+const BuildInPublic = () => {
   return (
-    <div ref={servicesRef} className={styles.BuildInPublic}>
+    <div className={styles.BuildInPublic}>
       <div className={styles.testimonialHeader}>
         <span className={styles.label}>TESTIMONIALS</span>
         <h2 className={styles.title}>What Our Users Say</h2>

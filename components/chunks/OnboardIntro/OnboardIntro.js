@@ -9,7 +9,7 @@ import { CiVideoOn } from "react-icons/ci";
 import { FaCode } from "react-icons/fa6";
 import { MdOutlineAttachMoney } from "react-icons/md";
 
-const OnboardIntro = () => {
+const OnboardIntro = ({ servicesRef }) => {
   const stepRefs = useRef([]);
   const lineRefs = useRef([]);
   const componentRef = useRef(null);
@@ -127,7 +127,13 @@ const OnboardIntro = () => {
   ];
 
   return (
-    <div ref={componentRef} className={styles.OnboardIntro}>
+    <div
+      ref={(el) => {
+        servicesRef.current = el;
+        componentRef.current = el;
+      }}
+      className={styles.OnboardIntro}
+    >
       <div className={styles.OnboardTitle}>
         <p>How it works</p>
         <h2>

@@ -66,9 +66,9 @@ const Home = () => {
       <MovingHeadline />
       <Services />
       <ChatBubble />
-      <BuildInPublic servicesRef={servicesRef} />
+      <BuildInPublic />
       <PricingSection />
-      <OnboardIntro />
+      <OnboardIntro servicesRef={servicesRef} />
       <HookIntro />
       <Footer />
     </div>
