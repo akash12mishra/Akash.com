@@ -62,11 +62,11 @@ const Home = () => {
       <Showcase />
       <FounderInfo />
       <MovingHeadline />
-      {/* <OnboardIntro /> */}
       <Services />
       <ChatBubble />
       <BuildInPublic servicesRef={servicesRef} />
       <PricingSection />
+      <OnboardIntro />
     </div>
   );
 };
