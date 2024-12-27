@@ -13,6 +13,8 @@ import Services from "../../chunks/Services/Services";
 import BuildInPublic from "../../chunks/BuildInPublic/BuildInPublic";
 import { useEffect, useRef } from "react";
 import PricingSection from "../../chunks/PricingSection/PricingSection";
+import HookIntro from "../../chunks/HookIntro/HookIntro";
+import Footer from "../../chunks/Footer/Footer";
 
 const Home = () => {
   const servicesRef = useRef(null);
@@ -67,6 +69,8 @@ const Home = () => {
       <BuildInPublic servicesRef={servicesRef} />
       <PricingSection />
       <OnboardIntro />
+      <HookIntro />
+      <Footer />
     </div>
   );
 };
