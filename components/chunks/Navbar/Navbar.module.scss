@@ -13,6 +13,13 @@
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
   z-index: 10;
 
+  .userBoxWrapper {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: transparent;
+  }
+
   @media (max-width: 1030px) {
     width: 80%;
   }
@@ -31,6 +38,14 @@
 
   .authBtn {
     background: transparent;
+
+    .navLogoImg {
+      object-fit: cover;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
 
     button {
       background-color: white;
