@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Navbar.module.scss";
 import Image from "next/image";
 import logoImg from "../../../assets/images/arka.png";
@@ -10,6 +10,26 @@ import { useRouter } from "next/navigation";
 const Navbar = () => {
   const { data: session } = useSession();
   const router = useRouter();
+
+  const [showUserBox, setShowUserBox] = useState(false);
+
+  const handleImageClick = (e) => {
+    e.stopPropagation();
+    setShowUserBox(!showUserBox);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showUserBox) {
+        setShowUserBox(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [showUserBox]);
 
   return (
     <div className={styles.Navbar}>
@@ -26,6 +46,7 @@ const Navbar = () => {
               className={styles.navLogoImg}
               width={50}
               height={50}
+              onClick={handleImageClick}
             />
           </>
         ) : (
@@ -38,7 +59,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {session && (
+      {session && showUserBox && (
         <>
           <div className={styles.userBoxWrapper}>
             <UserBox />

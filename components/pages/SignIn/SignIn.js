@@ -25,7 +25,12 @@ const SignIn = () => {
     <div className={styles.SignIn}>
       <div className={styles.signInLeft}>
         <div className={styles.signInLeftLogo}>
-          <Image className={styles.signInLog} src={arkaImg} alt="CodeService" />
+          <Image
+            onClick={() => router.push("/")}
+            className={styles.signInLog}
+            src={arkaImg}
+            alt="CodeService"
+          />
         </div>
 
         <div className={styles.signInLeftContent}>
