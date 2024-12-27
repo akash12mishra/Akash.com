@@ -1,0 +1,127 @@
+.PricingSection {
+  margin: 100px auto;
+  width: 90%;
+  max-width: 1200px;
+  text-align: center;
+
+  .pricingHeader {
+    margin-bottom: 60px;
+
+    h2 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 24px;
+      color: #6c757d;
+    }
+  }
+
+  .pricingCards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+
+    .pricingCard {
+      position: relative;
+      width: 450px;
+      border: 2px solid black;
+      border-radius: 16px;
+      padding: 40px;
+      text-align: left;
+      background: white;
+
+      &.regular {
+        background: white;
+        border: 1px solid gray;
+      }
+
+      .limitedBadge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: black;
+        color: white;
+        padding: 4px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      .cardContent {
+        h3 {
+          font-size: 32px;
+          margin-bottom: 8px;
+        }
+
+        .seatsLeft {
+          color: #6c757d;
+          margin-bottom: 24px;
+        }
+
+        .price {
+          margin-bottom: 32px;
+
+          .amount {
+            font-size: 48px;
+            font-weight: bold;
+          }
+
+          .period {
+            color: #6c757d;
+            font-size: 20px;
+          }
+        }
+
+        .features {
+          margin-bottom: 32px;
+
+          .feature {
+            margin-bottom: 16px;
+            font-size: 18px;
+          }
+        }
+
+        .actionBtn {
+          width: 100%;
+          padding: 16px;
+          border-radius: 8px;
+          border: none;
+          font-size: 18px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s ease-in-out;
+
+          .btnIcon {
+            font-size: 20px;
+            background: transparent;
+          }
+
+          &:hover {
+            opacity: 0.9;
+          }
+        }
+
+        .regular .actionBtn {
+          background: white;
+          color: black;
+        }
+
+        button {
+          background: black;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .guarantee {
+    color: #6c757d;
+    font-size: 18px;
+  }
+}
