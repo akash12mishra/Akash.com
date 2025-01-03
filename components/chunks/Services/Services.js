@@ -105,6 +105,96 @@ const Services = () => {
             </div>
           </div>
         </div>
+
+        <div className={styles.ServicesGridThree}>
+          <div className={styles.ServicesGridItemLeft}>
+            <div className={styles.ServicesGridItem}>
+              <div className={styles.ServicesGridItemTitle}>
+                <BsRobot className={styles.ServicesGridIcon} />
+
+                <h3>Custom AI Automations & Integrations</h3>
+
+                <p>
+                  We will build you a website that is so good, it will make{" "}
+                  <br /> all the other websites jealous. Trust me, <br /> not
+                  kidding.
+                </p>
+              </div>
+
+              <div className={styles.ServicesGridItemIcons}>
+                <Image
+                  alt=""
+                  src={aiAutoImg}
+                  className={styles.ServicesGridIcon}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.ServicesGridItemRight}>
+            <div className={styles.ServicesGridItem}>
+              <div className={styles.ServicesGridItemTitle}>
+                <BsRobot className={styles.ServicesGridIcon} />
+
+                <h3>Get found on Google</h3>
+
+                <p>Make your app optimized for search</p>
+              </div>
+
+              <div className={styles.ServicesGridItemIcons}>
+                <Image
+                  alt=""
+                  src={aiAutoImg}
+                  className={styles.ServicesGridIcon}
+                />
+              </div>
+            </div>
+
+            <div className={styles.ServicesGridItem}>
+              <div className={styles.ServicesGridItemTitle}>
+                <BsRobot className={styles.ServicesGridIcon} />
+
+                <h3>Custom AI Automations & Integrations</h3>
+
+                <p>
+                  We will build you a website that is so good, it will make{" "}
+                  <br /> all the other websites jealous. Trust me, <br /> not
+                  kidding.
+                </p>
+              </div>
+
+              <div className={styles.ServicesGridItemIcons}>
+                <Image
+                  alt=""
+                  src={aiAutoImg}
+                  className={styles.ServicesGridIcon}
+                />
+              </div>
+            </div>
+
+            <div className={styles.ServicesGridItem}>
+              <div className={styles.ServicesGridItemTitle}>
+                <BsRobot className={styles.ServicesGridIcon} />
+
+                <h3>Custom AI Automations & Integrations</h3>
+
+                <p>
+                  We will build you a website that is so good, it will make{" "}
+                  <br /> all the other websites jealous. Trust me, <br /> not
+                  kidding.
+                </p>
+              </div>
+
+              <div className={styles.ServicesGridItemIcons}>
+                <Image
+                  alt=""
+                  src={aiAutoImg}
+                  className={styles.ServicesGridIcon}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
