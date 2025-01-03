@@ -107,89 +107,48 @@ const Services = () => {
         </div>
 
         <div className={styles.ServicesGridThree}>
-          <div className={styles.ServicesGridItemLeft}>
-            <div className={styles.ServicesGridItem}>
-              <div className={styles.ServicesGridItemTitle}>
-                <BsRobot className={styles.ServicesGridIcon} />
-
-                <h3>Custom AI Automations & Integrations</h3>
-
-                <p>
-                  We will build you a website that is so good, it will make{" "}
-                  <br /> all the other websites jealous. Trust me, <br /> not
-                  kidding.
-                </p>
-              </div>
-
-              <div className={styles.ServicesGridItemIcons}>
+          <div className={styles.gridLeft}>
+            <div className={styles.gridItem}>
+              <div className={styles.content}>
+                <div>
+                  <BsRobot className={styles.icon} />
+                  <h3>Get found on Google</h3>
+                  <p>Your Search visibility, your success.</p>
+                </div>
                 <Image
-                  alt=""
+                  alt="Find on Google"
                   src={aiAutoImg}
-                  className={styles.ServicesGridIcon}
+                  className={styles.featureImage}
                 />
               </div>
             </div>
           </div>
-
-          <div className={styles.ServicesGridItemRight}>
-            <div className={styles.ServicesGridItem}>
-              <div className={styles.ServicesGridItemTitle}>
-                <BsRobot className={styles.ServicesGridIcon} />
-
-                <h3>Get found on Google</h3>
-
-                <p>Make your app optimized for search</p>
-              </div>
-
-              <div className={styles.ServicesGridItemIcons}>
+          <div className={styles.gridRight}>
+            <div className={styles.gridItem}>
+              <div className={styles.content}>
+                <div>
+                  <BsRobot className={styles.icon} />
+                  <h3>Regular Updates</h3>
+                  <p>Keep track of your progress</p>
+                </div>
                 <Image
-                  alt=""
+                  alt="Updates"
                   src={aiAutoImg}
-                  className={styles.ServicesGridIcon}
+                  className={styles.featureImage}
                 />
               </div>
             </div>
-
-            <div className={styles.ServicesGridItem}>
-              <div className={styles.ServicesGridItemTitle}>
-                <BsRobot className={styles.ServicesGridIcon} />
-
-                <h3>Custom AI Automations & Integrations</h3>
-
-                <p>
-                  We will build you a website that is so good, it will make{" "}
-                  <br /> all the other websites jealous. Trust me, <br /> not
-                  kidding.
-                </p>
-              </div>
-
-              <div className={styles.ServicesGridItemIcons}>
+            <div className={styles.gridItem}>
+              <div className={styles.content}>
+                <div>
+                  <BsRobot className={styles.icon} />
+                  <h3>Complete Deployment</h3>
+                  <p>From development to deployment</p>
+                </div>
                 <Image
-                  alt=""
+                  alt="Deployment"
                   src={aiAutoImg}
-                  className={styles.ServicesGridIcon}
-                />
-              </div>
-            </div>
-
-            <div className={styles.ServicesGridItem}>
-              <div className={styles.ServicesGridItemTitle}>
-                <BsRobot className={styles.ServicesGridIcon} />
-
-                <h3>Custom AI Automations & Integrations</h3>
-
-                <p>
-                  We will build you a website that is so good, it will make{" "}
-                  <br /> all the other websites jealous. Trust me, <br /> not
-                  kidding.
-                </p>
-              </div>
-
-              <div className={styles.ServicesGridItemIcons}>
-                <Image
-                  alt=""
-                  src={aiAutoImg}
-                  className={styles.ServicesGridIcon}
+                  className={styles.featureImage}
                 />
               </div>
             </div>
