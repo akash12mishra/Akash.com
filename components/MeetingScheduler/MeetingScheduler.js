@@ -11,13 +11,49 @@ const MeetingScheduler = ({ onSave }) => {
   const [userTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
+  const [isLoading, setIsLoading] = useState(false);
+  const [disabledDates, setDisabledDates] = useState({});
 
-  const handleSave = () => {
+  // Add this useEffect at the top level of your component
+  useEffect(() => {
+    return () => {
+      setTimeSlots(generateTimeSlots());
+      setDisabledDates({});
+    };
+  }, []);
+
+  // Update the handleSave function
+  const handleSave = async () => {
     if (!date || !time || !email) {
       alert("Please fill in all fields");
       return;
     }
-    onSave({ date, time, email, timeZone: userTimezone });
+
+    // Check if slot is already booked before proceeding
+    const checkSlot = await isSlotBooked(date, { value: time });
+    if (checkSlot) {
+      alert(
+        "This time slot is no longer available. Please select another time."
+      );
+      // Refresh the time slots
+      const updatedSlots = await Promise.all(
+        timeSlots.map(async (slot) => {
+          const isBooked = await isSlotBooked(date, slot);
+          return { ...slot, isBooked };
+        })
+      );
+      setTimeSlots(updatedSlots);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await onSave({ date, time, email, timeZone: userTimezone });
+    } catch (error) {
+      console.error("Error saving meeting:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Calendar helpers
@@ -62,7 +98,8 @@ const MeetingScheduler = ({ onSave }) => {
     // Calendar days
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDate = new Date(currentYear, currentMonth, day);
-      const isDisabled = currentDate < today;
+      const dateString = currentDate.toISOString().split("T")[0];
+      const isDisabled = currentDate < today || disabledDates[dateString];
       const isSelected =
         date &&
         date.getDate() === day &&
@@ -73,8 +110,8 @@ const MeetingScheduler = ({ onSave }) => {
         <div
           key={day}
           className={`${styles.calendarDay} 
-            ${isDisabled ? styles.disabled : ""} 
-            ${isSelected ? styles.selected : ""}`}
+          ${isDisabled ? styles.disabled : ""} 
+          ${isSelected ? styles.selected : ""}`}
           onClick={() =>
             !isDisabled && setDate(new Date(currentYear, currentMonth, day))
           }
@@ -141,24 +178,6 @@ const MeetingScheduler = ({ onSave }) => {
 
   const [timeSlots, setTimeSlots] = useState(generateTimeSlots());
 
-  // Add this useEffect after the timeSlots state
-  useEffect(() => {
-    const checkSlotAvailability = async () => {
-      if (!date) return;
-
-      const updatedSlots = await Promise.all(
-        timeSlots.map(async (slot) => {
-          const isBooked = await isSlotBooked(date, slot);
-          return { ...slot, isBooked };
-        })
-      );
-
-      setTimeSlots(updatedSlots);
-    };
-
-    checkSlotAvailability();
-  }, [date]);
-
   // Function to check if a slot is booked
   const isSlotBooked = async (date, timeSlot) => {
     try {
@@ -174,6 +193,52 @@ const MeetingScheduler = ({ onSave }) => {
       return false;
     }
   };
+
+  // Add this state at the top
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+
+  // Add this single useEffect for all availability checks
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkSlotAvailability = async () => {
+      if (!date || isLoadingSlots) return;
+      setIsLoadingSlots(true);
+
+      try {
+        const updatedSlots = await Promise.all(
+          timeSlots.map(async (slot) => {
+            const isBooked = await isSlotBooked(date, slot);
+            return { ...slot, isBooked };
+          })
+        );
+
+        if (isMounted) {
+          setTimeSlots(updatedSlots);
+
+          // Update disabled dates for the selected date
+          const dateString = date.toISOString().split("T")[0];
+          setDisabledDates((prev) => ({
+            ...prev,
+            [dateString]: updatedSlots.every((slot) => slot.isBooked),
+          }));
+        }
+      } catch (error) {
+        console.error("Error checking slot availability:", error);
+      } finally {
+        if (isMounted) {
+          setIsLoadingSlots(false);
+        }
+      }
+    };
+
+    const timer = setTimeout(checkSlotAvailability, 300);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [date]); // Only check when date changes
 
   return (
     <div className={styles.MeetingScheduler}>
@@ -252,8 +317,16 @@ const MeetingScheduler = ({ onSave }) => {
         </div>
       </div>
 
-      <button onClick={handleSave} className={styles.scheduleButton}>
-        Schedule Meeting
+      <button
+        onClick={handleSave}
+        className={styles.scheduleButton}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <div className={styles.buttonSpinner}></div>
+        ) : (
+          "Schedule Meeting"
+        )}
       </button>
     </div>
   );

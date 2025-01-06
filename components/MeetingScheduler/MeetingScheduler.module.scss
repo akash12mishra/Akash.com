@@ -157,6 +157,21 @@
     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
     transition: all 0.2s ease-in-out;
 
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .buttonSpinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid white;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
     &:hover {
       background-color: white;
       color: black;

@@ -51,6 +51,30 @@
       max-width: 90%;
       width: 100%;
 
+      .schedulingLoader {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        margin: 10px 0;
+
+        .spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid #666;
+          border-top: 2px solid transparent;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        span {
+          color: #333;
+          font-size: 14px;
+        }
+      }
+
       // Headings
       .heading1 {
         font-size: 24px;

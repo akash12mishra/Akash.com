@@ -231,69 +231,85 @@ const ChatPlay = () => {
         break;
 
       case "schedule_meeting":
-        // Instead of updating the existing message, create a new complete state
-        setChatHistory((prev) => {
-          const lastIndex = prev.length;
-          return [
-            ...prev.map((msg, idx) =>
-              idx === assistantMessageIndex.current
-                ? {
-                    role: "assistant",
-                    content:
-                      "Here is the scheduling box where you can book the call below:",
-                    isLoading: false,
-                  }
-                : msg
-            ),
-            {
-              role: "assistant",
-              content: "",
-              isLoading: false,
-              boxData: "loading",
-            },
-          ];
-        });
+        // Add loading message first
+        setChatHistory((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content:
+              "Here is the scheduling box where you can book the call below:",
+            isLoading: false,
+          },
+          {
+            role: "assistant",
+            content: "",
+            isLoading: false,
+            boxData: "loading",
+          },
+        ]);
 
-        // After delay, update only the component message
+        // After delay, update the component message
         setTimeout(() => {
           setChatHistory((prev) => {
-            const lastIndex = prev.length - 1;
-            return prev.map((msg, idx) =>
-              idx === lastIndex
-                ? {
-                    ...msg,
-                    boxData: {
-                      type: "meeting",
-                      onSave: async (meetingData) => {
-                        try {
-                          const response = await fetch("/api/meeting", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(meetingData),
-                          });
-
-                          if (response.ok) {
-                            addMessage(
-                              "assistant",
-                              "Your call has been scheduled with Arka Lal Chakravarty. Please check your email."
-                            );
-                          } else {
-                            addMessage(
-                              "assistant",
-                              "Sorry, there was an error scheduling your call. Please try again."
-                            );
-                          }
-                        } catch (error) {
-                          addMessage(
-                            "assistant",
-                            "Sorry, there was an error scheduling your call. Please try again."
-                          );
-                        }
-                      },
-                    },
-                  }
-                : msg
+            const updatedHistory = [...prev];
+            const boxIndex = updatedHistory.findIndex(
+              (msg) => msg.boxData === "loading"
             );
+            if (boxIndex !== -1) {
+              updatedHistory[boxIndex] = {
+                ...updatedHistory[boxIndex],
+                boxData: {
+                  type: "meeting",
+                  onSave: async (meetingData) => {
+                    // Add loading message
+                    addMessage("assistant", "", true, {
+                      type: "schedulingLoader",
+                      text: "Your meeting is getting scheduled, please wait...",
+                    });
+
+                    try {
+                      const response = await fetch("/api/meeting", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(meetingData),
+                      });
+
+                      // Remove the loading message
+                      setChatHistory((prev) =>
+                        prev.filter(
+                          (msg) => !(msg.boxData?.type === "schedulingLoader")
+                        )
+                      );
+
+                      if (response.ok) {
+                        addMessage(
+                          "assistant",
+                          "Your call has been scheduled with Arka Lal Chakravarty. Please check your email."
+                        );
+                      } else {
+                        addMessage(
+                          "assistant",
+                          "Sorry, there was an error scheduling your call. Please try again."
+                        );
+                      }
+                    } catch (error) {
+                      // Remove the loading message
+                      setChatHistory((prev) =>
+                        prev.filter(
+                          (msg) => !(msg.boxData?.type === "schedulingLoader")
+                        )
+                      );
+
+                      addMessage(
+                        "assistant",
+                        "Sorry, there was an error scheduling your call. Please try again."
+                      );
+                    }
+                  },
+                },
+              };
+            }
+            return updatedHistory;
           });
         }, 2000);
         break;
@@ -482,14 +498,19 @@ const ChatPlay = () => {
               // If we have boxData
               if (msg.boxData) {
                 if (msg.boxData === "loading") {
-                  // Show skeleton loader
                   return (
                     <div className={styles.boxLoader}>
                       <SkeletonBox />
                     </div>
                   );
+                } else if (msg.boxData.type === "schedulingLoader") {
+                  return (
+                    <div className={styles.schedulingLoader}>
+                      <div className={styles.spinner}></div>
+                      <span>{msg.boxData.text}</span>
+                    </div>
+                  );
                 } else {
-                  // Render the box with the data
                   return <Box data={msg.boxData} />;
                 }
               } else if (msg.isLoading && !msg.content) {
