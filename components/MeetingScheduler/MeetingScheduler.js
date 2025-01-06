@@ -17,7 +17,7 @@ const MeetingScheduler = ({ onSave }) => {
       alert("Please fill in all fields");
       return;
     }
-    onSave({ date, time, email });
+    onSave({ date, time, email, timeZone: userTimezone });
   };
 
   // Calendar helpers
@@ -105,11 +105,9 @@ const MeetingScheduler = ({ onSave }) => {
     }
   };
 
-  const formatTime = (hours, minutes) => {
-    const time = new Date();
-    time.setHours(hours);
-    time.setMinutes(minutes);
-    return time.toLocaleTimeString([], {
+  const formatTimeWithZone = (time, targetTimezone) => {
+    return new Date(time).toLocaleTimeString("en-US", {
+      timeZone: targetTimezone,
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
@@ -118,27 +116,23 @@ const MeetingScheduler = ({ onSave }) => {
 
   const generateTimeSlots = () => {
     const slots = [];
-    // IST times: 4 PM to 1 AM
-    const istStart = 16; // 4 PM
+    const istStart = 16; // 4 PM IST
     const istEnd = 25; // 1 AM next day
 
-    // Convert IST to local time
-    const istOffset = 5.5; // IST is UTC+5:30
-    const localOffset = new Date().getTimezoneOffset() / 60;
-    const offsetDiff = istOffset + localOffset;
-
     for (let hour = istStart; hour < istEnd; hour++) {
-      // Convert IST hour to local hour
-      const localHour = (hour - offsetDiff + 24) % 24;
+      // Create date object for the slot time in IST
+      const slotDate = new Date();
+      slotDate.setHours(hour % 24, 0, 0, 0);
 
-      const displayTime = formatTime(localHour, 0);
-      const value = String(hour % 24).padStart(2, "0") + ":00"; // 24h format for backend
+      // Convert IST time to user's local time
+      const localTime = formatTimeWithZone(slotDate, userTimezone);
+      const istTime = formatTimeWithZone(slotDate, "Asia/Kolkata");
 
       slots.push({
         istHour: hour,
-        displayTime,
-        value,
-        isBooked: false,
+        displayTime: localTime,
+        value: `${String(hour % 24).padStart(2, "0")}:00`,
+        istTime: istTime, // Store IST time for backend
       });
     }
 
@@ -216,7 +210,16 @@ const MeetingScheduler = ({ onSave }) => {
       </div>
 
       <div className={styles.inputGroup}>
-        <label>Select Time ({userTimezone})</label>
+        <label>
+          Select Time (
+          {new Intl.DateTimeFormat(undefined, {
+            timeZoneName: "short",
+          })
+            .formatToParts()
+            .find((part) => part.type === "timeZoneName")?.value ||
+            userTimezone}
+          )
+        </label>
         <div className={styles.customSelect}>
           <div
             className={styles.selectTrigger}

@@ -47,6 +47,21 @@ export async function POST(req) {
     const [hours, minutes] = time.split(":");
     formattedStartTime.setHours(parseInt(hours), parseInt(minutes), 0);
 
+    // Add this helper function at the top
+    const formatTimeWithZone = (dateTime, timezone) => {
+      return new Date(dateTime).toLocaleTimeString("en-US", {
+        timeZone: timezone,
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZoneName: "short",
+      });
+    };
+
+    // In your POST handler, modify the email sending part
+    const userDateTime = formatTimeWithZone(formattedStartTime, timeZone);
+    const istDateTime = formatTimeWithZone(formattedStartTime, "Asia/Kolkata");
+
     const formattedEndTime = new Date(formattedStartTime);
     formattedEndTime.setHours(formattedStartTime.getHours() + 1);
 
@@ -103,49 +118,54 @@ export async function POST(req) {
     // After successful meeting creation, send emails
     if (meetingResponse?.data?.hangoutLink) {
       try {
-        // Send email to the user
+        // User email
         await resend.emails.send({
           from: "admin@arkalalchakravarty.com",
           to: [email],
           subject: "Meeting Scheduled - Arka Lal Chakravarty",
           html: `
-        <h2>Your meeting has been scheduled!</h2>
-        <p>Details:</p>
-        <ul>
-          <li>Date: ${formattedStartTime.toLocaleDateString()}</li>
-          <li>Time: ${time}</li>
-          <li>Duration: 1 hour</li>
-        </ul>
-        <p>Join the meeting using this link: <a href="${
-          meetingResponse.data.hangoutLink
-        }">${meetingResponse.data.hangoutLink}</a></p>
-        <p>The meeting link will also be added to your Google Calendar.</p>
-        <br/>
-        <p>Best regards,</p>
-        <p>Arka Lal Chakravarty</p>
-      `,
+    <h2>Your meeting has been scheduled!</h2>
+    <p>Details:</p>
+    <ul>
+      <li>Date: ${formattedStartTime.toLocaleDateString("en-US", {
+        timeZone: timeZone,
+      })}</li>
+      <li>Time: ${userDateTime}</li>
+      <li>Duration: 1 hour</li>
+    </ul>
+    <p>Join the meeting using this link: <a href="${
+      meetingResponse.data.hangoutLink
+    }">${meetingResponse.data.hangoutLink}</a></p>
+    <p>The meeting link will also be added to your Google Calendar.</p>
+    <br/>
+    <p>Best regards,</p>
+    <p>Arka Lal Chakravarty</p>
+  `,
         });
 
-        // Send separate notification email to admin
+        // Admin email
         await resend.emails.send({
           from: "admin@arkalalchakravarty.com",
           to: ["admin@arkalalchakravarty.com"],
           subject: `New Meeting Scheduled - ${email}`,
           html: `
-        <h2>New Meeting Scheduled</h2>
-        <p>A new meeting has been scheduled by: ${email}</p>
-        <p>Details:</p>
-        <ul>
-          <li>Date: ${formattedStartTime.toLocaleDateString()}</li>
-          <li>Time: ${time}</li>
-          <li>Duration: 1 hour</li>
-        </ul>
-        <p>Meeting link: <a href="${meetingResponse.data.hangoutLink}">${
+    <h2>New Meeting Scheduled</h2>
+    <p>A new meeting has been scheduled by: ${email}</p>
+    <p>Details:</p>
+    <ul>
+      <li>Date: ${formattedStartTime.toLocaleDateString("en-US", {
+        timeZone: "Asia/Kolkata",
+      })}</li>
+      <li>Time: ${istDateTime} (IST)</li>
+      <li>User's Local Time: ${userDateTime}</li>
+      <li>Duration: 1 hour</li>
+    </ul>
+    <p>Meeting link: <a href="${meetingResponse.data.hangoutLink}">${
             meetingResponse.data.hangoutLink
           }</a></p>
-        <br/>
-        <p>You can now continue the conversation with the client via email.</p>
-      `,
+    <br/>
+    <p>You can now continue the conversation with the client via email.</p>
+  `,
         });
 
         console.log("Emails sent successfully");
