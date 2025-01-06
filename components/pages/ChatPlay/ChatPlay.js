@@ -287,10 +287,20 @@ const ChatPlay = () => {
                           "Your call has been scheduled with Arka Lal Chakravarty. Please check your email."
                         );
                       } else {
-                        addMessage(
-                          "assistant",
-                          "Sorry, there was an error scheduling your call. Please try again."
-                        );
+                        const data = await response.json();
+
+                        // Check if it's a duplicate slot error
+                        if (data.error?.includes("duplicate key error")) {
+                          addMessage(
+                            "assistant",
+                            "This time slot is already booked. Please select another available time slot. 👋"
+                          );
+                        } else {
+                          addMessage(
+                            "assistant",
+                            "Sorry, there was an error scheduling your call. Please try again."
+                          );
+                        }
                       }
                     } catch (error) {
                       // Remove the loading message
