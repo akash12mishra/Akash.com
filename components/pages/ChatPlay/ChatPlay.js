@@ -264,7 +264,7 @@ const ChatPlay = () => {
                     // Add loading message
                     addMessage("assistant", "", true, {
                       type: "schedulingLoader",
-                      text: "Your meeting is getting scheduled, please wait...",
+                      text: "Your meeting is getting scheduled, please wait",
                     });
 
                     try {
