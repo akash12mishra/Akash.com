@@ -1,11 +1,14 @@
 import { auth } from "../../../../auth";
 import { google } from "googleapis";
 import { Resend } from "resend"; // Add this import
+import Booking from "../../../../models/Booking";
+import connectMongoDB from "../../../../utils/mongoDB";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req) {
   try {
+    await connectMongoDB();
     const session = await auth();
 
     if (!session?.accessToken) {
@@ -38,7 +41,7 @@ export async function POST(req) {
     });
 
     // Your existing event creation code...
-    const { date, time, email } = await req.json();
+    const { date, time, email, timeZone } = await req.json();
 
     const formattedStartTime = new Date(date);
     const [hours, minutes] = time.split(":");
@@ -52,11 +55,13 @@ export async function POST(req) {
       description: "Scheduled meeting via website",
       start: {
         dateTime: formattedStartTime.toISOString(),
-        timeZone: "UTC",
+        timeZone: "Asia/Kolkata", // Explicitly set IST timezone
       },
       end: {
-        dateTime: formattedEndTime.toISOString(),
-        timeZone: "UTC",
+        dateTime: new Date(
+          formattedStartTime.getTime() + 60 * 60 * 1000
+        ).toISOString(), // Add 1 hour
+        timeZone: "Asia/Kolkata",
       },
       attendees: [{ email }],
       conferenceData: {
@@ -81,6 +86,19 @@ export async function POST(req) {
     if (!meetingResponse?.data?.hangoutLink) {
       throw new Error("Failed to create meeting link");
     }
+
+    // Add the booking record creation HERE, before the email sending block
+    const bookingRecord = new Booking({
+      date: formattedStartTime,
+      time: time,
+      email: email,
+      meetLink: meetingResponse.data.hangoutLink,
+      status: "active",
+      userId: session.user.id,
+      timeZone: timeZone || "Asia/Kolkata", // Use provided timezone or default to IST
+    });
+
+    await bookingRecord.save();
 
     // After successful meeting creation, send emails
     if (meetingResponse?.data?.hangoutLink) {

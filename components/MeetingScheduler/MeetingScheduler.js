@@ -1,23 +1,16 @@
 // MeetingScheduler.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./MeetingScheduler.module.scss";
+import { format } from "date-fns";
 
 const MeetingScheduler = ({ onSave }) => {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState("");
   const [email, setEmail] = useState("");
   const [isSelectOpen, setIsSelectOpen] = useState(false);
-
-  const timeSlots = [
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-  ];
+  const [userTimezone] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
 
   const handleSave = () => {
     if (!date || !time || !email) {
@@ -112,6 +105,82 @@ const MeetingScheduler = ({ onSave }) => {
     }
   };
 
+  const formatTime = (hours, minutes) => {
+    const time = new Date();
+    time.setHours(hours);
+    time.setMinutes(minutes);
+    return time.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const generateTimeSlots = () => {
+    const slots = [];
+    // IST times: 4 PM to 1 AM
+    const istStart = 16; // 4 PM
+    const istEnd = 25; // 1 AM next day
+
+    // Convert IST to local time
+    const istOffset = 5.5; // IST is UTC+5:30
+    const localOffset = new Date().getTimezoneOffset() / 60;
+    const offsetDiff = istOffset + localOffset;
+
+    for (let hour = istStart; hour < istEnd; hour++) {
+      // Convert IST hour to local hour
+      const localHour = (hour - offsetDiff + 24) % 24;
+
+      const displayTime = formatTime(localHour, 0);
+      const value = String(hour % 24).padStart(2, "0") + ":00"; // 24h format for backend
+
+      slots.push({
+        istHour: hour,
+        displayTime,
+        value,
+        isBooked: false,
+      });
+    }
+
+    return slots;
+  };
+
+  const [timeSlots, setTimeSlots] = useState(generateTimeSlots());
+
+  // Add this useEffect after the timeSlots state
+  useEffect(() => {
+    const checkSlotAvailability = async () => {
+      if (!date) return;
+
+      const updatedSlots = await Promise.all(
+        timeSlots.map(async (slot) => {
+          const isBooked = await isSlotBooked(date, slot);
+          return { ...slot, isBooked };
+        })
+      );
+
+      setTimeSlots(updatedSlots);
+    };
+
+    checkSlotAvailability();
+  }, [date]);
+
+  // Function to check if a slot is booked
+  const isSlotBooked = async (date, timeSlot) => {
+    try {
+      const response = await fetch("/api/check-availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, time: timeSlot.value }),
+      });
+      const data = await response.json();
+      return data.isBooked;
+    } catch (error) {
+      console.error("Error checking slot availability:", error);
+      return false;
+    }
+  };
+
   return (
     <div className={styles.MeetingScheduler}>
       <div className={styles.inputGroup}>
@@ -147,26 +216,32 @@ const MeetingScheduler = ({ onSave }) => {
       </div>
 
       <div className={styles.inputGroup}>
-        <label>Select Time</label>
+        <label>Select Time ({userTimezone})</label>
         <div className={styles.customSelect}>
           <div
             className={styles.selectTrigger}
             onClick={() => setIsSelectOpen(!isSelectOpen)}
           >
-            {time || "Select time slot"}
+            {time
+              ? timeSlots.find((slot) => slot.value === time)?.displayTime
+              : "Select time slot"}
           </div>
           {isSelectOpen && (
             <div className={styles.selectContent}>
               {timeSlots.map((slot) => (
                 <div
-                  key={slot}
-                  className={styles.selectItem}
+                  key={slot.value}
+                  className={`${styles.selectItem} ${
+                    slot.isBooked ? styles.disabled : ""
+                  }`}
                   onClick={() => {
-                    setTime(slot);
-                    setIsSelectOpen(false);
+                    if (!slot.isBooked) {
+                      setTime(slot.value);
+                      setIsSelectOpen(false);
+                    }
                   }}
                 >
-                  {slot}
+                  {slot.displayTime}
                 </div>
               ))}
             </div>
