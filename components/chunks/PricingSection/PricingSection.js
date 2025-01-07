@@ -9,7 +9,7 @@ const PricingSection = () => {
     <div className={styles.PricingSection}>
       <div className={styles.pricingHeader}>
         <h2>Simple, transparent pricing</h2>
-        <p>Choose the plan thats right for you</p>
+        <p>Grab your early bird access quickly!</p>
       </div>
 
       <div className={styles.pricingCards}>
@@ -26,11 +26,30 @@ const PricingSection = () => {
               <div className={styles.feature}>
                 ✓ Full access to all features
               </div>
-              <div className={styles.feature}>✓ Priority support</div>
-              <div className={styles.feature}>✓ Custom AI automations</div>
-              <div className={styles.feature}>✓ Dedicated account manager</div>
-              <div className={styles.feature}>✓ Advanced analytics</div>
-              <div className={styles.feature}>✓ API access</div>
+              <div className={styles.feature}>✓ React / Next.js / code</div>
+              <div className={styles.feature}>
+                ✓ Unlimited Custom AI automations
+              </div>
+              <div className={styles.feature}>
+                ✓ Unlimited AI Agents & Chatbots
+              </div>
+              <div className={styles.feature}>
+                ✓ Unlimited MVPs, Website, AI Apps and Sass development
+              </div>
+              <div className={styles.feature}>
+                ✓ Unlimited Custom React Components
+              </div>
+              <div className={styles.feature}>✓ Unlimited Revisions</div>
+              <div className={styles.feature}>✓ Search Engine Optimization</div>
+              <div className={styles.feature}>
+                ✓ 24-hour support response time
+              </div>
+              <div className={styles.feature}>
+                ✓ Full Access to private Google workspace
+              </div>
+              <div className={styles.feature}>
+                ✓ Full Access to Email marketing automations
+              </div>
             </div>
             <button className={styles.actionBtn}>
               <IoSparklesOutline className={styles.btnIcon} />
@@ -51,11 +70,30 @@ const PricingSection = () => {
               <div className={styles.feature}>
                 ✓ Full access to all features
               </div>
-              <div className={styles.feature}>✓ Priority support</div>
-              <div className={styles.feature}>✓ Custom AI automations</div>
-              <div className={styles.feature}>✓ Dedicated account manager</div>
-              <div className={styles.feature}>✓ Advanced analytics</div>
-              <div className={styles.feature}>✓ API access</div>
+              <div className={styles.feature}>✓ React / Next.js / code</div>
+              <div className={styles.feature}>
+                ✓ Unlimited Custom AI automations
+              </div>
+              <div className={styles.feature}>
+                ✓ Unlimited AI Agents & Chatbots
+              </div>
+              <div className={styles.feature}>
+                ✓ Unlimited MVPs, Website, AI Apps and Sass development
+              </div>
+              <div className={styles.feature}>
+                ✓ Unlimited Custom React Components
+              </div>
+              <div className={styles.feature}>✓ Unlimited Revisions</div>
+              <div className={styles.feature}>✓ Search Engine Optimization</div>
+              <div className={styles.feature}>
+                ✓ 24-hour support response time
+              </div>
+              <div className={styles.feature}>
+                ✓ Full Access to private Google workspace
+              </div>
+              <div className={styles.feature}>
+                ✓ Full Access to Email marketing automations
+              </div>
             </div>
             <button className={styles.actionBtn}>Join Waitlist</button>
           </div>
