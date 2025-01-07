@@ -10,11 +10,19 @@
     h2 {
       font-size: 48px;
       margin-bottom: 20px;
+
+      @media (max-width: 600px) {
+        font-size: 30px;
+      }
     }
 
     p {
       font-size: 24px;
       color: #6c757d;
+
+      @media (max-width: 600px) {
+        font-size: 16px;
+      }
     }
   }
 
@@ -24,6 +32,11 @@
     gap: 30px;
     margin-bottom: 40px;
 
+    @media (max-width: 600px) {
+      flex-direction: column;
+      align-items: center;
+    }
+
     .pricingCard {
       position: relative;
       width: 450px;
@@ -32,6 +45,10 @@
       padding: 40px;
       text-align: left;
       background: white;
+
+      @media (max-width: 600px) {
+        width: 100%;
+      }
 
       &.regular {
         background: white;
@@ -54,6 +71,10 @@
         h3 {
           font-size: 32px;
           margin-bottom: 8px;
+
+          @media (max-width: 600px) {
+            font-size: 24px;
+          }
         }
 
         .seatsLeft {
@@ -67,6 +88,10 @@
           .amount {
             font-size: 48px;
             font-weight: bold;
+
+            @media (max-width: 600px) {
+              font-size: 32px;
+            }
           }
 
           .period {
@@ -81,6 +106,10 @@
           .feature {
             margin-bottom: 16px;
             font-size: 18px;
+
+            @media (max-width: 600px) {
+              font-size: 16px;
+            }
           }
         }
 
@@ -96,6 +125,10 @@
           justify-content: center;
           gap: 8px;
           transition: all 0.2s ease-in-out;
+
+          @media (max-width: 600px) {
+            font-size: 16px;
+          }
 
           &.disabled {
             opacity: 0.7;

@@ -9,6 +9,12 @@
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
   margin-top: 200px;
 
+  @media (max-width: 600px) {
+    flex-direction: column;
+    padding: 60px 20px;
+    gap: 50px;
+  }
+
   .footerLeft {
     background: transparent;
     display: flex;
@@ -20,12 +26,20 @@
       background: transparent;
       color: white;
       font-size: 25px;
+
+      @media (max-width: 600px) {
+        font-size: 20px;
+      }
     }
 
     h2 {
       font-size: 40px;
       background: transparent;
       color: white;
+
+      @media (max-width: 600px) {
+        font-size: 25px;
+      }
 
       span {
         background-color: white;
@@ -58,6 +72,10 @@
       background-color: black;
       color: white;
       border: 1px solid white;
+
+      @media (max-width: 600px) {
+        width: 100%;
+      }
 
       .FooterBtnIcon {
         background: transparent;

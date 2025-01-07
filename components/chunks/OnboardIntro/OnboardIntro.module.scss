@@ -6,10 +6,21 @@
   justify-content: space-around;
   border: 1px dotted black;
 
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
   .OnboardTitle {
     h2 {
       font-size: 40px;
       margin: 10px 0;
+
+      @media (max-width: 768px) {
+        font-size: 30px;
+      }
     }
 
     .OnboardIntroImgBox {
@@ -41,11 +52,19 @@
       .OnboardStepInfo {
         h3 {
           font-size: 26px;
+
+          @media (max-width: 768px) {
+            font-size: 20px;
+          }
         }
 
         p {
           margin-top: 10px;
           font-size: 16px;
+
+          @media (max-width: 768px) {
+            font-size: 14px;
+          }
         }
       }
 
@@ -69,6 +88,10 @@
         height: 0; /* Initial height */
         background-color: black;
         transition: height 0.1s linear; /* Linear for consistent scroll speed */
+
+        @media (max-width: 600px) {
+          left: 5%;
+        }
       }
     }
   }
