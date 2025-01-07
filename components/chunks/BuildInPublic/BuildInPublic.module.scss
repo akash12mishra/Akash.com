@@ -101,19 +101,26 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
+      width: 100%;
     }
 
     .row {
       display: flex;
       gap: 24px;
       padding: 20px 0;
-      width: max-content;
+      min-width: fit-content;
       animation: slideLeft 30s linear infinite;
       position: relative;
       z-index: 1; // Place below the gradients
 
       &:hover {
         animation-play-state: paused;
+      }
+
+      &:after {
+        content: "";
+        display: block;
+        width: 24px; // Same as gap
       }
 
       &.reverse {
