@@ -45,14 +45,6 @@ const bottomTestimonials = [
 ];
 
 const BuildInPublic = () => {
-  useEffect(() => {
-    // Force a repaint on Safari after component mount
-    const rows = document.querySelectorAll(`.${styles.row}`);
-    rows.forEach((row) => {
-      row.style.transform = "translate3d(0,0,0)";
-    });
-  }, []);
-
   return (
     <div className={styles.BuildInPublic}>
       <div className={styles.testimonialHeader}>
@@ -74,10 +66,7 @@ const BuildInPublic = () => {
         <div className={styles.scrollContainer}>
           <div className={styles.row}>
             {[...testimonials, ...testimonials, ...testimonials].map(
-              (
-                item,
-                index // Added one more spread
-              ) => (
+              (item, index) => (
                 <a
                   key={`${item.id}-${index}`}
                   href={item.link}
@@ -92,7 +81,7 @@ const BuildInPublic = () => {
                       width={500}
                       height={300}
                       className={styles.avatar}
-                      priority={index < 3} // Add priority loading for first few images
+                      priority={index < 3}
                     />
                   </div>
                 </a>
@@ -105,31 +94,26 @@ const BuildInPublic = () => {
               ...bottomTestimonials,
               ...bottomTestimonials,
               ...bottomTestimonials,
-            ].map(
-              (
-                item,
-                index // Added one more spread
-              ) => (
-                <a
-                  key={`${item.id}-${index}`}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.card}
-                >
-                  <div className={styles.content}>
-                    <Image
-                      src={item.image}
-                      alt="Social media post"
-                      width={500}
-                      height={300}
-                      className={styles.avatar}
-                      priority={index < 3} // Add priority loading for first few images
-                    />
-                  </div>
-                </a>
-              )
-            )}
+            ].map((item, index) => (
+              <a
+                key={`${item.id}-${index}`}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.card}
+              >
+                <div className={styles.content}>
+                  <Image
+                    src={item.image}
+                    alt="Social media post"
+                    width={500}
+                    height={300}
+                    className={styles.avatar}
+                    priority={index < 3}
+                  />
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </div>
