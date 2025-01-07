@@ -17,7 +17,7 @@ const HookIntro = () => {
         </h3>
 
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. A, quaerat.
+          Get your business to the next level with our AI powered solutions.
         </p>
       </div>
 

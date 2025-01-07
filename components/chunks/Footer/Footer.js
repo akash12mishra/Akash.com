@@ -1,10 +1,15 @@
+"use client";
+
 import React from "react";
 import styles from "./Footer.module.scss";
 import { IoSparklesOutline } from "react-icons/io5";
 import arkaImg from "../../../assets/images/arka.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Footer = () => {
+  const router = useRouter();
+
   return (
     <div className={styles.Footer}>
       <div className={styles.footerLeft}>
@@ -15,7 +20,7 @@ const Footer = () => {
           Efficiently{" "}
         </h2>
 
-        <button>
+        <button onClick={() => router.push("/chatPlay")}>
           Book a call <IoSparklesOutline className={styles.FooterBtnIcon} />{" "}
         </button>
 

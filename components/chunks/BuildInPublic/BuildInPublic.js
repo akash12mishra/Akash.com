@@ -12,17 +12,17 @@ const testimonials = [
   {
     id: 1,
     image: linkPost1,
-    link: "https://twitter.com/demo1",
+    link: "https://www.linkedin.com/in/arkalal/",
   },
   {
     id: 2,
     image: linkPost2,
-    link: "https://twitter.com/demo2",
+    link: "https://www.linkedin.com/in/arkalal/",
   },
   {
     id: 3,
     image: linkPost3,
-    link: "https://twitter.com/demo3",
+    link: "https://www.linkedin.com/in/arkalal/",
   },
 ];
 
@@ -30,17 +30,17 @@ const bottomTestimonials = [
   {
     id: 4,
     image: xPost1,
-    link: "https://twitter.com/demo4",
+    link: "https://x.com/arka_codes",
   },
   {
     id: 5,
     image: xPost2,
-    link: "https://twitter.com/demo5",
+    link: "https://x.com/arka_codes",
   },
   {
     id: 6,
     image: xPost3,
-    link: "https://twitter.com/demo6",
+    link: "https://x.com/arka_codes",
   },
 ];
 

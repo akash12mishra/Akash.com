@@ -3,8 +3,11 @@
 import React from "react";
 import styles from "./PricingSection.module.scss";
 import { IoSparklesOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 const PricingSection = () => {
+  const router = useRouter();
+
   return (
     <div className={styles.PricingSection}>
       <div className={styles.pricingHeader}>
@@ -51,9 +54,12 @@ const PricingSection = () => {
                 ✓ Full Access to Email marketing automations
               </div>
             </div>
-            <button className={styles.actionBtn}>
+            <button
+              onClick={() => router.push("/chatPlay")}
+              className={styles.actionBtn}
+            >
               <IoSparklesOutline className={styles.btnIcon} />
-              Get Started Now
+              Book a Call
             </button>
           </div>
         </div>
@@ -95,7 +101,12 @@ const PricingSection = () => {
                 ✓ Full Access to Email marketing automations
               </div>
             </div>
-            <button className={styles.actionBtn}>Join Waitlist</button>
+            <button
+              className={`${styles.actionBtn} ${styles.disabled}`}
+              disabled
+            >
+              Coming Soon
+            </button>
           </div>
         </div>
       </div>
