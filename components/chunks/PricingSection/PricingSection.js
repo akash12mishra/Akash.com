@@ -101,7 +101,7 @@ const PricingSection = () => {
       </div>
 
       <div className={styles.guarantee}>
-        All plans include 14-day money-back guarantee
+        All plans include 7-day money-back guarantee
       </div>
     </div>
   );

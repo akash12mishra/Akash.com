@@ -1,8 +1,13 @@
+"use client";
+
 import React from "react";
 import styles from "./HookIntro.module.scss";
 import { IoSparklesOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 const HookIntro = () => {
+  const router = useRouter();
+
   return (
     <div className={styles.HookIntro}>
       <div className={styles.HookIntroTitle}>
@@ -21,7 +26,7 @@ const HookIntro = () => {
       </video>
 
       <div className={styles.HookIntroBtn}>
-        <button>
+        <button onClick={() => router.push("/chatPlay")}>
           Book a call <IoSparklesOutline className={styles.HookIntroBtnIcon} />{" "}
         </button>
       </div>
