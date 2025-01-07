@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
 import Box from "../../Box/Box";
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
+import { useSession } from "next-auth/react";
 
 const TypingAnimation = () => (
   <div className={styles.typingAnimation}>
@@ -21,6 +22,8 @@ const ChatPlay = () => {
   const assistantMessageIndex = useRef(null);
   const currentMessageRef = useRef("");
   const functionCallBuffer = useRef("");
+
+  const { data: session } = useSession();
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -231,6 +234,15 @@ const ChatPlay = () => {
         break;
 
       case "schedule_meeting":
+        // First check for session
+        if (!session) {
+          addMessage(
+            "assistant",
+            "You need to sign in first to book a call with Arka Lal Chakravarty."
+          );
+          return;
+        }
+
         // Add loading message first
         setChatHistory((prev) => [
           ...prev,
