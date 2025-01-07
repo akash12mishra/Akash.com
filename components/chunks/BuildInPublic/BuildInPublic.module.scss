@@ -137,6 +137,7 @@
         border-radius: 16px;
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         transition: all 0.3s ease;
+        height: 150px;
 
         &:hover {
           transform: translateY(-4px);
@@ -144,12 +145,10 @@
         }
 
         .content {
-          line-height: 0;
-
           .avatar {
             width: 100%;
             height: auto;
-            display: block;
+            object-fit: cover;
           }
         }
       }
