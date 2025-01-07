@@ -41,6 +41,10 @@
         width: 100%;
       }
 
+      @media (min-width: 820px) and (max-width: 1030px) {
+        width: 100%;
+      }
+
       .ServicesGridItem {
         display: flex;
         flex-direction: column;
