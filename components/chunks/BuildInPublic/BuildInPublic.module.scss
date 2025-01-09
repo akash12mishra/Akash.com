@@ -25,6 +25,17 @@
       font-weight: bold;
       color: #111827;
       margin-bottom: 16px;
+
+      @media (max-width: 600px) {
+        font-size: 24px;
+      }
+
+      span {
+        background-color: black;
+        color: white;
+        padding: 5px;
+        border-radius: 10px;
+      }
     }
 
     .subtitle {
@@ -94,24 +105,30 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .row {
       display: flex;
       gap: 24px;
-      padding: 20px 0;
-      width: max-content;
-      animation: slideLeft 30s linear infinite;
+      min-width: fit-content;
       position: relative;
-      z-index: 1; // Place below the gradients
-
-      &:hover {
-        animation-play-state: paused;
-      }
+      z-index: 1;
+      padding: 20px 0;
 
       &.reverse {
         animation: slideRight 30s linear infinite;
-        margin-top: 24px;
+        margin-top: 20px;
+
+        &:hover {
+          animation-play-state: paused;
+        }
+      }
+
+      &:not(.reverse) {
+        animation: slideLeft 30s linear infinite;
 
         &:hover {
           animation-play-state: paused;
@@ -119,14 +136,12 @@
       }
 
       .card {
-        width: 400px;
-        background: white;
+        width: 500px;
+        overflow: hidden;
         border-radius: 16px;
-        padding: 24px;
         box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         transition: all 0.3s ease;
-        text-decoration: none;
-        color: inherit;
+        height: 120px;
 
         &:hover {
           transform: translateY(-4px);
@@ -134,38 +149,10 @@
         }
 
         .content {
-          p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #4b5563;
-            margin-bottom: 20px;
-          }
-
-          .userInfo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-
-            .avatar {
-              width: 40px;
-              height: 40px;
-              border-radius: 50%;
-              object-fit: cover;
-            }
-
-            .userText {
-              h4 {
-                font-size: 16px;
-                font-weight: 600;
-                color: #111827;
-                margin: 0;
-              }
-
-              span {
-                font-size: 14px;
-                color: #6b7280;
-              }
-            }
+          .avatar {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
           }
         }
       }
@@ -174,19 +161,45 @@
 }
 
 @keyframes slideLeft {
-  from {
-    transform: translateX(0);
+  0% {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
   }
-  to {
-    transform: translateX(-50%);
+  100% {
+    transform: translate3d(-33.333%, 0, 0);
+    -webkit-transform: translate3d(-33.333%, 0, 0);
+  }
+}
+
+@-webkit-keyframes slideLeft {
+  0% {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-33.333%, 0, 0);
+    -webkit-transform: translate3d(-33.333%, 0, 0);
   }
 }
 
 @keyframes slideRight {
-  from {
-    transform: translateX(-50%);
+  0% {
+    transform: translate3d(-33.333%, 0, 0);
+    -webkit-transform: translate3d(-33.333%, 0, 0);
   }
-  to {
-    transform: translateX(0);
+  100% {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+}
+
+@-webkit-keyframes slideRight {
+  0% {
+    transform: translate3d(-33.333%, 0, 0);
+    -webkit-transform: translate3d(-33.333%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
   }
 }

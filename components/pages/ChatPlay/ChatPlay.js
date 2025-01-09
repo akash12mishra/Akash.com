@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./ChatPlay.module.scss";
 import Box from "../../Box/Box";
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
+import { useSession } from "next-auth/react";
 
 const TypingAnimation = () => (
   <div className={styles.typingAnimation}>
@@ -21,6 +22,8 @@ const ChatPlay = () => {
   const assistantMessageIndex = useRef(null);
   const currentMessageRef = useRef("");
   const functionCallBuffer = useRef("");
+
+  const { data: session } = useSession();
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -231,69 +234,104 @@ const ChatPlay = () => {
         break;
 
       case "schedule_meeting":
-        // Instead of updating the existing message, create a new complete state
-        setChatHistory((prev) => {
-          const lastIndex = prev.length;
-          return [
-            ...prev.map((msg, idx) =>
-              idx === assistantMessageIndex.current
-                ? {
-                    role: "assistant",
-                    content:
-                      "Here is the scheduling box where you can book the call below:",
-                    isLoading: false,
-                  }
-                : msg
-            ),
-            {
-              role: "assistant",
-              content: "",
-              isLoading: false,
-              boxData: "loading",
-            },
-          ];
-        });
+        // First check for session
+        if (!session) {
+          addMessage(
+            "assistant",
+            "You need to sign in first to book a call with Arka Lal Chakravarty."
+          );
+          return;
+        }
 
-        // After delay, update only the component message
+        // Add loading message first
+        setChatHistory((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content:
+              "Here is the scheduling box where you can book the call below:",
+            isLoading: false,
+          },
+          {
+            role: "assistant",
+            content: "",
+            isLoading: false,
+            boxData: "loading",
+          },
+        ]);
+
+        // After delay, update the component message
         setTimeout(() => {
           setChatHistory((prev) => {
-            const lastIndex = prev.length - 1;
-            return prev.map((msg, idx) =>
-              idx === lastIndex
-                ? {
-                    ...msg,
-                    boxData: {
-                      type: "meeting",
-                      onSave: async (meetingData) => {
-                        try {
-                          const response = await fetch("/api/meeting", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(meetingData),
-                          });
+            const updatedHistory = [...prev];
+            const boxIndex = updatedHistory.findIndex(
+              (msg) => msg.boxData === "loading"
+            );
+            if (boxIndex !== -1) {
+              updatedHistory[boxIndex] = {
+                ...updatedHistory[boxIndex],
+                boxData: {
+                  type: "meeting",
+                  onSave: async (meetingData) => {
+                    // Add loading message
+                    addMessage("assistant", "", true, {
+                      type: "schedulingLoader",
+                      text: "Your meeting is getting scheduled, please wait",
+                    });
 
-                          if (response.ok) {
-                            addMessage(
-                              "assistant",
-                              "Your call has been scheduled with Arka Lal Chakravarty. Please check your email."
-                            );
-                          } else {
-                            addMessage(
-                              "assistant",
-                              "Sorry, there was an error scheduling your call. Please try again."
-                            );
-                          }
-                        } catch (error) {
+                    try {
+                      const response = await fetch("/api/meeting", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(meetingData),
+                      });
+
+                      // Remove the loading message
+                      setChatHistory((prev) =>
+                        prev.filter(
+                          (msg) => !(msg.boxData?.type === "schedulingLoader")
+                        )
+                      );
+
+                      if (response.ok) {
+                        addMessage(
+                          "assistant",
+                          "Your call has been scheduled with Arka Lal Chakravarty. Please check your email."
+                        );
+                      } else {
+                        const data = await response.json();
+
+                        // Check if it's a duplicate slot error
+                        if (data.error?.includes("duplicate key error")) {
+                          addMessage(
+                            "assistant",
+                            "This time slot is already booked. Please select another available time slot. 👋"
+                          );
+                        } else {
                           addMessage(
                             "assistant",
                             "Sorry, there was an error scheduling your call. Please try again."
                           );
                         }
-                      },
-                    },
-                  }
-                : msg
-            );
+                      }
+                    } catch (error) {
+                      // Remove the loading message
+                      setChatHistory((prev) =>
+                        prev.filter(
+                          (msg) => !(msg.boxData?.type === "schedulingLoader")
+                        )
+                      );
+
+                      addMessage(
+                        "assistant",
+                        "Sorry, there was an error scheduling your call. Please try again."
+                      );
+                    }
+                  },
+                },
+              };
+            }
+            return updatedHistory;
           });
         }, 2000);
         break;
@@ -482,14 +520,19 @@ const ChatPlay = () => {
               // If we have boxData
               if (msg.boxData) {
                 if (msg.boxData === "loading") {
-                  // Show skeleton loader
                   return (
                     <div className={styles.boxLoader}>
                       <SkeletonBox />
                     </div>
                   );
+                } else if (msg.boxData.type === "schedulingLoader") {
+                  return (
+                    <div className={styles.schedulingLoader}>
+                      <div className={styles.spinner}></div>
+                      <span>{msg.boxData.text}</span>
+                    </div>
+                  );
                 } else {
-                  // Render the box with the data
                   return <Box data={msg.boxData} />;
                 }
               } else if (msg.isLoading && !msg.content) {

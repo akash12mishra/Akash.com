@@ -43,8 +43,9 @@ const Hero = () => {
 
       <div className={styles.HeroDesc}>
         <p>
-          We build websites that drive results and help your business grow.{" "}
-          <br /> No Calls. No BS. Just Results.
+          We build Websites, MVPs and AI Automations that drive results and help{" "}
+          <br />
+          your business grow. No Calls. Just Results.
         </p>
       </div>
 

@@ -1,30 +1,59 @@
 // MeetingScheduler.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./MeetingScheduler.module.scss";
+import { format } from "date-fns";
 
 const MeetingScheduler = ({ onSave }) => {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState("");
   const [email, setEmail] = useState("");
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const [userTimezone] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
+  const [isLoading, setIsLoading] = useState(false);
+  const [disabledDates, setDisabledDates] = useState({});
 
-  const timeSlots = [
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-  ];
+  // Add this useEffect at the top level of your component
+  useEffect(() => {
+    return () => {
+      setTimeSlots(generateTimeSlots());
+      setDisabledDates({});
+    };
+  }, []);
 
-  const handleSave = () => {
+  // Update the handleSave function
+  const handleSave = async () => {
     if (!date || !time || !email) {
       alert("Please fill in all fields");
       return;
     }
-    onSave({ date, time, email });
+
+    // Check if slot is already booked before proceeding
+    const checkSlot = await isSlotBooked(date, { value: time });
+    if (checkSlot) {
+      alert(
+        "This time slot is no longer available. Please select another time."
+      );
+      // Refresh the time slots
+      const updatedSlots = await Promise.all(
+        timeSlots.map(async (slot) => {
+          const isBooked = await isSlotBooked(date, slot);
+          return { ...slot, isBooked };
+        })
+      );
+      setTimeSlots(updatedSlots);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await onSave({ date, time, email, timeZone: userTimezone });
+    } catch (error) {
+      console.error("Error saving meeting:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Calendar helpers
@@ -69,7 +98,8 @@ const MeetingScheduler = ({ onSave }) => {
     // Calendar days
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDate = new Date(currentYear, currentMonth, day);
-      const isDisabled = currentDate < today;
+      const dateString = currentDate.toISOString().split("T")[0];
+      const isDisabled = currentDate < today || disabledDates[dateString];
       const isSelected =
         date &&
         date.getDate() === day &&
@@ -80,8 +110,8 @@ const MeetingScheduler = ({ onSave }) => {
         <div
           key={day}
           className={`${styles.calendarDay} 
-            ${isDisabled ? styles.disabled : ""} 
-            ${isSelected ? styles.selected : ""}`}
+          ${isDisabled ? styles.disabled : ""} 
+          ${isSelected ? styles.selected : ""}`}
           onClick={() =>
             !isDisabled && setDate(new Date(currentYear, currentMonth, day))
           }
@@ -111,6 +141,104 @@ const MeetingScheduler = ({ onSave }) => {
       setCurrentMonth(currentMonth - 1);
     }
   };
+
+  const formatTimeWithZone = (time, targetTimezone) => {
+    return new Date(time).toLocaleTimeString("en-US", {
+      timeZone: targetTimezone,
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const generateTimeSlots = () => {
+    const slots = [];
+    const istStart = 16; // 4 PM IST
+    const istEnd = 25; // 1 AM next day
+
+    for (let hour = istStart; hour < istEnd; hour++) {
+      // Create date object for the slot time in IST
+      const slotDate = new Date();
+      slotDate.setHours(hour % 24, 0, 0, 0);
+
+      // Convert IST time to user's local time
+      const localTime = formatTimeWithZone(slotDate, userTimezone);
+      const istTime = formatTimeWithZone(slotDate, "Asia/Kolkata");
+
+      slots.push({
+        istHour: hour,
+        displayTime: localTime,
+        value: `${String(hour % 24).padStart(2, "0")}:00`,
+        istTime: istTime, // Store IST time for backend
+      });
+    }
+
+    return slots;
+  };
+
+  const [timeSlots, setTimeSlots] = useState(generateTimeSlots());
+
+  // Function to check if a slot is booked
+  const isSlotBooked = async (date, timeSlot) => {
+    try {
+      const response = await fetch("/api/check-availability", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date, time: timeSlot.value }),
+      });
+      const data = await response.json();
+      return data.isBooked;
+    } catch (error) {
+      console.error("Error checking slot availability:", error);
+      return false;
+    }
+  };
+
+  // Add this state at the top
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+
+  // Add this single useEffect for all availability checks
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkSlotAvailability = async () => {
+      if (!date || isLoadingSlots) return;
+      setIsLoadingSlots(true);
+
+      try {
+        const updatedSlots = await Promise.all(
+          timeSlots.map(async (slot) => {
+            const isBooked = await isSlotBooked(date, slot);
+            return { ...slot, isBooked };
+          })
+        );
+
+        if (isMounted) {
+          setTimeSlots(updatedSlots);
+
+          // Update disabled dates for the selected date
+          const dateString = date.toISOString().split("T")[0];
+          setDisabledDates((prev) => ({
+            ...prev,
+            [dateString]: updatedSlots.every((slot) => slot.isBooked),
+          }));
+        }
+      } catch (error) {
+        console.error("Error checking slot availability:", error);
+      } finally {
+        if (isMounted) {
+          setIsLoadingSlots(false);
+        }
+      }
+    };
+
+    const timer = setTimeout(checkSlotAvailability, 300);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
+  }, [date]); // Only check when date changes
 
   return (
     <div className={styles.MeetingScheduler}>
@@ -147,26 +275,41 @@ const MeetingScheduler = ({ onSave }) => {
       </div>
 
       <div className={styles.inputGroup}>
-        <label>Select Time</label>
+        <label>
+          Select Time (
+          {new Intl.DateTimeFormat(undefined, {
+            timeZoneName: "short",
+          })
+            .formatToParts()
+            .find((part) => part.type === "timeZoneName")?.value ||
+            userTimezone}
+          )
+        </label>
         <div className={styles.customSelect}>
           <div
             className={styles.selectTrigger}
             onClick={() => setIsSelectOpen(!isSelectOpen)}
           >
-            {time || "Select time slot"}
+            {time
+              ? timeSlots.find((slot) => slot.value === time)?.displayTime
+              : "Select time slot"}
           </div>
           {isSelectOpen && (
             <div className={styles.selectContent}>
               {timeSlots.map((slot) => (
                 <div
-                  key={slot}
-                  className={styles.selectItem}
+                  key={slot.value}
+                  className={`${styles.selectItem} ${
+                    slot.isBooked ? styles.disabled : ""
+                  }`}
                   onClick={() => {
-                    setTime(slot);
-                    setIsSelectOpen(false);
+                    if (!slot.isBooked) {
+                      setTime(slot.value);
+                      setIsSelectOpen(false);
+                    }
                   }}
                 >
-                  {slot}
+                  {slot.displayTime}
                 </div>
               ))}
             </div>
@@ -174,8 +317,16 @@ const MeetingScheduler = ({ onSave }) => {
         </div>
       </div>
 
-      <button onClick={handleSave} className={styles.scheduleButton}>
-        Schedule Meeting
+      <button
+        onClick={handleSave}
+        className={styles.scheduleButton}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <div className={styles.buttonSpinner}></div>
+        ) : (
+          "Schedule Meeting"
+        )}
       </button>
     </div>
   );

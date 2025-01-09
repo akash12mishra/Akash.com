@@ -51,6 +51,67 @@
       max-width: 90%;
       width: 100%;
 
+      .schedulingLoader {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: transparent;
+        border-radius: 8px;
+        margin: 10px 0;
+
+        /* Keyframes for smooth infinite rotation */
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        .spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid #666;
+          border-top: 2px solid transparent;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        /* Keyframes for the animated dots after "please wait" */
+        @keyframes dotFade {
+          0%,
+          20% {
+            content: "";
+          }
+          40% {
+            content: ".";
+          }
+          60% {
+            content: "..";
+          }
+          80% {
+            content: "...";
+          }
+          100% {
+            content: "";
+          }
+        }
+
+        span {
+          color: #333;
+          font-size: 14px;
+
+          &::after {
+            display: inline-block;
+            animation: dotFade 2s infinite;
+            content: "";
+            // margin-left: 2px;
+          }
+        }
+      }
+
       // Headings
       .heading1 {
         font-size: 24px;
