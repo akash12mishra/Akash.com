@@ -1,0 +1,62 @@
+.TermsOfService {
+  margin-top: 10px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+
+  .termsContainer {
+    max-width: 800px;
+    width: 100%;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
+
+    h1 {
+      font-size: 40px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    section {
+      margin-bottom: 30px;
+
+      h2 {
+        font-size: 24px;
+        color: black;
+        margin-bottom: 15px;
+      }
+
+      p {
+        font-size: 16px;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+
+      ul {
+        list-style-type: disc;
+        margin-left: 20px;
+        color: #666;
+
+        li {
+          margin-bottom: 10px;
+          line-height: 1.6;
+        }
+      }
+    }
+
+    .lastUpdated {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+
+      p {
+        color: #999;
+        font-style: italic;
+        text-align: center;
+      }
+    }
+  }
+}

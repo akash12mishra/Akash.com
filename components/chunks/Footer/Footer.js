@@ -25,6 +25,11 @@ const Footer = () => {
         </button>
 
         <p>A L Chakravarty Technologies.</p>
+
+        <div className={styles.policyPages}>
+          <a href="/privacyPolicy">Privacy Policy</a>
+          <a href="/termsOfService">Terms Of Service</a>
+        </div>
       </div>
 
       <div className={styles.footerRight}>
