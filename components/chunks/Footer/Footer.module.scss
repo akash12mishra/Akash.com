@@ -54,6 +54,18 @@
       color: gray;
     }
 
+    .policyPages {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: transparent;
+
+      a {
+        background: transparent;
+        color: gray;
+      }
+    }
+
     button {
       width: 40%;
       font-size: 20px;
