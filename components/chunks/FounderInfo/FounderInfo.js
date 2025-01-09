@@ -39,12 +39,12 @@ const FounderInfo = () => {
 
   // Paragraph text with line breaks for rendering as per the image
   const paragraphText = [
-    "“Manu is the man! He is the best front-end developer I have worked with.",
-    "He took the requirements and quite literally ran with them.",
+    "“Arka is a dedicated developer delivering projects with ReactJS, Redux, and NextJS.",
+    "Highly specialised in SEO, Generative AI, and user-focused products.",
     "",
     "We are super happy with the result and product we got.",
-    "He’s very intelligent, experienced, friendly, and helpful.",
-    "To anyone reading this - I can’t recommend this Manu enough, your job will be done exceptionally well, and you will be delighted with the end result.”",
+    "Love to work with experienced, friendly, and helpful clients.",
+    "Let’s collaborate from scratch and ship real value, harnessing React, NextJS, Generative AI with building MPVs and Sass products from scratch integrating AI Automations”",
   ];
 
   const totalCharacters = paragraphText.join("").length;

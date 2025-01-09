@@ -12,6 +12,9 @@ import Stack from "../../chunks/Stack/Stack";
 import Services from "../../chunks/Services/Services";
 import BuildInPublic from "../../chunks/BuildInPublic/BuildInPublic";
 import { useEffect, useRef } from "react";
+import PricingSection from "../../chunks/PricingSection/PricingSection";
+import HookIntro from "../../chunks/HookIntro/HookIntro";
+import Footer from "../../chunks/Footer/Footer";
 
 const Home = () => {
   const servicesRef = useRef(null);
@@ -61,10 +64,13 @@ const Home = () => {
       <Showcase />
       <FounderInfo />
       <MovingHeadline />
-      {/* <OnboardIntro /> */}
       <Services />
       <ChatBubble />
-      <BuildInPublic servicesRef={servicesRef} />
+      <BuildInPublic />
+      <PricingSection />
+      <OnboardIntro servicesRef={servicesRef} />
+      <HookIntro />
+      <Footer />
     </div>
   );
 };

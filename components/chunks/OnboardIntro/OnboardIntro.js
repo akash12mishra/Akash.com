@@ -9,7 +9,7 @@ import { CiVideoOn } from "react-icons/ci";
 import { FaCode } from "react-icons/fa6";
 import { MdOutlineAttachMoney } from "react-icons/md";
 
-const OnboardIntro = () => {
+const OnboardIntro = ({ servicesRef }) => {
   const stepRefs = useRef([]);
   const lineRefs = useRef([]);
   const componentRef = useRef(null);
@@ -106,28 +106,34 @@ const OnboardIntro = () => {
   const steps = [
     {
       icon: <IoChatbubbleEllipsesOutline />,
-      title: "Fill in the Questionnaire",
-      desc: "Help us understand your business bottlenecks and challenges.",
+      title: "Talk to our AI chatbot",
+      desc: "Ask your queries to our AI chatbot regarding our services and get instant answers.",
     },
     {
       icon: <CiVideoOn />,
       title: "Book a Call",
-      desc: "Discuss the identified challenges in detail with our experts.",
+      desc: "Schedule your meeting with us in our chatbot and lets discuss about your requirements.",
     },
     {
       icon: <FaCode />,
       title: "Get a Personalized Demo",
-      desc: "Receive a tailored demonstration, including ROI analysis.",
+      desc: "Receive a tailored demonstration, including a working demo of our software solutions.",
     },
     {
       icon: <MdOutlineAttachMoney />,
-      title: "Contract and Start Saving",
-      desc: "Begin your journey towards cutting costs and increasing sales.",
+      title: "Get Onboarded",
+      desc: "Begin your journey towards cutting costs and building advanced software solutions with us.",
     },
   ];
 
   return (
-    <div ref={componentRef} className={styles.OnboardIntro}>
+    <div
+      ref={(el) => {
+        servicesRef.current = el;
+        componentRef.current = el;
+      }}
+      className={styles.OnboardIntro}
+    >
       <div className={styles.OnboardTitle}>
         <p>How it works</p>
         <h2>

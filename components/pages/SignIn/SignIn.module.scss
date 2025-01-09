@@ -1,0 +1,124 @@
+.SignIn {
+  display: flex;
+  height: 100svh;
+  width: 100%;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+
+  .signInLeft {
+    width: 40%;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 50px 10px 50px 20px;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      flex-direction: row;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .signInLeftLogo {
+      background: transparent;
+      .signInLog {
+        object-fit: cover;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+
+        @media (max-width: 600px) {
+          width: 40px;
+          height: 40px;
+        }
+      }
+    }
+
+    .signInLeftContent {
+      background: transparent;
+
+      @media (max-width: 600px) {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .signInImg {
+        background: transparent;
+        object-fit: contain;
+        height: auto;
+        width: 80px;
+        color: white;
+
+        @media (max-width: 600px) {
+          width: 50px;
+        }
+      }
+
+      p {
+        background: transparent;
+        color: white;
+        font-size: 22px;
+
+        @media (max-width: 600px) {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .signInRight {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+    width: 60%;
+
+    @media (max-width: 600px) {
+      width: 100%;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .signInRightbtn {
+      button {
+        border: 1px solid #000;
+        border-radius: 10px;
+        padding: 10px 20px;
+        background-color: #fff;
+        font-size: 20px;
+        color: gray;
+        width: 250px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+
+        @media (max-width: 600px) {
+          font-size: 16px;
+        }
+
+        &:hover {
+          box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+        }
+      }
+    }
+
+    .signInRightTitle {
+      h3 {
+        font-size: 30px;
+
+        @media (max-width: 600px) {
+          font-size: 25px;
+        }
+      }
+    }
+  }
+}
