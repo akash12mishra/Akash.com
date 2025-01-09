@@ -16,7 +16,6 @@
       }
 
       span {
-        // background-color: black;
         color: black;
         padding: 5px;
         border-radius: 10px;
@@ -60,6 +59,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       font-weight: bold;
+      color: black;
 
       @media (max-width: 600px) {
         font-size: 16px;
@@ -72,6 +72,7 @@
 
       .HookIntroBtnIcon {
         background: transparent;
+        color: black;
 
         &:hover {
           color: white;
