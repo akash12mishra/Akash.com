@@ -98,7 +98,7 @@ const CustomFont = localFont({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <GoogleAnalytics GA_MEASUREMENT_ID="G-8Y1H8JM52G" />
+      <GoogleAnalytics GA_MEASUREMENT_ID="G-MD32GNY568" />
 
       <head>
         <script
