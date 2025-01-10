@@ -99,7 +99,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <GoogleAnalytics GA_MEASUREMENT_ID="G-MD32GNY568" />
+        <GoogleAnalytics GA_MEASUREMENT_ID="G-8Y1H8JM52G" />
 
         <script
           type="application/ld+json"
