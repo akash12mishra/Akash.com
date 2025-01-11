@@ -98,31 +98,49 @@ const CustomFont = localFont({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <GoogleAnalytics GA_MEASUREMENT_ID="G-8Y1H8JM52G" />
-
       <head>
+        <GoogleAnalytics GA_MEASUREMENT_ID="G-8Y1H8JM52G" />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "ProfessionalService",
-              name: "Arka Lal Chakravarty",
-              description:
-                "Expert web development services including AI-powered solutions",
-              image: "/images/og-image.jpg",
-              url: "https://arkalalchakravarty.com",
-              address: {
-                "@type": "PostalAddress",
-                addressCountry: "India",
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "ProfessionalService",
+                name: "Arka Lal Chakravarty",
+                description:
+                  "Expert web development services including AI-powered solutions",
+                image: "/images/og-image.jpg",
+                url: "https://arkalalchakravarty.com",
+                address: {
+                  "@type": "PostalAddress",
+                  addressCountry: "India",
+                },
+                priceRange: "$$",
+                serviceType: [
+                  "Web Development",
+                  "AI Integration",
+                  "Website Design",
+                ],
               },
-              priceRange: "$$",
-              serviceType: [
-                "Web Development",
-                "AI Integration",
-                "Website Design",
-              ],
-            }),
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "Arka Lal Chakravarty",
+                url: "https://arkalalchakravarty.com",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target:
+                    "https://arkalalchakravarty.com/search?q={search_term_string}",
+                  "query-input": "required name=search_term_string",
+                },
+                sameAs: [
+                  "https://www.linkedin.com/in/arkalal/",
+                  "https://github.com/arkalal",
+                ],
+              },
+            ]),
           }}
         />
       </head>
