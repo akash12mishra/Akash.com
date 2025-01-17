@@ -505,7 +505,7 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
     if (!initialMessageShown.current) {
       addMessage(
         "assistant",
-        "Hey! So you want me to book a call with Arka Lal Chakravarty right? Let me know 👋👀"
+        "Hey! welcome to arkalalchakravarty.com 🎉. I'm Arka's assistant. Feel free to ask me anything! 👀🧑🏻‍💻"
       );
       initialMessageShown.current = true;
     }
