@@ -55,7 +55,13 @@ const PricingSection = () => {
               </div>
             </div>
             <button
-              onClick={() => router.push("/chatPlay")}
+              onClick={() =>
+                window.open(
+                  "https://calendly.com/arkalal-chakravarty/30min",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
               className={styles.actionBtn}
             >
               <IoSparklesOutline className={styles.btnIcon} />

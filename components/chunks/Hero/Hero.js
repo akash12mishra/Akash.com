@@ -10,15 +10,15 @@ const Hero = () => {
   const [showVideo, setShowVideo] = useState(true);
   const chatbotRef = useRef(null);
 
-  const handleCallButtonClick = () => {
-    setShowVideo(false);
-    setTimeout(() => {
-      chatbotRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center", // This will center the element in viewport
-      });
-    }, 100); // Small delay to ensure state update completes
-  };
+  // const handleCallButtonClick = () => {
+  //   setShowVideo(false);
+  //   setTimeout(() => {
+  //     chatbotRef.current?.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "center", // This will center the element in viewport
+  //     });
+  //   }, 100); // Small delay to ensure state update completes
+  // };
 
   return (
     <div className={styles.Hero}>
@@ -50,14 +50,22 @@ const Hero = () => {
       </div>
 
       <div className={styles.HeroBtn}>
-        <button onClick={handleCallButtonClick}>
+        <button
+          onClick={() =>
+            window.open(
+              "https://calendly.com/arkalal-chakravarty/30min",
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }
+        >
           Book a call <CiVideoOn className={styles.HeroBtnIcon} />{" "}
         </button>
       </div>
 
       <Chatbot
         ref={chatbotRef}
-        showVideo={showVideo}
+        // showVideo={showVideo}
         setShowVideo={setShowVideo}
       />
     </div>
