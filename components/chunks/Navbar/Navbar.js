@@ -6,6 +6,7 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { useSession } from "next-auth/react";
 import UserBox from "../../UserBox/UserBox";
 import { useRouter } from "next/navigation";
+import { FaGithub } from "react-icons/fa";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -51,9 +52,16 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <button onClick={() => router.push("/signIn")}>
-              <span>Sign In</span>{" "}
-              <FaArrowRightLong className={styles.signInArrow} />{" "}
+            <button
+              onClick={() =>
+                window.open(
+                  "https://github.com/arkalal",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
+            >
+              <span>Follow</span> <FaGithub className={styles.signInArrow} />{" "}
             </button>
           </>
         )}

@@ -100,7 +100,7 @@ const Services = () => {
               </p>
 
               <button onClick={() => router.push("/chatPlay")}>
-                Book a call{" "}
+                Chat with AI{" "}
                 <IoSparklesOutline className={styles.demoSparkleService} />{" "}
               </button>
             </div>

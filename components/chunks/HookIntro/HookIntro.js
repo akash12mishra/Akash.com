@@ -26,7 +26,15 @@ const HookIntro = () => {
       </video>
 
       <div className={styles.HookIntroBtn}>
-        <button onClick={() => router.push("/chatPlay")}>
+        <button
+          onClick={() =>
+            window.open(
+              "https://calendly.com/arkalal-chakravarty/30min",
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }
+        >
           Book a call <IoSparklesOutline className={styles.HookIntroBtnIcon} />{" "}
         </button>
       </div>
