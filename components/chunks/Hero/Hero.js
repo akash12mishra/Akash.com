@@ -22,6 +22,13 @@ const Hero = () => {
 
   return (
     <div className={styles.Hero}>
+      <div className={styles.heroGlassSlots}>
+        <p>
+          {" "}
+          <span>Limited Availability:</span> 3 spots available
+        </p>
+      </div>
+
       <div className={styles.HeroTitle}>
         <h2>
           Building{" "}
@@ -37,7 +44,7 @@ const Hero = () => {
             />{" "}
           </span>
           {"  "}
-          Websites with <br /> Excellent Design & Speed{" "}
+          MVPs with <br /> Excellent Design & Speed{" "}
         </h2>
       </div>
 

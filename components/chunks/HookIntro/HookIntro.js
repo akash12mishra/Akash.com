@@ -17,7 +17,8 @@ const HookIntro = () => {
         </h3>
 
         <p>
-          Get your business to the next level with our AI powered solutions.
+          Get your business to the next level with our MVP development & AI
+          powered solutions.
         </p>
       </div>
 
