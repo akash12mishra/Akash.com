@@ -9,8 +9,8 @@ import { useRouter } from "next/navigation";
 import { FaGithub } from "react-icons/fa";
 
 const Navbar = () => {
-  const { data: session } = useSession();
-  const router = useRouter();
+  // const { data: session } = useSession();
+  // const router = useRouter();
 
   const [showUserBox, setShowUserBox] = useState(false);
 
@@ -39,41 +39,26 @@ const Navbar = () => {
       </div>
 
       <div className={styles.authBtn}>
-        {session ? (
-          <>
-            <Image
-              src={session.user.image}
-              alt="logo"
-              className={styles.navLogoImg}
-              width={50}
-              height={50}
-              onClick={handleImageClick}
-            />
-          </>
-        ) : (
-          <>
-            <button
-              onClick={() =>
-                window.open(
-                  "https://github.com/arkalal",
-                  "_blank",
-                  "noopener,noreferrer"
-                )
-              }
-            >
-              <span>Follow</span> <FaGithub className={styles.signInArrow} />{" "}
-            </button>
-          </>
-        )}
+        <button
+          onClick={() =>
+            window.open(
+              "https://github.com/arkalal",
+              "_blank",
+              "noopener,noreferrer"
+            )
+          }
+        >
+          <span>Follow</span> <FaGithub className={styles.signInArrow} />{" "}
+        </button>
       </div>
 
-      {session && showUserBox && (
+      {/* {session && showUserBox && (
         <>
           <div className={styles.userBoxWrapper}>
             <UserBox />
           </div>
         </>
-      )}
+      )} */}
     </div>
   );
 };
