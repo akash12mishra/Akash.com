@@ -6,6 +6,34 @@
   align-items: center;
   gap: 40px;
 
+  .heroGlassSlots {
+    background: linear-gradient(
+      135deg,
+      rgba(38, 46, 86, 0.35) 0%,
+      rgba(52, 67, 138, 0.15) 100%
+    );
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 12px 30px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    cursor: pointer;
+
+    p {
+      background: transparent;
+      font-size: 16px;
+      margin: 0;
+      color: black;
+
+      span {
+        background: transparent;
+        font-weight: 600;
+        color: rgb(131, 127, 127);
+      }
+    }
+  }
+
   .HeroTitle {
     h2 {
       font-size: 50px;
