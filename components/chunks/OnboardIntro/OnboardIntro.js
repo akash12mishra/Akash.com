@@ -8,6 +8,8 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { CiVideoOn } from "react-icons/ci";
 import { FaCode } from "react-icons/fa6";
 import { MdOutlineAttachMoney } from "react-icons/md";
+import { FaLaptopCode } from "react-icons/fa";
+import { FcSupport } from "react-icons/fc";
 
 const OnboardIntro = ({ servicesRef }) => {
   const stepRefs = useRef([]);
@@ -105,24 +107,24 @@ const OnboardIntro = ({ servicesRef }) => {
 
   const steps = [
     {
-      icon: <IoChatbubbleEllipsesOutline />,
-      title: "Talk to our AI chatbot",
-      desc: "Ask your queries to our AI chatbot regarding our services and get instant answers.",
-    },
-    {
       icon: <CiVideoOn />,
-      title: "Book a Call",
-      desc: "Schedule your meeting with us in our chatbot and lets discuss about your requirements.",
+      title: "Initial Consultation",
+      desc: "Book a call with us. We will explore and research on your idea and undertstand your vision in detail.",
     },
     {
       icon: <FaCode />,
-      title: "Get a Personalized Demo",
-      desc: "Receive a tailored demonstration, including a working demo of our software solutions.",
+      title: "MVP Planning & Development",
+      desc: "Get a detailed plan of development. Once the proposal is signed, development begins.",
     },
     {
-      icon: <MdOutlineAttachMoney />,
-      title: "Get Onboarded",
-      desc: "Begin your journey towards cutting costs and building advanced software solutions with us.",
+      icon: <FaLaptopCode />,
+      title: "On-time project delivery",
+      desc: "Get your fully functional MVP with all planned features, ready for the official launch.",
+    },
+    {
+      icon: <FcSupport />,
+      title: "Continuous Maintenance & Support",
+      desc: "Enjoy unlimited maintenance support including critical bug fixes by connecting inside our workspace.",
     },
   ];
 
