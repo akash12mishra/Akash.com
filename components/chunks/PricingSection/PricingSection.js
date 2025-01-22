@@ -16,30 +16,25 @@ const PricingSection = () => {
       </div>
 
       <div className={styles.pricingCards}>
-        <div className={styles.pricingCard}>
-          <div className={styles.limitedBadge}>Most Popular</div>
+        <div className={`${styles.pricingCard} ${styles.regular}`}>
+          {/* <div className={styles.limitedBadge}>Most Popular</div> */}
           <div className={styles.cardContent}>
-            <h3>Development Bundle</h3>
-            <p className={styles.seatsLeft}>One Time</p>
+            <h3> AI Bundle</h3>
+            <p className={styles.seatsLeft}>
+              Monthly Recurring (cancel anytime)
+            </p>
             <div className={styles.price}>
-              <span className={styles.amount}>$2,000</span>
-              {/* <span className={styles.period}>/month</span> */}
+              <span className={styles.amount}>$1,000</span>
+              <span className={styles.period}>/month</span>
             </div>
             <div className={styles.features}>
               <div className={styles.feature}>
-                ✓ Full access to all features
-              </div>
-              <div className={styles.feature}>✓ React / Next.js / code</div>
-              <div className={styles.feature}>✓ One Custom AI automation</div>
-              <div className={styles.feature}>✓ One AI Agent & Chatbot</div>
-              <div className={styles.feature}>
-                ✓ One MVP, Website, AI App and Sass development
+                ✓ Unlimited Custom AI automations
               </div>
               <div className={styles.feature}>
-                ✓ Unlimited Custom React Components
+                ✓ Unlimited AI Agents & Chatbots
               </div>
               <div className={styles.feature}>✓ Unlimited Revisions</div>
-              <div className={styles.feature}>✓ Search Engine Optimization</div>
               <div className={styles.feature}>
                 ✓ 24-hour support response time
               </div>
@@ -66,25 +61,70 @@ const PricingSection = () => {
           </div>
         </div>
 
+        <div className={styles.pricingCard}>
+          <div className={styles.limitedBadge}>Most Popular</div>
+          <div className={styles.cardContent}>
+            <h3>Development Bundle</h3>
+            <p className={styles.seatsLeft}>One Time</p>
+            <div className={styles.price}>
+              <span className={styles.amount}>$2,000</span>
+              {/* <span className={styles.period}>/month</span> */}
+            </div>
+            <div className={styles.features}>
+              <div className={styles.feature}>
+                ✓ Includes AI Bundle features for 30 days for free
+              </div>
+              {/* <div className={styles.feature}>✓ React / Next.js / code</div> */}
+              <div className={styles.feature}>
+                ✓ Complete MVP, Website, AI App and Sass development under 4
+                weeks
+              </div>
+              <div className={styles.feature}>
+                ✓ Unlimited Custom React Components
+              </div>
+              <div className={styles.feature}>✓ Unlimited Revisions</div>
+              <div className={styles.feature}>✓ Search Engine Optimization</div>
+              <div className={styles.feature}>
+                ✓ 24-hour support response time
+              </div>
+              <div className={styles.feature}>
+                ✓ Full Access to private Google workspace
+              </div>
+            </div>
+            <button
+              onClick={() =>
+                window.open(
+                  "https://calendly.com/arkalal-chakravarty/30min",
+                  "_blank",
+                  "noopener,noreferrer"
+                )
+              }
+              className={styles.actionBtn}
+            >
+              <IoSparklesOutline className={styles.btnIcon} />
+              Book a Call
+            </button>
+          </div>
+        </div>
+
         <div className={`${styles.pricingCard} ${styles.regular}`}>
           <div className={styles.cardContent}>
             <h3>Retainer Bundle</h3>
-            <p className={styles.seatsLeft}>Monthly Recurring</p>
+            <p className={styles.seatsLeft}>
+              Monthly Recurring (cancel anytime)
+            </p>
             <div className={styles.price}>
               <span className={styles.amount}>$3,000</span>
               <span className={styles.period}>/month</span>
             </div>
             <div className={styles.features}>
               <div className={styles.feature}>
+                ✓ Includes AI Bundle features
+              </div>
+              {/* <div className={styles.feature}>
                 ✓ 80 hours of development time per month
-              </div>
-              <div className={styles.feature}>✓ React / Next.js / code</div>
-              <div className={styles.feature}>
-                ✓ Unlimited Custom AI automations
-              </div>
-              <div className={styles.feature}>
-                ✓ Unlimited AI Agents & Chatbots
-              </div>
+              </div> */}
+              {/* <div className={styles.feature}>✓ React / Next.js / code</div> */}
               <div className={styles.feature}>
                 ✓ Unlimited MVPs, Website, AI Apps and Sass development
               </div>
@@ -98,9 +138,6 @@ const PricingSection = () => {
               </div>
               <div className={styles.feature}>
                 ✓ Full Access to private Google workspace
-              </div>
-              <div className={styles.feature}>
-                ✓ Full Access to Email marketing automations
               </div>
             </div>
             <button
