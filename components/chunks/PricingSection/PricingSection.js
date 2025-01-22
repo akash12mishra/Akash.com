@@ -29,14 +29,17 @@ const PricingSection = () => {
             </div>
             <div className={styles.features}>
               <div className={styles.feature}>
-                ✓ Unlimited Custom AI automations
+                ✓ Complete Custom AI automations
               </div>
               <div className={styles.feature}>
-                ✓ Unlimited AI Agents & Chatbots
+                ✓ Complete AI Agents & Chatbots Development
               </div>
               <div className={styles.feature}>✓ Unlimited Revisions</div>
               <div className={styles.feature}>
                 ✓ 24-hour support response time
+              </div>
+              <div className={styles.feature}>
+                ✓ Immediate emergency support
               </div>
               <div className={styles.feature}>
                 ✓ Full Access to private Google workspace
@@ -82,7 +85,15 @@ const PricingSection = () => {
               <div className={styles.feature}>
                 ✓ Unlimited Custom React Components
               </div>
-              <div className={styles.feature}>✓ Unlimited Revisions</div>
+              <div className={styles.feature}>
+                ✓ 30 days of Unlimited Revisions
+              </div>
+              <div className={styles.feature}>
+                ✓ 30 days of Weekly strategy calls
+              </div>
+              <div className={styles.feature}>
+                ✓ Immediate emergency support
+              </div>
               <div className={styles.feature}>✓ Search Engine Optimization</div>
               <div className={styles.feature}>
                 ✓ 24-hour support response time
@@ -136,6 +147,14 @@ const PricingSection = () => {
               <div className={styles.feature}>
                 ✓ 24-hour support response time
               </div>
+              <div className={styles.feature}>
+                ✓ Immediate emergency support
+              </div>
+              <div className={styles.feature}>
+                ✓ Long-term committment with continuous maintenance, support &
+                optimization
+              </div>
+              <div className={styles.feature}>✓ Weekly strategy calls</div>
               <div className={styles.feature}>
                 ✓ Full Access to private Google workspace
               </div>
