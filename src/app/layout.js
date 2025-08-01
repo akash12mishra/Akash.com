@@ -1,8 +1,10 @@
 import localFont from "next/font/local";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.scss";
 import { Provider } from "../../Providers";
 import Script from "next/script";
 import GoogleAnalytics from "../../utils/GoogleAnalytics.js";
+import { ThemeProvider } from "../../components/ThemeProvider";
 
 export const metadata = {
   metadataBase: new URL("https://arkalalchakravarty.com"),
@@ -58,6 +60,16 @@ export const metadata = {
     },
   },
 };
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
 
 const CustomFont = localFont({
   src: [
@@ -143,8 +155,12 @@ export default function RootLayout({ children }) {
         />
       </head>
 
-      <body className={CustomFont.className}>
-        <Provider>{children}</Provider>
+      <body className={`${CustomFont.className} ${spaceGrotesk.variable} ${inter.variable}`}>
+        <Provider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </Provider>
       </body>
     </html>
   );
