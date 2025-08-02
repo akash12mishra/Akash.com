@@ -12,6 +12,7 @@ import Contact from "../../chunks/Contact/Contact";
 import CTASection from "../../chunks/CTASection/CTASection";
 import NewFooter from "../../chunks/Footer/NewFooter";
 import TechStack from "../../chunks/TechStack/TechStack";
+import ChatBubble from "../../chunks/ChatBubble/ChatBubble";
 
 const NewHome = () => {
   return (
@@ -27,6 +28,7 @@ const NewHome = () => {
       <Contact />
       <CTASection />
       <NewFooter />
+      <ChatBubble />
     </div>
   );
 };

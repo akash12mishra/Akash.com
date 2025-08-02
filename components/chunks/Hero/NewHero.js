@@ -11,7 +11,8 @@ import logoImg from "../../../assets/images/arka.png";
 
 const NewHero = () => {
   const heroRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const avatarRef = useRef(null);
+  const mousePositionRef = useRef({ x: 0, y: 0 });
   
   useEffect(() => {
     const handleScroll = () => {
@@ -26,11 +27,20 @@ const NewHero = () => {
       }
     };
     
+    // Handle mouse move without triggering state updates that cause re-renders
     const handleMouseMove = (e) => {
+      if (!avatarRef.current) return;
+      
       const { clientX, clientY } = e;
-      const x = (clientX / window.innerWidth - 0.5) * 20;
-      const y = (clientY / window.innerHeight - 0.5) * 20;
-      setMousePosition({ x, y });
+      mousePositionRef.current = {
+        x: (clientX / window.innerWidth - 0.5) * 20,
+        y: (clientY / window.innerHeight - 0.5) * 20
+      };
+      
+      // Apply the transform directly to the DOM element
+      if (avatarRef.current) {
+        avatarRef.current.style.transform = `perspective(1000px) rotateY(${mousePositionRef.current.x}deg) rotateX(${-mousePositionRef.current.y}deg)`;
+      }
     };
     
     window.addEventListener("scroll", handleScroll);
@@ -83,9 +93,7 @@ const NewHero = () => {
         <motion.div className={styles.content} variants={containerVariants}>
           <motion.div 
             className={styles.avatarContainer}
-            style={{
-              transform: `perspective(1000px) rotateY(${mousePosition.x * 0.02}deg) rotateX(${-mousePosition.y * 0.02}deg)`
-            }}
+            ref={avatarRef}
             variants={itemVariants}
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 300 }}

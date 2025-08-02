@@ -1,57 +1,80 @@
 .Chatbot {
   border: none;
   outline: none;
-  box-shadow: 28px 28px 36px #000, -28px -28px 36px #fff;
-  border-radius: 20px;
-  padding: 10px;
-  height: 550px;
-  width: 400px;
-  background-color: #ffffff;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
   position: relative;
-
-  @media (max-width: 600px) {
-    width: 350px;
-  }
+  display: flex;
+  flex-direction: column;
 
   .chatbotBox {
-    height: 88%;
-    overflow-y: auto; /* Independent scrolling */
-    padding: 10px;
-    border-radius: 10px;
-    background-color: transparent;
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    padding: 10px 15px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 92, 246, 0.3) transparent;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(139, 92, 246, 0.3);
+      border-radius: 6px;
+    }
 
     .userMessage {
       align-self: flex-end;
       width: fit-content;
-      max-width: 80%;
+      max-width: 85%;
 
       p {
-        background-color: black;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
-        border-radius: 10px;
-        padding: 8px 12px;
-        box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.75);
+        border-radius: 18px 18px 4px 18px;
+        padding: 10px 16px;
+        box-shadow: 0px 2px 8px rgba(99, 102, 241, 0.3);
         text-align: left;
-        margin: 0; /* Ensure no extra margin on user messages */
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.5;
       }
     }
 
     .aiMessage {
       text-align: left;
       align-self: flex-start;
-      color: #333;
+      color: rgba(255, 255, 255, 1);
       max-width: 90%;
-      width: 100%;
+      width: fit-content;
+      
+      p {
+        background: rgba(40, 40, 50, 0.85);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 4px 18px 18px 18px;
+        padding: 12px 18px;
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.6;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        color: rgba(255, 255, 255, 0.95);
+      }
 
       .schedulingLoader {
         display: flex;
         align-items: center;
         gap: 10px;
         padding: 10px;
-        background: transparent;
+        background: rgba(30, 30, 35, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 8px;
         margin: 10px 0;
 
@@ -66,10 +89,10 @@
         }
 
         .spinner {
-          width: 20px;
-          height: 20px;
-          border: 2px solid #666;
-          border-top: 2px solid transparent;
+          width: 18px;
+          height: 18px;
+          border: 2px solid rgba(139, 92, 246, 0.5);
+          border-top: 2px solid #8b5cf6;
           border-radius: 50%;
           animation: spin 1s linear infinite;
         }
@@ -95,7 +118,7 @@
         }
 
         span {
-          color: #333;
+          color: rgba(255, 255, 255, 0.8);
           font-size: 14px;
 
           &::after {
@@ -109,26 +132,28 @@
 
       // Headings
       .heading1 {
-        font-size: 24px;
+        font-size: 22px;
         font-weight: bold;
         margin: 24px 0 16px;
-        color: #1a1a1a;
+        color: rgba(255, 255, 255, 0.95);
         line-height: 1.3;
+        border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+        padding-bottom: 8px;
       }
 
       .heading2 {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: bold;
         margin: 20px 0 12px;
-        color: #1a1a1a;
+        color: rgba(255, 255, 255, 0.95);
         line-height: 1.3;
       }
 
       .heading3 {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: bold;
-        margin: 16px 0 10px;
-        color: #1a1a1a;
+        margin: 18px 0 10px;
+        color: rgba(255, 255, 255, 0.95);
         line-height: 1.3;
       }
 
@@ -141,36 +166,47 @@
         line-height: 1.5;
 
         .number {
-          color: #1a1a1a;
+          color: rgba(139, 92, 246, 0.9);
           min-width: 24px;
           font-weight: 600;
         }
 
         .heading {
-          color: #1a1a1a;
+          color: rgba(255, 255, 255, 0.95);
           font-weight: 600;
         }
 
         .rest {
-          color: #333;
+          color: rgba(255, 255, 255, 0.8);
           margin-left: 4px;
         }
       }
 
       // Lists
       .bulletList {
-        margin: 12px 0;
-        padding-left: 24px;
-        list-style-type: disc;
+        margin: 10px 0 15px 0;
+        padding-left: 20px;
+        color: rgba(255, 255, 255, 0.95);
 
         .bulletItem {
-          margin: 8px 0;
+          margin-bottom: 8px;
           line-height: 1.6;
-          color: #333;
-          padding-left: 4px;
+          position: relative;
+          list-style-type: none;
+          padding-left: 8px;
+          
+          &::before {
+            content: '•';
+            color: rgba(139, 92, 246, 0.9);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+            font-size: 1.2em;
+          }
 
-          &::marker {
-            color: #666;
+          &:last-child {
+            margin-bottom: 0;
           }
         }
       }
@@ -179,12 +215,12 @@
       .paragraph {
         margin: 12px 0;
         line-height: 1.6;
-        color: #333;
+        color: rgba(255, 255, 255, 0.9);
         white-space: pre-wrap;
         word-wrap: break-word;
 
         strong {
-          color: #1a1a1a;
+          color: rgba(255, 255, 255, 1);
           font-weight: 600;
         }
       }
@@ -193,29 +229,33 @@
       .emptyLine {
         height: 16px;
       }
-
-      // Code blocks if needed
-      pre {
-        background-color: #f5f5f5;
-        padding: 12px;
+      
+      // Code blocks
+      .codeBlock {
+        background-color: rgba(20, 20, 30, 0.8);
+        border: 1px solid rgba(139, 92, 246, 0.3);
         border-radius: 6px;
-        margin: 12px 0;
+        padding: 14px;
+        margin: 15px 0;
         overflow-x: auto;
-
-        code {
-          font-family: monospace;
-          font-size: 14px;
-          line-height: 1.4;
-        }
+        font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 14px;
+        line-height: 1.5;
+        box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2) inset;
       }
-
-      // Inline code if needed
+      
+      // Inline code
       code {
-        background-color: #f5f5f5;
+        background-color: rgba(30, 30, 40, 0.6);
         padding: 2px 6px;
         border-radius: 4px;
-        font-family: monospace;
+        font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
         font-size: 0.9em;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(139, 92, 246, 0.2);
       }
     }
 
@@ -274,50 +314,66 @@
   }
 
   .chatbotInput {
+    position: relative;
+    width: 100%;
+    padding: 10px;
     display: flex;
-    gap: 10px;
-    justify-content: space-between;
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+    background: rgba(15, 15, 20, 0.4);
 
     form {
-      display: flex;
       width: 100%;
-      gap: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
 
       input {
-        flex-grow: 1;
-        padding: 0.5rem;
-        font-size: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+        flex: 1;
+        padding: 10px 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        background: rgba(20, 20, 25, 0.8);
+        color: rgba(255, 255, 255, 0.9);
         outline: none;
-        font-size: 16px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) inset;
+        
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.4);
+        }
+        
+        &:focus {
+          border-color: rgba(139, 92, 246, 0.6);
+          box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
       }
 
       button {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        cursor: pointer;
+        padding: 10px 20px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
         border: none;
-        border-radius: 10px;
-        background-color: black;
-        color: #fff;
-        outline: none;
-        transition: all 0.2s ease-in-out;
-        box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        transition: all 0.2s ease;
 
         &:hover {
-          background-color: white;
-          color: black;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        &:active {
+          transform: translateY(1px);
         }
 
         &:disabled {
-          background-color: #cccccc;
+          background: rgba(99, 102, 241, 0.3);
           cursor: not-allowed;
+          box-shadow: none;
         }
       }
     }
@@ -348,17 +404,18 @@
     align-items: center;
     column-gap: 4px;
     padding: 12px 16px;
-    background: #f5f5f5;
-    border-radius: 20px;
+    background: rgba(40, 40, 50, 0.85);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 18px;
     width: fit-content;
 
     .dot {
       width: 6px;
       height: 6px;
-      background: #666;
+      background: rgba(139, 92, 246, 0.9);
       border-radius: 50%;
       animation: typing 1.4s infinite;
-      opacity: 0.4;
+      opacity: 0.7;
 
       &:nth-child(1) {
         animation-delay: 0s;
@@ -373,7 +430,7 @@
       }
     }
   }
-
+  
   @keyframes typing {
     0% {
       transform: translateY(0px);
@@ -384,8 +441,8 @@
       opacity: 0.9;
     }
     50% {
-      transform: translateY(1px);
-      opacity: 0.4;
+      transform: translateY(-4px);
+      opacity: 1;
     }
     75% {
       transform: translateY(-1px);
