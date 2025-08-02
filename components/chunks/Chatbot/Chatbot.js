@@ -4,8 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./Chatbot.module.scss";
 import Box from "../../Box/Box";
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
-import ChatbotVideo from "../../ChatbotVideo/ChatbotVideo";
-import { useSession } from "next-auth/react";
 
 const TypingAnimation = () => (
   <div className={styles.typingAnimation}>
@@ -24,7 +22,7 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
   const currentMessageRef = useRef("");
   const functionCallBuffer = useRef("");
 
-  const { data: session } = useSession();
+  // Session removed as part of authentication cleanup
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -213,55 +211,24 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
         break;
 
       case "render_box_component":
-        // Immediately show skeleton loader
-        setChatHistory((prev) =>
-          prev.map((msg, idx) =>
-            idx === assistantMessageIndex.current
-              ? { ...msg, isLoading: false, boxData: "loading" }
-              : msg
-          )
-        );
-
-        // Simulate loading time, then show actual box
-        setTimeout(() => {
-          setChatHistory((prev) =>
-            prev.map((msg, idx) =>
-              idx === assistantMessageIndex.current
-                ? { ...msg, boxData: "AI Box Rendered" }
-                : msg
-            )
+        // First add a loading box
+        setChatHistory((prev) => {
+          const updatedHistory = [...prev];
+          const loadingIndex = updatedHistory.findIndex(
+            (msg) => msg.role === "assistant" && msg.isLoading === true
           );
-        }, 2000);
-        break;
+          if (loadingIndex !== -1) {
+            updatedHistory[loadingIndex] = {
+              role: "assistant",
+              content: "Here's a demo of my tech stack:",
+              isLoading: false,
+              boxData: "loading",
+            };
+          }
+          return updatedHistory;
+        });
 
-      case "schedule_meeting":
-        // First check for session
-        if (!session) {
-          addMessage(
-            "assistant",
-            "You need to sign in first to book a call with Arka Lal Chakravarty."
-          );
-          return;
-        }
-
-        // Add loading message first
-        setChatHistory((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content:
-              "Here is the scheduling box where you can book the call below:",
-            isLoading: false,
-          },
-          {
-            role: "assistant",
-            content: "",
-            isLoading: false,
-            boxData: "loading",
-          },
-        ]);
-
-        // After delay, update the component message
+        // After a short delay, replace with the actual box
         setTimeout(() => {
           setChatHistory((prev) => {
             const updatedHistory = [...prev];
@@ -272,77 +239,48 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
               updatedHistory[boxIndex] = {
                 ...updatedHistory[boxIndex],
                 boxData: {
-                  type: "meeting",
-                  onSave: async (meetingData) => {
-                    // Add loading message
-                    addMessage("assistant", "", true, {
-                      type: "schedulingLoader",
-                      text: "Your meeting is getting scheduled, please wait",
-                    });
-
-                    try {
-                      const response = await fetch("/api/meeting", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(meetingData),
-                      });
-
-                      // Remove the loading message
-                      setChatHistory((prev) =>
-                        prev.filter(
-                          (msg) => !(msg.boxData?.type === "schedulingLoader")
-                        )
-                      );
-
-                      if (response.ok) {
-                        addMessage(
-                          "assistant",
-                          "Your call has been scheduled with Arka Lal Chakravarty. Please check your email."
-                        );
-                      } else {
-                        const data = await response.json();
-
-                        // Check if it's a duplicate slot error
-                        if (data.error?.includes("duplicate key error")) {
-                          addMessage(
-                            "assistant",
-                            "This time slot is already booked. Please select another available time slot. 👋"
-                          );
-                        } else {
-                          addMessage(
-                            "assistant",
-                            "Sorry, there was an error scheduling your call. Please try again."
-                          );
-                        }
-                      }
-                    } catch (error) {
-                      // Remove the loading message
-                      setChatHistory((prev) =>
-                        prev.filter(
-                          (msg) => !(msg.boxData?.type === "schedulingLoader")
-                        )
-                      );
-
-                      addMessage(
-                        "assistant",
-                        "Sorry, there was an error scheduling your call. Please try again."
-                      );
-                    }
-                  },
+                  title: "Tech Stack",
+                  description: "Technologies I work with:",
+                  items: [
+                    {
+                      name: "Next.js",
+                      icon: "nextjs",
+                    },
+                    {
+                      name: "React",
+                      icon: "react",
+                    },
+                    {
+                      name: "MongoDB",
+                      icon: "mongodb",
+                    },
+                    {
+                      name: "Node.js",
+                      icon: "nodejs",
+                    },
+                    {
+                      name: "Python",
+                      icon: "python",
+                    },
+                    {
+                      name: "OpenAI",
+                      icon: "openai",
+                    },
+                  ],
                 },
               };
             }
             return updatedHistory;
           });
-        }, 2000);
+        }, 1500);
         break;
     }
   };
 
-  const tryParseFunctionCall = (jsonString) => {
+  const tryParseToolCall = (jsonString) => {
     try {
       const parsed = JSON.parse(jsonString);
-      if (parsed.function_call) {
+      if (parsed.tool_call) {
         return parsed;
       }
     } catch {
@@ -400,69 +338,47 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
         try {
           parsedChunk = JSON.parse(chunk);
         } catch {
-          // Not JSON. Possibly a partial function call or normal text.
+          // Not JSON. Possibly a partial tool call or normal text.
         }
 
-        if (parsedChunk && parsedChunk.function_call) {
-          if (!parsedChunk.function_call.name) {
+        if (parsedChunk && parsedChunk.tool_call) {
+          if (!parsedChunk.tool_call.function?.name) {
             updateAssistantMessage(
-              "Sorry, I did a mistake 👀. Can you type it again?"
+              "Sorry, I encountered an issue. Can you try again?"
             );
             finalizeAssistantMessage();
             return;
           }
 
-          // If we got a direct function call JSON
-          if (typeof parsedChunk.function_call === "string") {
-            // Accumulate and try parse again
-            functionCallBuffer.current += parsedChunk.function_call;
-            const parsedFunction = tryParseFunctionCall(
-              functionCallBuffer.current
-            );
-            if (parsedFunction) {
-              await handleFunctionCall(
-                parsedFunction.function_call.name,
-                parsedFunction.function_call.arguments
-              );
-              functionCallBuffer.current = "";
-            }
-            // If still not parseable, just continue accumulating
-          } else {
-            // Fully formed function call
-            await handleFunctionCall(
-              parsedChunk.function_call.name,
-              parsedChunk.function_call.arguments
-            );
-            functionCallBuffer.current = "";
-
-            console.log("parsedChunk", parsedChunk);
-          }
+          // Fully formed tool call
+          await handleToolCall(
+            parsedChunk.tool_call.function.name,
+            parsedChunk.tool_call.function.arguments
+          );
+          functionCallBuffer.current = "";
+          console.log("Tool call executed:", parsedChunk.tool_call.function.name);
         } else {
-          // No direct function_call in chunk
-          // Maybe it's partial function call data or normal text
+          // No direct tool_call in chunk
+          // Maybe it's partial tool call data or normal text
           if (functionCallBuffer.current) {
             // We have some accumulated data, try adding this chunk to the buffer and parse
             functionCallBuffer.current += chunk;
-            const parsedFunction = tryParseFunctionCall(
-              functionCallBuffer.current
-            );
-            if (parsedFunction) {
-              await handleFunctionCall(
-                parsedFunction.function_call.name,
-                parsedFunction.function_call.arguments
+            const parsedTool = tryParseToolCall(functionCallBuffer.current);
+            if (parsedTool) {
+              await handleToolCall(
+                parsedTool.tool_call.function.name,
+                parsedTool.tool_call.function.arguments
               );
               functionCallBuffer.current = "";
               continue;
             } else {
-              // Still not parseable as function call. It might be normal text after all.
+              // Still not parseable as tool call. It might be normal text after all.
               // Since we failed to parse even after accumulation, let's treat this new chunk as text.
-              // But we must not lose previously accumulated data. Since it didn't form a valid function call,
-              // we assume it was just text. So updateAssistantMessage with the entire buffer + this chunk.
               updateAssistantMessage(functionCallBuffer.current);
               functionCallBuffer.current = "";
             }
           } else {
-            // No accumulated function call, just normal text.
+            // No accumulated tool call, just normal text.
             updateAssistantMessage(chunk);
           }
         }
@@ -484,7 +400,7 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
       );
     } finally {
       setIsLoading(false);
-      // If there's any leftover function call buffer at the end, treat it as text.
+      // If there's any leftover tool call buffer at the end, treat it as text.
       if (functionCallBuffer.current) {
         updateAssistantMessage(functionCallBuffer.current);
         functionCallBuffer.current = "";
@@ -513,15 +429,8 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
 
   return (
     <div ref={ref} className={styles.Chatbot}>
-      {showVideo ? (
-        <>
-          {" "}
-          <ChatbotVideo />{" "}
-        </>
-      ) : (
-        <>
-          <div className={styles.chatbotBox} ref={chatbotBoxRef}>
-            {chatHistory.map((msg, idx) => (
+      <div className={styles.chatbotBox} ref={chatbotBoxRef}>
+        {chatHistory.map((msg, idx) => (
               <div
                 key={idx}
                 className={
@@ -557,23 +466,21 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
                 })()}
               </div>
             ))}
-          </div>
-          <div className={styles.chatbotInput}>
-            <form onSubmit={handleFormSubmit}>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type your query..."
-              />
-              <button type="submit" disabled={isLoading}>
-                Send
-              </button>
-            </form>
-          </div>
-        </>
-      )}
+      </div>
+      <div className={styles.chatbotInput}>
+        <form onSubmit={handleFormSubmit}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your query..."
+          />
+          <button type="submit" disabled={isLoading}>
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   );
 });

@@ -1,89 +1,171 @@
-.ChatBubble {
+.chatBubbleContainer {
   position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  font-family: var(--font-sans);
+
+  @media (max-width: 768px) {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+.chatBubble {
+  position: relative;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background-color: black;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
   border: none;
   outline: none;
-  width: 50px;
-  height: 50px;
-  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.75);
-  bottom: 50px;
-  right: 50px;
   cursor: pointer;
-  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.3s ease-in-out;
-
-  @media (max-width: 600px) {
-    right: 10px;
-    bottom: 10px;
-  }
+  box-shadow: 
+    0 4px 15px rgba(99, 102, 241, 0.4),
+    0 0 0 1px rgba(99, 102, 241, 0.2),
+    0 0 20px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  z-index: 101;
 
   &:hover {
-    transform: scale(1.05);
+    box-shadow: 
+      0 8px 25px rgba(99, 102, 241, 0.5),
+      0 0 0 1px rgba(99, 102, 241, 0.3),
+      0 0 30px rgba(99, 102, 241, 0.5);
   }
 
-  .ChatBubbleImg {
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-    border-radius: 50%;
-    animation: fadeIn 0.3s ease-in-out;
+  &:focus {
+    outline: none;
+  }
+}
+
+.bubbleContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.robotIcon {
+  font-size: 24px;
+  color: white;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+}
+
+.glowEffect {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+  opacity: 0.2;
+  mix-blend-mode: overlay;
+  animation: pulse 2s infinite alternate;
+}
+
+.chatWindow {
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  width: 350px;
+  height: 500px;
+  background: rgba(15, 15, 20, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(99, 102, 241, 0.1),
+    0 0 40px rgba(99, 102, 241, 0.2);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+
+  @media (max-width: 768px) {
+    width: 320px;
+    height: 450px;
+    bottom: 70px;
+    right: 0;
   }
 
-  .ChatBubbleClose {
-    font-size: 25px;
-    background: transparent;
+  @media (max-width: 380px) {
+    width: 300px;
+    right: -10px;
+  }
+}
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+  border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.chatTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
     color: white;
-    animation: fadeRotate 0.3s ease-in-out;
-  }
-
-  .ChatBubbleChatbox {
-    position: absolute;
-    bottom: 50px;
-    right: 50px;
-    animation: slideIn 0.4s ease-in-out;
-    transform-origin: bottom right;
-    background: transparent;
-
-    @media (max-width: 600px) {
-      right: 5px;
-      bottom: 60px;
-    }
+    letter-spacing: 0.3px;
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
+  animation: pulse 1.5s infinite;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
   }
-  to {
-    opacity: 1;
-    transform: scale(1);
+
+  &:focus {
+    outline: none;
   }
 }
 
-@keyframes fadeRotate {
-  from {
-    opacity: 0;
-    transform: rotate(-90deg);
-  }
-  to {
-    opacity: 1;
-    transform: rotate(0);
-  }
+.chatContent {
+  flex: 1;
+  overflow: hidden;
+  height: calc(100% - 50px);
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
     transform: scale(0.95);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.05);
   }
 }
