@@ -4,8 +4,6 @@ import React, { useState, useRef, useEffect } from "react";
 import styles from "./Chatbot.module.scss";
 import Box from "../../Box/Box";
 import SkeletonBox from "../../SkeletonBox/SkeletonBox";
-import ChatbotVideo from "../../ChatbotVideo/ChatbotVideo";
-import { useSession } from "next-auth/react";
 
 const TypingAnimation = () => (
   <div className={styles.typingAnimation}>
@@ -24,7 +22,7 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
   const currentMessageRef = useRef("");
   const functionCallBuffer = useRef("");
 
-  const { data: session } = useSession();
+  // Session removed as part of authentication cleanup
 
   const scrollToBottom = () => {
     if (chatbotBoxRef.current) {
@@ -431,15 +429,8 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
 
   return (
     <div ref={ref} className={styles.Chatbot}>
-      {showVideo ? (
-        <>
-          {" "}
-          <ChatbotVideo />{" "}
-        </>
-      ) : (
-        <>
-          <div className={styles.chatbotBox} ref={chatbotBoxRef}>
-            {chatHistory.map((msg, idx) => (
+      <div className={styles.chatbotBox} ref={chatbotBoxRef}>
+        {chatHistory.map((msg, idx) => (
               <div
                 key={idx}
                 className={
@@ -475,23 +466,21 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
                 })()}
               </div>
             ))}
-          </div>
-          <div className={styles.chatbotInput}>
-            <form onSubmit={handleFormSubmit}>
-              <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Type your query..."
-              />
-              <button type="submit" disabled={isLoading}>
-                Send
-              </button>
-            </form>
-          </div>
-        </>
-      )}
+      </div>
+      <div className={styles.chatbotInput}>
+        <form onSubmit={handleFormSubmit}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type your query..."
+          />
+          <button type="submit" disabled={isLoading}>
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   );
 });

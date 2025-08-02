@@ -2,8 +2,6 @@ export default async function sitemap() {
   const baseUrl = "https://arkalalchakravarty.com";
   const routes = [
     "",
-    "/chatPlay",
-    "/signIn",
     "/privacyPolicy",
     "/termsOfService",
   ].map((route) => ({

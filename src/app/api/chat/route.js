@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "../../../../auth";
 
 export async function POST(req) {
   try {
-    const session = await auth();
     const { prompt, conversationHistory } = await req.json();
 
     if (!prompt) {
