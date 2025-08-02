@@ -6,7 +6,7 @@ import NewHero from "../../chunks/Hero/NewHero";
 import About from "../../chunks/About/About";
 import Projects from "../../chunks/Projects/Projects";
 import Experience from "../../chunks/Experience/Experience";
-import NewBuildinPublic from "../../chunks/BuildinPublic/NewBuildinPublic";
+import NewBuildinPublic from "../../chunks/BuildInPublic/NewBuildinPublic";
 import Resume from "../../chunks/Resume/Resume";
 import Contact from "../../chunks/Contact/Contact";
 import CTASection from "../../chunks/CTASection/CTASection";
