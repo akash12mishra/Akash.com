@@ -5,7 +5,6 @@ import styles from "./NewNavbar.module.scss";
 import Image from "next/image";
 import logoImg from "../../../assets/images/arka.png";
 import { FaGithub } from "react-icons/fa";
-import { FiSun, FiMoon } from "react-icons/fi";
 import { useTheme } from "../../ThemeProvider";
 import Link from "next/link";
 
@@ -54,13 +53,6 @@ const NewNavbar = () => {
           </ul>
           
           <div className={styles.actions}>
-            <button 
-              className={styles.themeToggle} 
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            >
-              {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
-            </button>
             
             <a 
               href="https://github.com/arkalal" 
@@ -91,14 +83,7 @@ const NewNavbar = () => {
             </li>
           ))}
           <li className={styles.mobileActions}>
-            <button 
-              className={styles.mobileThemeToggle} 
-              onClick={toggleTheme}
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            >
-              {theme === 'light' ? <FiMoon size={20} /> : <FiSun size={20} />}
-              <span>{theme === 'light' ? 'Dark' : 'Light'} Mode</span>
-            </button>
+
             
             <a 
               href="https://github.com/arkalal" 

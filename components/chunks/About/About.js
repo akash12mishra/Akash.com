@@ -12,7 +12,7 @@ const About = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add(styles.visible);
           }
@@ -54,16 +54,20 @@ const About = () => {
           </div>
 
           <div className={styles.textContent}>
-            <h3 className={styles.greeting}>Hi there! I'm Arka</h3>
+            <h3 className={styles.greeting}>Hi there! I&apos;m Arka</h3>
             <p className={styles.bio}>
-              I'm an <span>AI Engineer</span> and <span>Full-Stack Developer</span> with a passion for building 
-              advanced AI SaaS products and automations. With expertise in both AI integration and web development, 
-              I specialize in creating powerful, user-friendly applications that leverage cutting-edge technologies.
+              I&apos;m an <span>AI Engineer</span> and{" "}
+              <span>Full-Stack Developer</span> with a passion for building
+              advanced AI SaaS products and automations. With expertise in both
+              AI integration and web development, I specialize in creating
+              powerful, user-friendly applications that leverage cutting-edge
+              technologies.
             </p>
             <p className={styles.bio}>
-              My journey in tech has given me a unique perspective on how to create efficient, 
-              scalable solutions that help businesses grow. I'm always excited to take on new challenges 
-              and bring innovative ideas to life.
+              My journey in tech has given me a unique perspective on how to
+              create efficient, scalable solutions that help businesses grow.
+              I&apos;m always excited to take on new challenges and bring
+              innovative ideas to life.
             </p>
 
             <div className={styles.skillCards}>
@@ -72,7 +76,10 @@ const About = () => {
                   <FaLaptopCode className={styles.icon} />
                 </div>
                 <h4>Full-Stack Development</h4>
-                <p>Building modern, responsive web applications with the latest technologies.</p>
+                <p>
+                  Building modern, responsive web applications with the latest
+                  technologies.
+                </p>
               </div>
 
               <div className={styles.skillCard}>
@@ -80,7 +87,10 @@ const About = () => {
                   <FaRobot className={styles.icon} />
                 </div>
                 <h4>AI Integration</h4>
-                <p>Implementing advanced AI solutions and automations for practical business needs.</p>
+                <p>
+                  Implementing advanced AI solutions and automations for
+                  practical business needs.
+                </p>
               </div>
 
               <div className={styles.skillCard}>
@@ -88,7 +98,10 @@ const About = () => {
                   <FaCode className={styles.icon} />
                 </div>
                 <h4>Product Architecture</h4>
-                <p>Designing scalable, maintainable systems with a focus on performance and user experience.</p>
+                <p>
+                  Designing scalable, maintainable systems with a focus on
+                  performance and user experience.
+                </p>
               </div>
             </div>
           </div>

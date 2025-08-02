@@ -6,6 +6,7 @@ import Script from "next/script";
 import GoogleAnalytics from "../../utils/GoogleAnalytics.js";
 import { ThemeProvider } from "../../components/ThemeProvider";
 
+
 export const metadata = {
   metadataBase: new URL("https://arkalalchakravarty.com"),
   title: {

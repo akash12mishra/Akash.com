@@ -1,15 +1,24 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import styles from "./Experience.module.scss";
 import { FaBriefcase, FaGraduationCap, FaBuilding, FaLaptopCode, FaRobot } from "react-icons/fa";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
 const Experience = () => {
   const [activeExperience, setActiveExperience] = useState(0);
-  const timelineRef = useRef(null);
+  const timelineControlsMain = useAnimation();
+  const [timelineRef, timelineInView] = useInView({
+    threshold: 0.3,
+    triggerOnce: false
+  });
   
-  // Experience data
-  const experiences = [
+  // Animation states for each experience item
+  const [animationStates, setAnimationStates] = useState([]);
+  
+  // Experience data memoized to prevent unnecessary re-renders
+  const experiences = useMemo(() => [
     {
       id: 1,
       role: "Freelance Software Engineer",
@@ -76,92 +85,232 @@ const Experience = () => {
       icon: <FaBriefcase />,
       color: "#10B981",
     }
-  ];
+  ], []);
 
+  // Initialize animation states for each experience
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add(styles.visible);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+    setAnimationStates(experiences.map((_, index) => ({
+      isActive: index === activeExperience,
+      hasBeenViewed: index === activeExperience
+    })));
+  }, [experiences, activeExperience]);
 
-    const current = timelineRef.current;
-    if (current) {
-      observer.observe(current);
+  // Handle timeline animations
+  useEffect(() => {
+    if (timelineInView) {
+      timelineControlsMain.start("visible");
     }
+  }, [timelineInView, timelineControlsMain]);
+  
+  // Update animation states when active experience changes
+  useEffect(() => {
+    setAnimationStates(prevStates => 
+      prevStates.map((state, index) => ({
+        isActive: index === activeExperience,
+        hasBeenViewed: state.hasBeenViewed || index === activeExperience
+      }))
+    );
+  }, [activeExperience]);
 
-    return () => {
-      if (current) {
-        observer.unobserve(current);
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
       }
-    };
-  }, []);
+    }
+  };
+
+  const timelineVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  };
+
+  const lineVariants = {
+    hidden: { height: '0%' },
+    visible: { 
+      height: '100%',
+      transition: { 
+        duration: 0.8,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const bubbleVariants = {
+    hidden: { scale: 0 },
+    visible: { 
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }
+    },
+    active: {
+      scale: 1.2,
+      backgroundColor: "var(--accent-primary)",
+      transition: {
+        duration: 0.3
+      }
+    }
+  };
+
+  const contentVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+        delay: 0.3
+      }
+    },
+    exit: {
+      opacity: 0,
+      x: 20,
+      transition: {
+        duration: 0.2
+      }
+    }
+  };
 
   return (
-    <section id="experience" className={styles.experienceSection} ref={timelineRef}>
-      <div className={styles.container}>
-        <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>Experience</span>
-          <h2 className={styles.sectionTitle}>My Journey</h2>
-          <p className={styles.sectionDescription}>
-            A timeline of my professional experiences and educational background.
-          </p>
-        </div>
+    <section id="experience" className={styles.experienceSection}>
+      <motion.div 
+        className={styles.container}
+        ref={timelineRef}
+        variants={containerVariants}
+        initial="hidden"
+        animate={timelineControlsMain}
+      >
+        <motion.div 
+          className={styles.sectionHeader}
+          variants={itemVariants}
+        >
+          <motion.span 
+            className={styles.sectionTag}
+            variants={itemVariants}
+          >
+            Experience
+          </motion.span>
+          <motion.h2 
+            className={styles.sectionTitle}
+            variants={itemVariants}
+          >
+            My Journey
+          </motion.h2>
+          <motion.p 
+            className={styles.sectionDescription}
+            variants={itemVariants}
+          >
+            A timeline of my professional experiences and career milestones
+          </motion.p>
+
+        </motion.div>
         
-        <div className={styles.timelineContainer}>
-          <div className={styles.timelineNavigation}>
+        <div className={styles.timelineWrapper}>
+          <div className={styles.timelineProgressLine}>
+            <motion.div 
+              className={styles.progressBar}
+              variants={lineVariants}
+              initial="hidden"
+              animate="visible"
+              style={{ 
+                background: `linear-gradient(to bottom, ${experiences[0].color}, ${experiences[experiences.length-1].color})` 
+              }}
+            />
+          </div>
+
+          <div className={styles.timelineContent}>
             {experiences.map((exp, index) => (
-              <button
+              <motion.div
                 key={exp.id}
-                className={`${styles.timelineButton} ${activeExperience === index ? styles.active : ''}`}
-                onClick={() => setActiveExperience(index)}
-                style={activeExperience === index ? { borderColor: exp.color } : {}}
+                className={`${styles.timelineItem} ${activeExperience === index ? styles.active : ''}`}
+                variants={timelineVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, margin: "-100px" }}
               >
-                <div 
-                  className={styles.iconContainer} 
-                  style={{ backgroundColor: activeExperience === index ? exp.color : 'var(--card-bg)' }}
-                >
-                  {exp.icon}
+                <div className={styles.timelineBubbleContainer}>
+                  <motion.div 
+                    className={styles.timelineBubble}
+                    variants={bubbleVariants}
+                    animate={activeExperience === index ? "active" : "visible"}
+                    onClick={() => setActiveExperience(index)}
+                    style={{ 
+                      borderColor: exp.color,
+                      backgroundColor: activeExperience === index ? exp.color : "var(--card-bg)" 
+                    }}
+                  >
+                    {exp.icon}
+                  </motion.div>
                 </div>
-                <div className={styles.timelineInfo}>
-                  <h3>{exp.role}</h3>
-                  <p>{exp.company}</p>
-                </div>
-                <span 
-                  className={styles.duration}
-                  style={activeExperience === index ? { color: exp.color } : {}}
+                
+                <motion.div 
+                  className={`${styles.timelineItemContent} ${styles.activeContent}`}
+                  variants={itemVariants}
+                  whileInView="visible"
+                  viewport={{ once: false, amount: 0.4 }}
+                  initial="hidden"
                 >
-                  {exp.duration}
-                </span>
-              </button>
+                  <div className={styles.timelineHeader}>
+                    <h3 style={{ color: exp.color }}>
+                      {exp.role}
+                    </h3>
+                    <span className={styles.timelineCompany}>{exp.company}</span>
+                    <span className={styles.timelineDuration}>{exp.duration}</span>
+                  </div>
+                  
+                  <motion.div 
+                    className={styles.timelineDetails}
+                    variants={contentVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: false, amount: 0.4 }}
+                    exit="exit"
+                  >
+                      <ul className={styles.responsibilities}>
+                        {exp.description.map((item, i) => (
+                          <motion.li 
+                            key={i}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 * i }}
+                          >
+                            {item}
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                </motion.div>
+              </motion.div>
             ))}
           </div>
-          
-          <div className={styles.timelineContent}>
-            <div className={styles.experienceDetails} style={{ borderColor: experiences[activeExperience].color }}>
-              <div 
-                className={styles.experienceHeader} 
-                style={{ backgroundColor: experiences[activeExperience].color }}
-              >
-                <h3>{experiences[activeExperience].role}</h3>
-                <p>{experiences[activeExperience].company}</p>
-              </div>
-              <div className={styles.experienceBody}>
-                <ul className={styles.responsibilities}>
-                  {experiences[activeExperience].description.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

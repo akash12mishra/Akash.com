@@ -4,99 +4,144 @@ trigger: always_on
 
 # UI Theme
 
-Design System Prompt (Themes, Colors, Animations)
+⸻
 
-1. Color Themes:
+🌑 Overall Theme & Tone
+• Style: Dark theme default (with toggle for Light mode)
+• Vibe: Modern, professional, tech-focused, slightly futuristic
+• Look: Glassmorphism + smooth gradients + blurred neon accents
+• Fonts: Use high-contrast, bold heading fonts (e.g., Space Grotesk or Inter) paired with clean body text (e.g., Satoshi or DM Sans)
+• Colors:
+• Primary: #FFFFFF on dark
+• Accent: Neon blue, Electric purple, Aqua gradients
+• Background: Deep black with soft particle animations
+• Animations: Scroll-based transitions, parallax background, testimonial card floats, smooth image reveals
 
-   - Support both Dark Mode and Light Mode (toggle button top-right)
-   - Light Mode: #fdfdfd background, #1f1f1f text, blue/violet accent (#6366F1, #7C3AED)
-   - Dark Mode: #0e0e10 background, #fafafa text, neon/cyber blue accent (#38BDF8, #3B82F6)
-   - Smooth transitions between themes using Tailwind's dark mode classes
+⸻
 
-2. Fonts:
+🧠 Sections to Include
 
-   - Headings: 'Space Grotesk', sans-serif (bold, modern)
-   - Body: 'Inter', sans-serif (clean, readable)
+1. Hero Section (Landing Intro)
 
-3. UI Elements:
+Inspiration: [Lucas Miller section in image 5 + 6]
+• Background: 3D animated particle sphere or glowing tech mesh
+• Headline: Arka Lal Chakravarty
+• Subheadline: AI Engineer & Full-Stack Developer
+• Text: “I build cutting-edge AI-powered SaaS products, automation workflows, and web platforms. Let’s build something great.”
+• CTA Buttons:
+• [View Projects]
+• [Contact Me]
+• Profile photo with circular border hover effects or floating animation
+• Light/Dark mode toggle in header
 
-   - Hero section with a floating avatar + typing animation for title
-   - Glassmorphic project cards (on hover: subtle tilt and glow)
-   - Sticky navbar with scroll section highlight
-   - Animated skill icons (scroll-in fade + hover scale)
-   - Timeline section for experience using vertical stepper
-   - Parallax scroll effect on project thumbnails
-   - Button styles: pill-shaped with gradient background, hover ripple effect
+⸻
 
-4. Animations:
+2. About Me Section
 
-   - Framer Motion page transitions (fade/slide)
-   - Hero text typing effect: "AI Engineer", "Full Stack Developer", "Automation Architect"
-   - Scroll-based section reveals (fade-in, slide-up)
-   - SVG wave transitions between sections
-   - Particle background in hero (optional)
+Inspiration: Image 2
+• Text Bio with scroll fade-in
+• Tech stack badges (React, Next.js, MongoDB, OpenAI, Vercel, Python, FastAPI, GPT-4o, Pinecone, etc.)
+• Display values & personality: problem-solver, fast executor, product thinker
+• “Currently available for freelance / contract work”
+• Download Resume button + embedded PDF viewer (interactive)
 
-5. Responsiveness:
-   - Mobile-first layout
-   - Collapsible menu for mobile
-   - Project carousel/swiper on smaller screens
+⸻
 
-Landing Page UI Structure (Section-wise Layout)
+3. Services Offered
 
-1. Navbar (sticky top)
+Inspiration: Image 3
 
-   - Logo (Arka Lal)
-   - Links: Home, About, Projects, Resume, Experience, Contact
-   - Theme toggle (light/dark)
-   - CTA: "Hire Me" (button scrolls to Contact)
+Grid layout of cards:
+• AI-Powered Web Apps
+• SaaS Product Development
+• Workflow Automation
+• Chrome Extension Development
+• SEO Automation Platforms
+• AI Chatbots (RAG, Autogen, FastAPI)
+• Tech Stack Consulting
 
-2. Hero Section
+Each card:
+• Smooth hover glow
+• Minimal icon
+• Short description (3–5 lines)
 
-   - Big heading with typing effect
-   - Short subtitle: "Building powerful AI & SaaS experiences"
-   - Call-to-action buttons: View Resume, Contact Me
-   - Animated avatar or vector illustration (looping Lottie or floating effect)
-   - Background: particle or radial gradient
+⸻
 
-3. About Me
+4. Featured Projects Showcase
 
-   - Bio with photo
-   - Timeline of education and early journey
-   - Icons of companies worked with
+Inspiration: Image 4, 6, 7
+• Grid/masonry-style animated layout
+• Hover animations reveal project title + tags
+• Click to open full project modal with:
+• Overview
+• Screenshots
+• Stack used
+• Live Demo button
+• GitHub Repo button
 
-4. Skills & Tech Stack
+⸻
 
-   - Categorized grid (Frontend, Backend, AI, Tools)
-   - Hover effects to show expertise level or years of experience
+5. Experience Timeline
 
-5. Projects Section
+Inspiration: Image 2 lower half
+• Styled vertical timeline
+• Cards with:
+• Role title
+• Company name
+• Year
+• Short bullet highlights of impact
 
-   - Grid or horizontal carousel
-   - Each card: project title, short description, stack used, GitHub & demo links
-   - Hover animations, tag badges (e.g., #NextJS, #GPT-4)
+⸻
 
-6. Experience Timeline
+6. Client Testimonials
 
-   - Vertical scroll timeline with logos, roles, and descriptions
-   - Optionally animate as scrolls into view
+Inspiration: Floating testimonials in image 1
+• Floating glowing quote cards
+• Fade in/out carousel
+• Subtle animation (drifting, floating, rotating)
+• Real client quotes or placeholders (can be added dynamically)
 
-7. Resume
+⸻
 
-   - Interactive layout of your resume with download PDF button
-   - Optionally render from markdown or JSON for dynamic updates
+7. FAQs (Collapsible Accordion Style)
 
-8. Testimonials (Optional)
+Inspiration: Image 9
 
-   - Carousel of client/founder testimonials
-   - Image, name, role, and feedback
+Sample questions:
+• “How long does a typical project take?”
+• “What is your pricing model?”
+• “What tech stack do you specialize in?”
+• “Are you open to long-term contracts?”
 
-9. Contact Section
+⸻
 
-   - Email form (with validation)
-   - Social links (LinkedIn, GitHub, Twitter)
-   - Calendly/booking button (optional)
+8. Contact CTA Footer
 
-10. Footer
+Inspiration: Image 9 end section
+• Section title: Let’s Work Together
+• Subtitle: “Open to freelance, contract, or full-time roles”
+• Form: Name, Email, Message
+• Links to:
+• LinkedIn
+• Twitter
+• GitHub
+• Email (mailto)
 
-- Copyright
-- Mini site nav + social links
+⸻
+
+⚙️ Technical & Performance Requirements
+• Built using: Next.js (App Router), TailwindCSS
+• Animations with: Framer Motion or GSAP
+• Hosting on: Vercel
+• SEO optimized: Open Graph tags, JSON-LD, custom meta
+• Lighthouse Performance > 90
+• Lazy load images and animations
+
+⸻
+
+💡 Bonus Motion Suggestions
+• Cursor trail (subtle glowing dot)
+• Animated text typing effects (Hero headline)
+• 3D hover tilt on project cards
+• Scroll-triggered section fades & background color shifts
+• Particle JS / Vanta JS in background of Hero and Footer

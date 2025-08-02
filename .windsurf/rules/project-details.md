@@ -4,7 +4,7 @@ trigger: always_on
 
 # Project Details
 
-You are redesigning the personal portfolio website for Arka Lal Chakravarty — an AI Engineer and Full-Stack Developer with a proven track record of building advanced AI SaaS products and automations.
+This is the Personal portfolio website for Arka Lal Chakravarty — an AI Engineer and Full-Stack Developer with a proven track record of building advanced AI SaaS products and automations.
 
 ❗Purpose of the Website:
 To position Arka as a premium freelance/contract/full-time AI engineer and full-stack developer so that he can:
@@ -13,7 +13,7 @@ To position Arka as a premium freelance/contract/full-time AI engineer and full-
 - Attract high-quality international clients
 - Build a strong personal brand
 
-❗The site is no longer an MVP agency site. It is a personal branding portfolio focused entirely on showcasing:
+It is a personal branding portfolio focused entirely on showcasing:
 
 1. Who Arka is (bio, values, skills)
 2. Projects built (with live demos and GitHub links)

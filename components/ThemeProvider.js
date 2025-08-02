@@ -5,23 +5,20 @@ import { createContext, useContext, useEffect, useState } from "react";
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("dark");
+  const [theme] = useState("dark");
 
-  // Initialize theme from localStorage or system preference
+  // Set dark theme on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedTheme = localStorage.getItem("theme") || 
-        (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-      setTheme(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
+      // Always use dark theme
+      document.documentElement.setAttribute("data-theme", "dark");
+      localStorage.setItem("theme", "dark");
     }
   }, []);
 
+  // Dummy toggle function that does nothing (to maintain API compatibility)
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.setAttribute("data-theme", newTheme);
+    // No-op - we always stay in dark mode
   };
 
   return (

@@ -3,7 +3,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./Projects.module.scss";
 import Image from "next/image";
-import { FaArrowRight, FaGithub, FaYoutube, FaExternalLinkAlt } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaGithub,
+  FaYoutube,
+  FaExternalLinkAlt,
+} from "react-icons/fa";
 
 // Client Project Images
 import cawlabImg from "../../../assets/images/projects/clientWork/cawlab-app.png";
@@ -22,7 +27,7 @@ const Projects = () => {
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add(styles.visible);
           }
@@ -49,28 +54,32 @@ const Projects = () => {
       id: 1,
       name: "Cawlab - 2D Floor Plan Generator",
       image: cawlabImg,
-      description: "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
+      description:
+        "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
       tags: ["AI", "NextJS", "MongoDB"],
     },
     {
       id: 2,
       name: "Taltracker",
       image: taltrackerImg,
-      description: "Advanced talent tracking and management platform for recruiting professionals.",
+      description:
+        "Advanced talent tracking and management platform for recruiting professionals.",
       tags: ["React", "NodeJS", "PostgreSQL"],
     },
     {
       id: 3,
       name: "Disco Influencer Marketing",
       image: discoImg,
-      description: "Influencer marketing platform connecting brands with social media influencers.",
+      description:
+        "Influencer marketing platform connecting brands with social media influencers.",
       tags: ["NextJS", "AI", "Firebase"],
     },
     {
       id: 4,
       name: "Quenlo AI",
       image: quenloImg,
-      description: "AI-driven content generation and marketing automation platform.",
+      description:
+        "AI-driven content generation and marketing automation platform.",
       tags: ["AI", "React", "Python"],
     },
   ];
@@ -81,7 +90,8 @@ const Projects = () => {
       id: 1,
       name: "BrowzPot",
       image: browzpotImg,
-      description: "An AI-powered SaaS platform that helps businesses optimize their web presence and customer engagement.",
+      description:
+        "An AI-powered SaaS platform that helps businesses optimize their web presence and customer engagement.",
       tags: ["AI", "NextJS", "MongoDB", "OpenAI"],
       appLink: "https://www.browzpot.com/",
       demoLink: "#", // Will be updated later with YouTube demo link
@@ -95,40 +105,48 @@ const Projects = () => {
           <span className={styles.sectionTag}>Projects</span>
           <h2 className={styles.sectionTitle}>My Recent Work</h2>
           <p className={styles.sectionDescription}>
-            A collection of projects I've worked on, showcasing my expertise in AI, web development, and creative problem-solving.
+            A collection of projects Ive worked on, showcasing my expertise in
+            AI, web development, and creative problem-solving.
           </p>
         </div>
 
         <div className={styles.tabsContainer}>
           <div className={styles.tabs}>
-            <button 
-              className={`${styles.tabButton} ${activeTab === 'client' ? styles.active : ''}`}
-              onClick={() => setActiveTab('client')}
+            <button
+              className={`${styles.tabButton} ${
+                activeTab === "client" ? styles.active : ""
+              }`}
+              onClick={() => setActiveTab("client")}
             >
               Client Projects
             </button>
-            <button 
-              className={`${styles.tabButton} ${activeTab === 'own' ? styles.active : ''}`}
-              onClick={() => setActiveTab('own')}
+            <button
+              className={`${styles.tabButton} ${
+                activeTab === "own" ? styles.active : ""
+              }`}
+              onClick={() => setActiveTab("own")}
             >
               My SaaS Products
             </button>
           </div>
-          
-          <div className={styles.tabIndicator} style={{ 
-            left: activeTab === 'client' ? '0' : '50%' 
-          }}></div>
+
+          <div
+            className={styles.tabIndicator}
+            style={{
+              left: activeTab === "client" ? "0" : "50%",
+            }}
+          ></div>
         </div>
 
         <div className={styles.projectsContainer}>
           {/* Client Projects Grid */}
-          {activeTab === 'client' && (
+          {activeTab === "client" && (
             <div className={styles.projectsGrid}>
               {clientProjects.map((project) => (
                 <div key={project.id} className={styles.projectCard}>
                   <div className={styles.imageContainer}>
-                    <Image 
-                      src={project.image} 
+                    <Image
+                      src={project.image}
                       alt={project.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -152,13 +170,13 @@ const Projects = () => {
           )}
 
           {/* Own SaaS Projects Grid */}
-          {activeTab === 'own' && (
+          {activeTab === "own" && (
             <div className={styles.projectsGrid}>
               {ownProjects.map((project) => (
                 <div key={project.id} className={styles.projectCard}>
                   <div className={styles.imageContainer}>
-                    <Image 
-                      src={project.image} 
+                    <Image
+                      src={project.image}
                       alt={project.name}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -175,7 +193,7 @@ const Projects = () => {
                         ))}
                       </div>
                       <div className={styles.buttons}>
-                        <a 
+                        <a
                           href={project.appLink}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -184,7 +202,7 @@ const Projects = () => {
                           <span>Visit App</span>
                           <FaExternalLinkAlt />
                         </a>
-                        <button 
+                        <button
                           className={styles.button}
                           onClick={() => setShowModal(true)}
                         >
@@ -204,8 +222,14 @@ const Projects = () => {
       {/* Demo Modal - to be populated with YouTube embed when available */}
       {showModal && (
         <div className={styles.modal} onClick={() => setShowModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={() => setShowModal(false)}>
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className={styles.closeButton}
+              onClick={() => setShowModal(false)}
+            >
               &times;
             </button>
             <div className={styles.videoContainer}>
