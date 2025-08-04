@@ -137,6 +137,43 @@
   @media (max-width: 768px) {
     flex-direction: column;
   }
+  
+  &.mobileTimeline {
+    .timelineProgressLine {
+      position: relative;
+      width: 100%;
+      height: 4px;
+      margin-right: 0;
+      margin-bottom: 2rem;
+      
+      .progressBar {
+        height: 100%;
+        width: 0;
+      }
+    }
+    
+    .timelineContent {
+      margin-top: 1.5rem;
+    }
+    
+    .timelineItem {
+      margin-left: 2rem;
+      
+      .timelineBubbleContainer {
+        left: -2.5rem;
+        top: 1.5rem;
+        transform: none;
+      }
+      
+      .timelineItemContent {
+        margin-left: 0;
+        
+        &::before {
+          display: none;
+        }
+      }
+    }
+  }
 }
 
 .timelineProgressLine {
@@ -164,8 +201,10 @@
     z-index: 1;
 
     @media (max-width: 768px) {
-      height: 4px;
+      height: 100%;
       width: 0;
+      top: 0;
+      left: 0;
       background: linear-gradient(to right, #6366f1, #7c3aed);
     }
   }
@@ -194,8 +233,8 @@
     justify-content: center;
 
     @media (max-width: 768px) {
-      left: auto;
-      top: 0;
+      left: 0;
+      top: 50%;
       transform: translateY(-50%);
     }
   }
@@ -392,6 +431,8 @@
 
     @media (max-width: 768px) {
       padding-left: 1rem;
+      width: 100%;
+      margin-top: 2rem;
     }
   }
 

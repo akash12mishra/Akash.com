@@ -111,6 +111,24 @@ const Experience = () => {
       }))
     );
   }, [activeExperience]);
+  
+  // Handle responsive behavior for the timeline
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Animation variants
   const containerVariants = {
@@ -146,9 +164,17 @@ const Experience = () => {
     }
   };
 
+  // Different animation variants for desktop and mobile timeline
   const lineVariants = {
-    hidden: { height: '0%' },
-    visible: { 
+    hidden: { height: '0%', width: '0%' },
+    visible: isMobile ? { 
+      width: '100%',
+      height: '100%',
+      transition: { 
+        duration: 0.8,
+        ease: "easeInOut"
+      }
+    } : {
       height: '100%',
       transition: { 
         duration: 0.8,
@@ -231,7 +257,7 @@ const Experience = () => {
 
         </motion.div>
         
-        <div className={styles.timelineWrapper}>
+        <div className={`${styles.timelineWrapper} ${isMobile ? styles.mobileTimeline : ''}`}>
           <div className={styles.timelineProgressLine}>
             <motion.div 
               className={styles.progressBar}
@@ -239,7 +265,9 @@ const Experience = () => {
               initial="hidden"
               animate="visible"
               style={{ 
-                background: `linear-gradient(to bottom, ${experiences[0].color}, ${experiences[experiences.length-1].color})` 
+                backgroundImage: isMobile ? 
+                  `linear-gradient(to right, ${experiences[0].color}, ${experiences[experiences.length-1].color})` : 
+                  `linear-gradient(to bottom, ${experiences[0].color}, ${experiences[experiences.length-1].color})`
               }}
             />
           </div>
