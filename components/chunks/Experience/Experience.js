@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./Experience.module.scss";
 import { FaBriefcase, FaGraduationCap, FaBuilding, FaLaptopCode, FaRobot } from "react-icons/fa";
 import { motion, useAnimation } from "framer-motion";
@@ -13,6 +13,10 @@ const Experience = () => {
     threshold: 0.3,
     triggerOnce: false
   });
+  
+  // Handle responsive behavior for the timeline
+  const [isMobile, setIsMobile] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   
   // Animation states for each experience item
   const [animationStates, setAnimationStates] = useState([]);
@@ -87,14 +91,6 @@ const Experience = () => {
     }
   ], []);
 
-  // Initialize animation states for each experience
-  useEffect(() => {
-    setAnimationStates(experiences.map((_, index) => ({
-      isActive: index === activeExperience,
-      hasBeenViewed: index === activeExperience
-    })));
-  }, [experiences, activeExperience]);
-
   // Handle timeline animations
   useEffect(() => {
     if (timelineInView) {
@@ -102,20 +98,11 @@ const Experience = () => {
     }
   }, [timelineInView, timelineControlsMain]);
   
-  // Update animation states when active experience changes
+  // Client-side only effects
   useEffect(() => {
-    setAnimationStates(prevStates => 
-      prevStates.map((state, index) => ({
-        isActive: index === activeExperience,
-        hasBeenViewed: state.hasBeenViewed || index === activeExperience
-      }))
-    );
-  }, [activeExperience]);
-  
-  // Handle responsive behavior for the timeline
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
+    // Mark component as hydrated
+    setIsHydrated(true);
+    
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -222,122 +209,169 @@ const Experience = () => {
       }
     }
   };
+  
+  // Only apply animations if hydrated (client-side)
+  const shouldAnimate = isHydrated;
+  
+
+  
+  // Render different JSX for mobile vs desktop
+  const renderTimeline = () => {
+    if (isMobile) {
+      return (
+        <div className={`${styles.timelineWrapper} ${styles.mobileTimeline}`}>
+          {experiences.map((exp, index) => (
+            <div 
+              key={exp.id} 
+              className={`${styles.timelineItem} ${activeExperience === index ? styles.active : ''}`}
+              onClick={() => setActiveExperience(index)}
+            >
+              <div className={styles.timelineBubbleContainer}>
+                <div 
+                  className={styles.timelineBubble}
+                  style={{ 
+                    borderColor: exp.color,
+                    backgroundColor: activeExperience === index ? exp.color : "var(--card-bg)" 
+                  }}
+                >
+                  {exp.icon}
+                </div>
+              </div>
+              
+              <div className={`${styles.timelineItemContent} ${activeExperience === index ? styles.activeContent : ''}`}>
+                <div className={styles.timelineHeader}>
+                  <h3 style={{ color: exp.color }}>
+                    {exp.role}
+                  </h3>
+                  <span className={styles.timelineCompany}>{exp.company}</span>
+                  <span className={styles.timelineDuration}>{exp.duration}</span>
+                </div>
+                
+                <div className={styles.timelineDetails}>
+                  <ul className={styles.responsibilities}>
+                    {exp.description.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+    
+    // Desktop version with animations
+    return (
+      <div className={styles.timelineWrapper}>
+        <div className={styles.timelineProgressLine}>
+          <motion.div 
+            className={styles.progressBar}
+            variants={shouldAnimate ? lineVariants : {}}
+            initial={shouldAnimate ? "hidden" : false}
+            animate={shouldAnimate ? "visible" : false}
+            style={{ 
+              backgroundImage: `linear-gradient(to bottom, ${experiences[0].color}, ${experiences[experiences.length-1].color})`
+            }}
+          />
+        </div>
+        <div className={styles.timelineContent}>
+          {experiences.map((exp, index) => (
+            <motion.div
+              key={exp.id}
+              className={`${styles.timelineItem} ${activeExperience === index ? styles.active : ''}`}
+              variants={shouldAnimate && !isMobile ? itemVariants : {}}
+              initial={shouldAnimate && !isMobile ? 'hidden' : false}
+              animate={shouldAnimate && !isMobile ? 'visible' : false}
+            >
+              <div className={styles.timelineBubbleContainer}>
+                <motion.div
+                  className={styles.timelineBubble}
+                  variants={shouldAnimate ? bubbleVariants : {}}
+                  animate={shouldAnimate ? (activeExperience === index ? 'active' : 'visible') : false}
+                  onClick={() => setActiveExperience(index)}
+                  style={{
+                    borderColor: exp.color,
+                    backgroundColor: activeExperience === index ? exp.color : 'var(--card-bg)',
+                  }}
+                >
+                  {exp.icon}
+                </motion.div>
+              </div>
+
+              <motion.div
+                className={`${styles.timelineItemContent} ${activeExperience === index ? styles.activeContent : ''}`}
+                variants={shouldAnimate && !isMobile ? itemVariants : {}}
+                initial={shouldAnimate && !isMobile ? 'hidden' : false}
+                animate={shouldAnimate && !isMobile ? (activeExperience === index ? 'visible' : false) : false}
+              >
+                <div className={styles.timelineHeader}>
+                  <h3 style={{ color: exp.color }}>{exp.role}</h3>
+                  <span className={styles.timelineCompany}>{exp.company}</span>
+                  <span className={styles.timelineDuration}>{exp.duration}</span>
+                </div>
+
+                <motion.div
+                  className={styles.timelineDetails}
+                  variants={shouldAnimate ? itemVariants : {}}
+                  initial={shouldAnimate && !isMobile ? 'hidden' : false}
+                  animate={shouldAnimate ? (activeExperience === index ? 'visible' : false) : false}
+                >
+                  <ul className={styles.responsibilities}>
+                    {exp.description.map((item, i) => (
+                      <motion.li
+                        key={i}
+                        initial={shouldAnimate && !isMobile ? { opacity: 0, x: -10 } : false}
+                        animate={shouldAnimate ? { opacity: 1, x: 0 } : false}
+                        transition={shouldAnimate && !isMobile ? { delay: 0.1 * i } : { delay: 0.05 * i }}
+                      >
+                        {item}
+                      </motion.li>
+                    ))}
+                  </ul>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section id="experience" className={styles.experienceSection}>
       <motion.div 
         className={styles.container}
         ref={timelineRef}
-        variants={containerVariants}
-        initial="hidden"
-        animate={timelineControlsMain}
+        variants={shouldAnimate && !isMobile ? containerVariants : {}}
+        initial={shouldAnimate && !isMobile ? "hidden" : false}
+        animate={shouldAnimate && !isMobile ? timelineControlsMain : {}}
       >
         <motion.div 
           className={styles.sectionHeader}
-          variants={itemVariants}
+          variants={shouldAnimate && !isMobile ? itemVariants : {}}
         >
           <motion.span 
             className={styles.sectionTag}
-            variants={itemVariants}
+            variants={shouldAnimate && !isMobile ? itemVariants : {}}
           >
             Experience
           </motion.span>
           <motion.h2 
             className={styles.sectionTitle}
-            variants={itemVariants}
+            variants={shouldAnimate && !isMobile ? itemVariants : {}}
           >
             My Journey
           </motion.h2>
           <motion.p 
             className={styles.sectionDescription}
-            variants={itemVariants}
+            variants={shouldAnimate && !isMobile ? itemVariants : {}}
           >
             A timeline of my professional experiences and career milestones
           </motion.p>
-
         </motion.div>
         
-        <div className={`${styles.timelineWrapper} ${isMobile ? styles.mobileTimeline : ''}`}>
-          <div className={styles.timelineProgressLine}>
-            <motion.div 
-              className={styles.progressBar}
-              variants={lineVariants}
-              initial="hidden"
-              animate="visible"
-              style={{ 
-                backgroundImage: isMobile ? 
-                  `linear-gradient(to right, ${experiences[0].color}, ${experiences[experiences.length-1].color})` : 
-                  `linear-gradient(to bottom, ${experiences[0].color}, ${experiences[experiences.length-1].color})`
-              }}
-            />
-          </div>
-
-          <div className={styles.timelineContent}>
-            {experiences.map((exp, index) => (
-              <motion.div
-                key={exp.id}
-                className={`${styles.timelineItem} ${activeExperience === index ? styles.active : ''}`}
-                variants={timelineVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: false, margin: "-100px" }}
-              >
-                <div className={styles.timelineBubbleContainer}>
-                  <motion.div 
-                    className={styles.timelineBubble}
-                    variants={bubbleVariants}
-                    animate={activeExperience === index ? "active" : "visible"}
-                    onClick={() => setActiveExperience(index)}
-                    style={{ 
-                      borderColor: exp.color,
-                      backgroundColor: activeExperience === index ? exp.color : "var(--card-bg)" 
-                    }}
-                  >
-                    {exp.icon}
-                  </motion.div>
-                </div>
-                
-                <motion.div 
-                  className={`${styles.timelineItemContent} ${styles.activeContent}`}
-                  variants={itemVariants}
-                  whileInView="visible"
-                  viewport={{ once: false, amount: 0.4 }}
-                  initial="hidden"
-                >
-                  <div className={styles.timelineHeader}>
-                    <h3 style={{ color: exp.color }}>
-                      {exp.role}
-                    </h3>
-                    <span className={styles.timelineCompany}>{exp.company}</span>
-                    <span className={styles.timelineDuration}>{exp.duration}</span>
-                  </div>
-                  
-                  <motion.div 
-                    className={styles.timelineDetails}
-                    variants={contentVariants}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: false, amount: 0.4 }}
-                    exit="exit"
-                  >
-                      <ul className={styles.responsibilities}>
-                        {exp.description.map((item, i) => (
-                          <motion.li 
-                            key={i}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.1 * i }}
-                          >
-                            {item}
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </motion.div>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+        {renderTimeline()}
       </motion.div>
     </section>
   );

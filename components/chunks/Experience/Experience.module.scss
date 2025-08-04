@@ -9,6 +9,13 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  
+  @media (max-width: 768px) {
+    padding: 4rem 0;
+    min-height: auto;
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .container {
@@ -139,37 +146,91 @@
   }
   
   &.mobileTimeline {
-    .timelineProgressLine {
-      position: relative;
-      width: 100%;
-      height: 4px;
-      margin-right: 0;
-      margin-bottom: 2rem;
-      
-      .progressBar {
-        height: 100%;
-        width: 0;
-      }
-    }
-    
-    .timelineContent {
-      margin-top: 1.5rem;
-    }
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    min-height: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     
     .timelineItem {
-      margin-left: 2rem;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid transparent;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      
+      &.active {
+        border-color: var(--accent-primary);
+      }
       
       .timelineBubbleContainer {
-        left: -2.5rem;
-        top: 1.5rem;
-        transform: none;
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        
+        .timelineBubble {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 1rem;
+          color: white;
+          border: 2px solid;
+        }
       }
       
       .timelineItemContent {
-        margin-left: 0;
+        width: 100%;
         
-        &::before {
-          display: none;
+        .timelineHeader {
+          margin-bottom: 1rem;
+          
+          h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+          }
+          
+          .timelineCompany {
+            display: block;
+            margin-bottom: 0.5rem;
+          }
+        }
+        
+        .timelineDetails {
+          .responsibilities {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            
+            li {
+              position: relative;
+              padding-left: 1.25rem;
+              margin-bottom: 0.75rem;
+              font-size: 0.95rem;
+              line-height: 1.6;
+              
+              &:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0.5rem;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: var(--accent-primary);
+              }
+            }
+          }
         }
       }
     }
