@@ -14,12 +14,49 @@ const NewHero = () => {
   const avatarRef = useRef(null);
   const mousePositionRef = useRef({ x: 0, y: 0 });
   
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
   useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current) return;
       const scrollTop = window.scrollY;
-      const opacity = 1 - (scrollTop * 0.003);
-      const translateY = scrollTop * 0.3;
+      
+      // Use different fade rates for mobile and desktop
+      // On mobile: slower fade, larger minimum threshold
+      // On desktop: faster fade, smaller threshold
+      const mobileScrollThreshold = 100; // Min scroll before fading on mobile
+      const desktopScrollThreshold = 30; // Min scroll before fading on desktop
+      
+      const threshold = isMobile ? mobileScrollThreshold : desktopScrollThreshold;
+      const fadeRate = isMobile ? 0.0008 : 0.002; // Slower fade on mobile
+      const moveRate = isMobile ? 0.15 : 0.3; // Slower movement on mobile
+      
+      // Only start fading after the threshold
+      let opacity = 1;
+      let translateY = 0;
+      
+      if (scrollTop > threshold) {
+        // Calculate based on scroll position beyond threshold
+        const adjustedScroll = scrollTop - threshold;
+        opacity = 1 - (adjustedScroll * fadeRate);
+        translateY = adjustedScroll * moveRate;
+      }
       
       if (heroRef.current) {
         heroRef.current.style.opacity = Math.max(opacity, 0);
@@ -50,7 +87,7 @@ const NewHero = () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, []);
+  }, [isMobile]);
   
   const containerVariants = {
     hidden: { opacity: 0 },
