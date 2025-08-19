@@ -65,6 +65,16 @@
     background-size: 40px 40px;
     opacity: 0.3;
     animation: gridFade 10s ease infinite alternate;
+    
+    @media (max-width: 768px) {
+      animation-duration: 20s; // Slower animation on mobile
+      background-size: 60px 60px; // Larger grid on mobile (less lines to render)
+    }
+    
+    @media (max-width: 480px) {
+      animation: none; // Disable animation on smaller devices
+      opacity: 0.2;
+    }
   }
 }
 
@@ -82,6 +92,16 @@
   }
 }
 
+// Simplified animation for mobile devices
+@keyframes gridFadeMobile {
+  0% {
+    opacity: 0.15;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
 .container {
   width: 100%;
   max-width: 1200px;
@@ -93,6 +113,14 @@
   justify-content: center;
   position: relative;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  
+  @media (max-width: 768px) {
+    transition: transform 0.2s ease, opacity 0.2s ease; // Faster transitions on mobile
+  }
+  
+  @media (max-width: 480px) {
+    transition: none; // Disable transitions on smaller devices
+  }
 }
 
 .content {
@@ -171,6 +199,20 @@
     filter: blur(15px);
     z-index: 0;
     animation: pulseGlow 4s ease-in-out infinite alternate;
+    
+    @media (max-width: 768px) {
+      animation-duration: 6s; // Slower animation on mobile
+      width: 160px;
+      height: 160px;
+    }
+    
+    @media (max-width: 480px) {
+      animation: none; // Disable animation on smaller devices
+      filter: blur(10px); // Less intensive blur
+      opacity: 0.3;
+      width: 140px;
+      height: 140px;
+    }
   }
 
   .avatarRing {
@@ -204,6 +246,18 @@
   100% {
     opacity: 0.4;
     filter: blur(15px);
+  }
+}
+
+// Mobile-optimized keyframe with reduced visual complexity
+@keyframes pulseGlowMobile {
+  0% {
+    opacity: 0.3;
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 0.4;
+    filter: blur(12px);
   }
 }
 
