@@ -37,15 +37,23 @@ const NewHero = () => {
       if (!heroRef.current) return;
       const scrollTop = window.scrollY;
       
+      // Completely disable scroll animations on smaller mobile devices
+      if (isMobile && window.innerWidth <= 480) {
+        // Just ensure hero is fully visible with no animation effects
+        heroRef.current.style.opacity = 1;
+        heroRef.current.style.transform = 'none';
+        return;
+      }
+      
       // Use different fade rates for mobile and desktop
       // On mobile: slower fade, larger minimum threshold
       // On desktop: faster fade, smaller threshold
-      const mobileScrollThreshold = 100; // Min scroll before fading on mobile
+      const mobileScrollThreshold = 150; // Increased threshold for mobile
       const desktopScrollThreshold = 30; // Min scroll before fading on desktop
       
       const threshold = isMobile ? mobileScrollThreshold : desktopScrollThreshold;
-      const fadeRate = isMobile ? 0.0008 : 0.002; // Slower fade on mobile
-      const moveRate = isMobile ? 0.15 : 0.3; // Slower movement on mobile
+      const fadeRate = isMobile ? 0.0004 : 0.002; // Much slower fade on mobile (halved)
+      const moveRate = isMobile ? 0.08 : 0.3; // Much slower movement on mobile
       
       // Only start fading after the threshold
       let opacity = 1;
@@ -59,14 +67,15 @@ const NewHero = () => {
       }
       
       if (heroRef.current) {
-        heroRef.current.style.opacity = Math.max(opacity, 0);
+        heroRef.current.style.opacity = Math.max(opacity, 0.3); // Never fade below 30% opacity
         heroRef.current.style.transform = `translateY(${translateY}px)`;
       }
     };
     
     // Handle mouse move without triggering state updates that cause re-renders
     const handleMouseMove = (e) => {
-      if (!avatarRef.current) return;
+      // Skip mouse move animations completely on mobile devices
+      if (isMobile || !avatarRef.current) return;
       
       const { clientX, clientY } = e;
       mousePositionRef.current = {
@@ -89,13 +98,15 @@ const NewHero = () => {
     };
   }, [isMobile]);
   
+  // Optimize animations for mobile
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
       transition: { 
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
+        staggerChildren: isMobile ? 0.05 : 0.2, // Reduce stagger time on mobile
+        delayChildren: isMobile ? 0.1 : 0.3,   // Reduce delay on mobile
+        duration: isMobile ? 0.3 : 0.5         // Faster animations on mobile
       }
     }
   };
@@ -106,9 +117,10 @@ const NewHero = () => {
       y: 0, 
       opacity: 1,
       transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 10
+        type: isMobile ? "tween" : "spring", // Use simpler animation type on mobile
+        stiffness: isMobile ? 50 : 100,    // Reduce spring stiffness on mobile
+        damping: isMobile ? 15 : 10,       // Increase damping on mobile for quicker settle
+        duration: isMobile ? 0.2 : 0.3      // Shorter animation duration on mobile
       }
     }
   };
@@ -126,6 +138,7 @@ const NewHero = () => {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
+        transition={{ duration: isMobile ? 0.2 : 0.5 }} // Faster transitions on mobile
       >
         <motion.div className={styles.content} variants={containerVariants}>
           <motion.div 

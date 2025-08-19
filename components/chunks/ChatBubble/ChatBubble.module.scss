@@ -30,12 +30,35 @@
   transition: all 0.3s ease;
   overflow: hidden;
   z-index: 101;
+  
+  @media (max-width: 768px) {
+    transition: all 0.2s ease; // Faster transition on mobile
+    box-shadow: // Simplified shadow for better performance
+      0 4px 15px rgba(99, 102, 241, 0.4),
+      0 0 0 1px rgba(99, 102, 241, 0.2);
+  }
+  
+  @media (max-width: 480px) {
+    transition: all 0.15s ease; // Even faster transition on smaller devices
+  }
 
   &:hover {
     box-shadow: 
       0 8px 25px rgba(99, 102, 241, 0.5),
       0 0 0 1px rgba(99, 102, 241, 0.3),
       0 0 30px rgba(99, 102, 241, 0.5);
+      
+    @media (max-width: 768px) {
+      box-shadow: // Less intensive shadow effect on mobile
+        0 6px 20px rgba(99, 102, 241, 0.4),
+        0 0 0 1px rgba(99, 102, 241, 0.2);
+    }
+    
+    @media (max-width: 480px) {
+      box-shadow: // Even simpler shadow on smaller devices
+        0 4px 15px rgba(99, 102, 241, 0.4),
+        0 0 0 1px rgba(99, 102, 241, 0.2);
+    }
   }
 
   &:focus {
@@ -65,6 +88,16 @@
   opacity: 0.2;
   mix-blend-mode: overlay;
   animation: pulse 2s infinite alternate;
+  
+  @media (max-width: 768px) {
+    animation-duration: 3s; // Slower pulse animation on mobile
+    opacity: 0.15; // Slightly less intense glow
+  }
+  
+  @media (max-width: 480px) {
+    animation: none; // Disable animation on smaller devices
+    opacity: 0.1; // Even less intense glow
+  }
 }
 
 .chatWindow {
@@ -90,6 +123,14 @@
     height: 450px;
     bottom: 70px;
     right: 0;
+    box-shadow: // Simplified shadow for better performance
+      0 10px 25px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(99, 102, 241, 0.1);
+    backdrop-filter: blur(8px); // Less intensive blur
+  }
+
+  @media (max-width: 480px) {
+    backdrop-filter: blur(5px); // Even less intensive blur
   }
 
   @media (max-width: 380px) {
@@ -128,6 +169,16 @@
   background-color: #4ade80;
   box-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
   animation: pulse 1.5s infinite;
+  
+  @media (max-width: 768px) {
+    animation-duration: 2s; // Slower pulse on mobile
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5); // Less intensive shadow
+  }
+  
+  @media (max-width: 480px) {
+    animation: pulseMobile 2.5s infinite; // Simplified animation
+    box-shadow: 0 0 5px rgba(74, 222, 128, 0.4); // Even less intensive shadow
+  }
 }
 
 .closeButton {
@@ -142,10 +193,23 @@
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s ease;
+  
+  @media (max-width: 768px) {
+    transition: all 0.15s ease; // Faster transition on mobile
+  }
+  
+  @media (max-width: 480px) {
+    transition: none; // Disable transitions on smaller devices
+  }
 
   &:hover {
     color: white;
     background: rgba(255, 255, 255, 0.1);
+    
+    @media (max-width: 480px) {
+      // No hover effects on smaller touchscreen devices
+      background: transparent;
+    }
   }
 
   &:focus {
@@ -167,5 +231,16 @@
   100% {
     opacity: 1;
     transform: scale(1.05);
+  }
+}
+
+// Simplified animation for mobile devices
+@keyframes pulseMobile {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
   }
 }

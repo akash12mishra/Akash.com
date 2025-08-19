@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styles from "./ChatBubble.module.scss";
 import Chatbot from "../Chatbot/Chatbot";
 import Image from "next/image";
@@ -11,6 +11,24 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const ChatBubble = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Check for mobile devices
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
   useEffect(() => {
     const onOpenBubble = () => {
@@ -41,7 +59,12 @@ const ChatBubble = () => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            transition={{
+              type: isMobile ? "tween" : "spring", // Use simpler animation on mobile
+              stiffness: isMobile ? 100 : 300, // Lower stiffness on mobile 
+              damping: isMobile ? 15 : 25,    // Adjusted damping
+              duration: isMobile ? 0.2 : 0.3   // Faster animation on mobile
+            }}
           >
             <div className={styles.chatHeader}>
               <div className={styles.chatTitle}>
@@ -67,9 +90,9 @@ const ChatBubble = () => {
       <motion.button
         className={styles.chatBubble}
         onClick={handleToggleChat}
-        whileHover={{ scale: 1.1 }}
+        whileHover={!isMobile ? { scale: 1.1 } : {}} // Disable hover on mobile
         whileTap={{ scale: 0.95 }}
-        animate={isChatOpen ? { rotate: [0, 15, -15, 0] } : {}}
+        animate={isChatOpen && !isMobile ? { rotate: [0, 15, -15, 0] } : {}} // Disable rotation on mobile
         aria-label="Open chat assistant"
       >
         {!isChatOpen && (
@@ -78,7 +101,10 @@ const ChatBubble = () => {
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
-            transition={{ type: "spring" }}
+            transition={{
+              type: isMobile ? "tween" : "spring", // Use simpler animation on mobile
+              duration: isMobile ? 0.2 : 0.3      // Faster animation on mobile
+            }}
           >
             <FaRobot className={styles.robotIcon} />
             <div className={styles.glowEffect}></div>
