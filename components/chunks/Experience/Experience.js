@@ -10,8 +10,8 @@ const Experience = () => {
   const [activeExperience, setActiveExperience] = useState(0);
   const timelineControlsMain = useAnimation();
   const [timelineRef, timelineInView] = useInView({
-    threshold: 0.3,
-    triggerOnce: false
+    threshold: 0.2,
+    triggerOnce: true
   });
   
   // Handle responsive behavior for the timeline
@@ -123,7 +123,8 @@ const Experience = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2
+        staggerChildren: isMobile ? 0.05 : 0.2, // Reduce stagger time on mobile
+        duration: isMobile ? 0.3 : 0.5 // Faster overall animation on mobile
       }
     }
   };
@@ -211,7 +212,11 @@ const Experience = () => {
   };
   
   // Only apply animations if hydrated (client-side)
-  const shouldAnimate = isHydrated;
+  // Only animate if hydrated and not on mobile, or if on mobile but with reduced effects
+  const shouldAnimate = isHydrated && (!isMobile || window.innerWidth > 480);
+  
+  // On smaller mobile devices, completely disable animations for better performance
+  const disableAllAnimations = isHydrated && isMobile && window.innerWidth <= 480;
   
 
   
@@ -287,7 +292,7 @@ const Experience = () => {
               <div className={styles.timelineBubbleContainer}>
                 <motion.div
                   className={styles.timelineBubble}
-                  variants={shouldAnimate ? bubbleVariants : {}}
+                  variants={shouldAnimate && !disableAllAnimations ? bubbleVariants : {}}
                   animate={shouldAnimate ? (activeExperience === index ? 'active' : 'visible') : false}
                   onClick={() => setActiveExperience(index)}
                   style={{
@@ -303,7 +308,7 @@ const Experience = () => {
                 className={`${styles.timelineItemContent} ${activeExperience === index ? styles.activeContent : ''}`}
                 variants={shouldAnimate && !isMobile ? itemVariants : {}}
                 initial={shouldAnimate && !isMobile ? 'hidden' : false}
-                animate={shouldAnimate && !isMobile ? (activeExperience === index ? 'visible' : false) : false}
+                animate={shouldAnimate && !isMobile ? 'visible' : false}
               >
                 <div className={styles.timelineHeader}>
                   <h3 style={{ color: exp.color }}>{exp.role}</h3>
@@ -315,15 +320,15 @@ const Experience = () => {
                   className={styles.timelineDetails}
                   variants={shouldAnimate ? itemVariants : {}}
                   initial={shouldAnimate && !isMobile ? 'hidden' : false}
-                  animate={shouldAnimate ? (activeExperience === index ? 'visible' : false) : false}
+                  animate={shouldAnimate ? 'visible' : false}
                 >
                   <ul className={styles.responsibilities}>
                     {exp.description.map((item, i) => (
                       <motion.li
                         key={i}
                         initial={shouldAnimate && !isMobile ? { opacity: 0, x: -10 } : false}
-                        animate={shouldAnimate ? { opacity: 1, x: 0 } : false}
-                        transition={shouldAnimate && !isMobile ? { delay: 0.1 * i } : { delay: 0.05 * i }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={shouldAnimate && !isMobile ? { delay: 0.05 * i } : { delay: 0 }}
                       >
                         {item}
                       </motion.li>
@@ -343,7 +348,7 @@ const Experience = () => {
       <motion.div 
         className={styles.container}
         ref={timelineRef}
-        variants={shouldAnimate && !isMobile ? containerVariants : {}}
+        variants={shouldAnimate && !disableAllAnimations ? containerVariants : {}}
         initial={shouldAnimate && !isMobile ? "hidden" : false}
         animate={shouldAnimate && !isMobile ? timelineControlsMain : {}}
       >

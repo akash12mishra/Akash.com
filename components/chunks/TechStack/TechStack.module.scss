@@ -4,6 +4,16 @@
   transform: translateY(30px);
   transition: all 0.8s ease;
   
+  @media (max-width: 768px) {
+    padding: 4rem 0;
+    transition: all 0.5s ease; // Faster transition on mobile
+  }
+  
+  @media (max-width: 480px) {
+    transform: translateY(15px); // Less movement on smaller devices
+    transition: all 0.3s ease; // Even faster transition on smaller devices
+  }
+  
   &.visible {
     opacity: 1;
     transform: translateY(0);
@@ -114,8 +124,24 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   
+  @media (max-width: 768px) {
+    transition: transform 0.2s ease, box-shadow 0.2s ease; // Faster transition on mobile
+  }
+  
+  @media (max-width: 480px) {
+    transition: none; // Disable transitions on smaller devices
+  }
+  
   &:hover {
     transform: translateY(-5px);
+    
+    @media (max-width: 768px) {
+      transform: translateY(-3px); // Less movement on mobile
+    }
+    
+    @media (max-width: 480px) {
+      transform: none; // No hover effect on smaller devices
+    }
   }
 }
 
@@ -129,12 +155,36 @@
   background-color: rgba(var(--accent-primary-rgb), 0.05);
   transition: all 0.3s ease;
   
+  @media (max-width: 768px) {
+    transition: all 0.2s ease; // Faster transition on mobile
+  }
+  
+  @media (max-width: 480px) {
+    transition: none; // Disable transitions on smaller devices
+  }
+  
   svg {
     transition: transform 0.3s ease;
+    
+    @media (max-width: 768px) {
+      transition: transform 0.2s ease; // Faster transition on mobile
+    }
+    
+    @media (max-width: 480px) {
+      transition: none; // Disable transitions on smaller devices
+    }
   }
   
   &:hover svg {
     transform: scale(1.1);
+    
+    @media (max-width: 768px) {
+      transform: scale(1.05); // Less scaling on mobile
+    }
+    
+    @media (max-width: 480px) {
+      transform: none; // No hover effect on smaller devices
+    }
   }
 }
 
@@ -160,14 +210,38 @@
 /* Add floating animation to tech items with different delays */
 .techItem:nth-child(3n+1) {
   animation: float 4s ease-in-out infinite;
+  
+  @media (max-width: 768px) {
+    animation-duration: 6s; // Slower animation on mobile
+  }
+  
+  @media (max-width: 480px) {
+    animation: none; // Disable animation on smaller devices
+  }
 }
 
 .techItem:nth-child(3n+2) {
   animation: float 6s ease-in-out infinite;
   animation-delay: 1s;
+  
+  @media (max-width: 768px) {
+    animation-duration: 8s; // Slower animation on mobile
+  }
+  
+  @media (max-width: 480px) {
+    animation: none; // Disable animation on smaller devices
+  }
 }
 
 .techItem:nth-child(3n) {
   animation: float 5s ease-in-out infinite;
   animation-delay: 2s;
+  
+  @media (max-width: 768px) {
+    animation-duration: 7s; // Slower animation on mobile
+  }
+  
+  @media (max-width: 480px) {
+    animation: none; // Disable animation on smaller devices
+  }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import styles from "./TechStack.module.scss";
@@ -22,9 +22,29 @@ import { FaAws } from "react-icons/fa";
 const TechStack = () => {
   const controls = useAnimation();
   const [ref, inView] = useInView({
-    threshold: 0.2,
+    threshold: 0.1, // Lower threshold for earlier triggering on mobile
     triggerOnce: true,
   });
+  
+  // State for mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Check for mobile devices
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
   
   useEffect(() => {
     if (inView) {
@@ -36,23 +56,25 @@ const TechStack = () => {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: isMobile ? 0.03 : 0.1, // Reduced stagger on mobile
+        duration: isMobile ? 0.2 : 0.5, // Faster overall animation on mobile
       },
     },
   };
 
   const techItemVariants = {
     hidden: { 
-      y: 20, 
+      y: isMobile ? 10 : 20, // Smaller movement on mobile
       opacity: 0 
     },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
+        type: isMobile ? "tween" : "spring", // Simpler animation on mobile
+        stiffness: isMobile ? 50 : 100, // Lower stiffness on mobile
+        damping: isMobile ? 15 : 12, // Increased damping on mobile
+        duration: isMobile ? 0.15 : 0.3, // Shorter duration on mobile
       },
     },
   };
@@ -119,11 +141,11 @@ const TechStack = () => {
               className={styles.techItem}
               key={index}
               variants={techItemVariants}
-              whileHover={{ 
+              whileHover={!isMobile ? { 
                 scale: 1.1, 
                 boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.1)",
                 transition: { duration: 0.2 }
-              }}
+              } : undefined} // Disable hover effects on mobile
             >
               <div className={styles.iconWrapper} style={{ color: tech.color }}>
                 <tech.icon size={38} />
