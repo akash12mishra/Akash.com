@@ -4,9 +4,9 @@ import React from "react";
 import NewNavbar from "../../chunks/Navbar/NewNavbar";
 import NewHero from "../../chunks/Hero/NewHero";
 import About from "../../chunks/About/About";
-import Projects from "../../chunks/Projects/Projects";
-import Experience from "../../chunks/Experience/Experience";
-import NewBuildinPublic from "../../chunks/BuildInPublic/NewBuildinPublic";
+import ProjectShowcase from "../../chunks/Projects/ProjectShowcase";
+import ExperienceTestimonial from "../../chunks/Experience/ExperienceTestimonial";
+import BuildInPublicCarousel from "../../chunks/BuildInPublic/BuildInPublicCarousel";
 import Resume from "../../chunks/Resume/Resume";
 import Contact from "../../chunks/Contact/Contact";
 import CTASection from "../../chunks/CTASection/CTASection";
@@ -21,9 +21,9 @@ const NewHome = () => {
       <NewHero />
       <About />
       <TechStack />
-      <Experience />
-      <Projects />
-      <NewBuildinPublic />
+      <ExperienceTestimonial />
+      <ProjectShowcase />
+      <BuildInPublicCarousel />
       <Resume />
       <Contact />
       <CTASection />
