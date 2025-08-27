@@ -35,41 +35,10 @@ const NewHero = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (!heroRef.current) return;
-      const scrollTop = window.scrollY;
       
-      // Completely disable scroll animations on smaller mobile devices
-      if (isMobile && window.innerWidth <= 480) {
-        // Just ensure hero is fully visible with no animation effects
-        heroRef.current.style.opacity = 1;
-        heroRef.current.style.transform = 'none';
-        return;
-      }
-      
-      // Use different fade rates for mobile and desktop
-      // On mobile: slower fade, larger minimum threshold
-      // On desktop: faster fade, smaller threshold
-      const mobileScrollThreshold = 150; // Increased threshold for mobile
-      const desktopScrollThreshold = 30; // Min scroll before fading on desktop
-      
-      const threshold = isMobile ? mobileScrollThreshold : desktopScrollThreshold;
-      const fadeRate = isMobile ? 0.0004 : 0.002; // Much slower fade on mobile (halved)
-      const moveRate = isMobile ? 0.08 : 0.3; // Much slower movement on mobile
-      
-      // Only start fading after the threshold
-      let opacity = 1;
-      let translateY = 0;
-      
-      if (scrollTop > threshold) {
-        // Calculate based on scroll position beyond threshold
-        const adjustedScroll = scrollTop - threshold;
-        opacity = 1 - (adjustedScroll * fadeRate);
-        translateY = adjustedScroll * moveRate;
-      }
-      
-      if (heroRef.current) {
-        heroRef.current.style.opacity = Math.max(opacity, 0.3); // Never fade below 30% opacity
-        heroRef.current.style.transform = `translateY(${translateY}px)`;
-      }
+      // Keep the hero section fully visible with no fade or movement animations
+      heroRef.current.style.opacity = 1;
+      heroRef.current.style.transform = 'none';
     };
     
     // Handle mouse move without triggering state updates that cause re-renders

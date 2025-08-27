@@ -320,6 +320,8 @@
     display: flex;
     border-top: 1px solid rgba(99, 102, 241, 0.2);
     background: rgba(15, 15, 20, 0.4);
+    transform: translateZ(0); /* Force hardware acceleration */
+    font-size: 16px; /* Base font size for mobile */
 
     form {
       width: 100%;
@@ -335,9 +337,12 @@
         background: rgba(20, 20, 25, 0.8);
         color: rgba(255, 255, 255, 0.9);
         outline: none;
-        font-size: 14px;
+        font-size: 16px; /* Increased to 16px to prevent mobile zoom */
+        line-height: 1.2;
         transition: all 0.2s ease;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) inset;
+        -webkit-appearance: none; /* Prevent browser default styling */
+        appearance: none;
         
         &::placeholder {
           color: rgba(255, 255, 255, 0.4);
@@ -356,8 +361,11 @@
         color: white;
         border: none;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 16px;
         font-weight: 500;
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        -webkit-appearance: none; /* Remove default button appearance */
+        appearance: none;
         box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         transition: all 0.2s ease;
 

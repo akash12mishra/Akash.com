@@ -16,9 +16,9 @@ const ProjectShowcase = () => {
     {
       id: 1,
       name: "CawLab",
-      description: "A comprehensive social media analytics platform designed to track engagement, monitor audience growth, and provide actionable insights for content creators and social media managers.",
+      description: "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
       image: "/images/projects/clientWork/cawlab-app.png",
-      technologies: ["NextJS", "MongoDB", "Node.js", "Chart.js"],
+      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       liveLink: "https://cawlab.ai",
       githubLink: "#",
       featured: true
@@ -26,41 +26,41 @@ const ProjectShowcase = () => {
     {
       id: 2,
       name: "Disco",
-      description: "An AI-powered music discovery platform that analyzes user preferences to provide personalized recommendations and create custom playlists based on mood, activity, and listening history.",
+      description: "Influencer marketing platform connecting brands with social media influencers.",
       image: "/images/projects/clientWork/disco-app.png",
-      technologies: ["React", "Python", "TensorFlow", "AWS"],
-      liveLink: "https://disco.com",
-      githubLink: "#",
+      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
+      liveLink: null,
+      githubLink: null,
       featured: true
     },
     {
       id: 3,
       name: "BrowzPot",
-      description: "A browser-based productivity suite that helps teams collaborate in real-time, integrating task management, document sharing, and communication tools in a unified workspace.",
+      description: "An AI-powered SaaS platform that helps businesses optimize their web presence and customer engagement.",
       image: "/images/projects/selfWork/browzpot-app.png",
-      technologies: ["React", "Socket.io", "Express", "MongoDB"],
+      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       liveLink: "https://browzpot.com",
       githubLink: "https://github.com/arkalal/BrowzPot",
       featured: true
     },
     {
       id: 4,
-      name: "Quenlo",
-      description: "A modern e-learning platform that delivers personalized courses and adaptive learning paths using AI to identify knowledge gaps and optimize the learning experience.",
+      name: "Quenlo AI",
+      description: "AI-driven content generation and marketing automation platform.",
       image: "/images/projects/clientWork/quenlo-app.png",
-      technologies: ["NextJS", "TensorFlow.js", "Firebase", "MaterialUI"],
-      liveLink: "https://quenlo.edu",
-      githubLink: "#",
+      technologies: ["NextJS", "Python", "Clerk Auth", "Supabase", "Prisma", "OpenAI"],
+      liveLink: null,
+      githubLink: null,
       featured: true
     },
     {
       id: 5,
       name: "TalTracker",
-      description: "An AI-powered talent acquisition and management system that streamlines recruitment workflows, automates candidate screening, and provides data-driven hiring insights.",
+      description: "Advanced talent tracking and management platform for recruiting professionals.",
       image: "/images/projects/clientWork/taltracker-app.png",
-      technologies: ["React", "Node.js", "PostgreSQL", "AWS"],
+      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       liveLink: "https://taltracker.io",
-      githubLink: "#",
+      githubLink: null,
       featured: true
     }
   ];
@@ -143,18 +143,23 @@ const ProjectCard = ({ project }) => {
           ))}
         </div>
         
-        <div className={styles.projectLinks}>
-          {project.githubLink && (
-            <a href={project.githubLink} className={styles.projectLink} target="_blank" rel="noopener noreferrer">
-              <FaGithub /> Code
-            </a>
-          )}
-          {project.liveLink && (
-            <a href={project.liveLink} className={`${styles.projectLink} ${styles.liveLink}`} target="_blank" rel="noopener noreferrer">
-              <FaExternalLinkAlt /> Live Demo
-            </a>
-          )}
-        </div>
+        {/* Only show project links if the project should have them */}
+        {(project.id === 1 || project.id === 3 || project.id === 5) && (
+          <div className={styles.projectLinks}>
+            {/* Show GitHub link for CawLab and BrowzPot */}
+            {(project.id === 1 || project.id === 3) && project.githubLink && (
+              <a href={project.githubLink} className={styles.projectLink} target="_blank" rel="noopener noreferrer">
+                <FaGithub /> Code
+              </a>
+            )}
+            {/* Show Live Demo for CawLab, BrowzPot and TalTracker */}
+            {project.liveLink && (
+              <a href={project.liveLink} className={`${styles.projectLink} ${styles.liveLink}`} target="_blank" rel="noopener noreferrer">
+                <FaExternalLinkAlt /> Live Demo
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </motion.div>
   );

@@ -147,7 +147,7 @@ const ExperienceTestimonial = () => {
             {/* Statistics */}
             <div className={styles.statsContainer}>
               <div className={styles.statBox}>
-                <h3>5+</h3>
+                <h3>3+</h3>
                 <p>Years Experience</p>
               </div>
               <div className={styles.statBox}>
@@ -162,8 +162,8 @@ const ExperienceTestimonial = () => {
 
             {/* Call-to-action buttons */}
             <div className={styles.ctaButtons}>
-              <a href="#resume" className={styles.btnOutline}>
-                View Resume
+              <a href="/assets/doc/Arka resume 2024 - AI new.pdf" download="Arka_Lal_Chakravarty_Resume.pdf" className={styles.btnOutline}>
+                Download CV
               </a>
               <a href="#contact" className={styles.btnFilled}>
                 Contact Me

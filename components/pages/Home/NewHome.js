@@ -7,7 +7,6 @@ import About from "../../chunks/About/About";
 import ProjectShowcase from "../../chunks/Projects/ProjectShowcase";
 import ExperienceTestimonial from "../../chunks/Experience/ExperienceTestimonial";
 import BuildInPublicCarousel from "../../chunks/BuildInPublic/BuildInPublicCarousel";
-import Resume from "../../chunks/Resume/Resume";
 import Contact from "../../chunks/Contact/Contact";
 import CTASection from "../../chunks/CTASection/CTASection";
 import NewFooter from "../../chunks/Footer/NewFooter";
@@ -24,7 +23,6 @@ const NewHome = () => {
       <ExperienceTestimonial />
       <ProjectShowcase />
       <BuildInPublicCarousel />
-      <Resume />
       <Contact />
       <CTASection />
       <NewFooter />

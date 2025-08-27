@@ -95,6 +95,7 @@
   border: 1px solid var(--border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
   
   &:hover {
     transform: translateY(-5px);
@@ -141,8 +142,8 @@
 
 .postsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
   padding: 1.5rem;
 }
 
@@ -152,17 +153,19 @@
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  height: 200px; // Fixed height for consistent grid
+  height: 380px; // Further increased height for full post visibility
+  padding: 15px;
+  background: #f8f9fa;
   
   &:hover {
-    transform: scale(1.03);
+    transform: scale(1.01);
     
     .overlay {
       opacity: 1;
     }
     
     .postImage {
-      transform: scale(1.1);
+      transform: scale(1.02);
     }
   }
 }
@@ -171,9 +174,23 @@
   position: relative;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  box-sizing: border-box;
   
   .postImage {
     transition: transform 0.6s ease;
+    padding: 0;
+    object-position: center !important;
+    max-width: 100% !important;
+    height: auto !important;
+    width: auto !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   }
   
   .overlay {
@@ -229,6 +246,18 @@
     padding: 1rem;
   }
   
+  .postCard {
+    height: 260px;
+    padding: 10px;
+  }
+  
+  .imageWrapper {
+    .postImage {
+      width: 320px !important;
+      height: 220px !important;
+    }
+  }
+  
   .platformHeader {
     padding: 1rem;
     
@@ -243,6 +272,23 @@
     .followButton {
       padding: 0.4rem 1rem;
       font-size: 0.75rem;
+    }
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .postCard {
+    height: 340px;
+  }
+  
+  .postsContainer {
+    gap: 1.2rem;
+  }
+  
+  .imageWrapper {
+    .postImage {
+      width: 360px !important;
+      height: 260px !important;
     }
   }
 }

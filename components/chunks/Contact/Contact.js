@@ -90,7 +90,7 @@ const Contact = () => {
         </div>
 
         <div className={styles.contactContent}>
-          <div className={styles.contactInfo}>
+          <div className={styles.contactCards}>
             <div className={styles.infoCard}>
               <div className={styles.iconContainer}>
                 <FaEnvelope />
@@ -120,7 +120,9 @@ const Contact = () => {
                 Book a Meeting
               </a>
             </div>
-
+          </div>
+          
+          <div className={styles.connectSection}>
             <div className={styles.socialsContainer}>
               <h3>Connect with me</h3>
               <div className={styles.socialIcons}>

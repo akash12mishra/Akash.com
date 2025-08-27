@@ -56,7 +56,8 @@ const Projects = () => {
       image: cawlabImg,
       description:
         "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
-      tags: ["AI", "NextJS", "MongoDB"],
+      tags: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
+      appLink: "https://cawlab.com",
     },
     {
       id: 2,
@@ -64,7 +65,8 @@ const Projects = () => {
       image: taltrackerImg,
       description:
         "Advanced talent tracking and management platform for recruiting professionals.",
-      tags: ["React", "NodeJS", "PostgreSQL"],
+      tags: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
+      appLink: "https://taltracker.com",
     },
     {
       id: 3,
@@ -72,7 +74,7 @@ const Projects = () => {
       image: discoImg,
       description:
         "Influencer marketing platform connecting brands with social media influencers.",
-      tags: ["NextJS", "AI", "Firebase"],
+      tags: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
     },
     {
       id: 4,
@@ -80,7 +82,7 @@ const Projects = () => {
       image: quenloImg,
       description:
         "AI-driven content generation and marketing automation platform.",
-      tags: ["AI", "React", "Python"],
+      tags: ["NextJS", "Python", "Clerk Auth", "Supabase", "Prisma", "OpenAI"],
     },
   ];
 
@@ -92,7 +94,7 @@ const Projects = () => {
       image: browzpotImg,
       description:
         "An AI-powered SaaS platform that helps businesses optimize their web presence and customer engagement.",
-      tags: ["AI", "NextJS", "MongoDB", "OpenAI"],
+      tags: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       appLink: "https://www.browzpot.com/",
       demoLink: "#", // Will be updated later with YouTube demo link
     },
@@ -162,6 +164,19 @@ const Projects = () => {
                           </span>
                         ))}
                       </div>
+                      {(project.id === 1 || project.id === 2) && (
+                        <div className={styles.buttons}>
+                          <a
+                            href={project.appLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.button}
+                          >
+                            <span>Live Demo</span>
+                            <FaExternalLinkAlt />
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

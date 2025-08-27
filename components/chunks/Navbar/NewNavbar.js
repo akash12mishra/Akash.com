@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./NewNavbar.module.scss";
 import Image from "next/image";
 import logoImg from "../../../assets/images/arka.png";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaFileDownload } from "react-icons/fa";
 import { useTheme } from "../../ThemeProvider";
 import Link from "next/link";
 
@@ -28,7 +28,6 @@ const NewNavbar = () => {
     { name: "About", href: "#about" },
     { name: "Projects", href: "#projects" },
     { name: "Experience", href: "#experience" },
-    { name: "Resume", href: "#resume" },
     { name: "Contact", href: "#contact" },
   ];
 
@@ -55,13 +54,12 @@ const NewNavbar = () => {
           <div className={styles.actions}>
             
             <a 
-              href="https://github.com/arkalal" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="/assets/doc/Arka resume 2024 - AI new.pdf" 
+              download="Arka_Lal_Chakravarty_Resume.pdf" 
               className={styles.githubButton}
             >
-              <FaGithub size={20} />
-              <span>Follow</span>
+              <FaFileDownload size={20} />
+              <span>Download CV</span>
             </a>
           </div>
         </div>
@@ -86,13 +84,12 @@ const NewNavbar = () => {
 
             
             <a 
-              href="https://github.com/arkalal" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="/assets/doc/Arka resume 2024 - AI new.pdf" 
+              download="Arka_Lal_Chakravarty_Resume.pdf" 
               className={styles.mobileGithubButton}
             >
-              <FaGithub size={20} />
-              <span>Follow on GitHub</span>
+              <FaFileDownload size={20} />
+              <span>Download CV</span>
             </a>
           </li>
         </ul>

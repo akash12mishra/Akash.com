@@ -55,11 +55,11 @@ const twitterPosts = [
 
 const NewBuildinPublic = () => {
   const sectionRef = useRef(null);
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add(styles.visible);
           }
@@ -81,7 +81,11 @@ const NewBuildinPublic = () => {
   }, []);
 
   return (
-    <section id="buildinpublic" className={styles.buildinPublicSection} ref={sectionRef}>
+    <section
+      id="buildinpublic"
+      className={styles.buildinPublicSection}
+      ref={sectionRef}
+    >
       <div className={styles.container}>
         <div className={styles.sectionHeader}>
           <span className={styles.sectionTag}>#buildinpublic</span>
@@ -119,10 +123,13 @@ const NewBuildinPublic = () => {
                     <Image
                       src={post.image}
                       alt="LinkedIn post"
-                      layout="fill"
-                      objectFit="cover"
+                      fill={false}
+                      width={380}
+                      height={280}
                       className={styles.postImage}
                       priority={post.id === 1}
+                      unoptimized={true}
+                      sizes="(max-width: 768px) 320px, 380px"
                     />
                     <div className={styles.overlay}>
                       <span className={styles.viewPost}>View Post</span>
@@ -159,10 +166,13 @@ const NewBuildinPublic = () => {
                     <Image
                       src={post.image}
                       alt="Twitter post"
-                      layout="fill"
-                      objectFit="cover"
+                      fill={false}
+                      width={380}
+                      height={280}
                       className={styles.postImage}
                       priority={post.id === 4}
+                      unoptimized={true}
+                      sizes="(max-width: 768px) 320px, 380px"
                     />
                     <div className={styles.overlay}>
                       <span className={styles.viewPost}>View Post</span>

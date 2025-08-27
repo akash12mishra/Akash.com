@@ -64,17 +64,20 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  gap: 2rem;
+  gap: 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .contactCards {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
-  max-width: 700px;
+  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
   
-  @media (min-width: 576px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -87,23 +90,30 @@
   }
 }
 
-.contactInfo {
+.connectSection {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .infoCard {
   background-color: var(--card-bg);
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
     
     .iconContainer {
       transform: scale(1.1);
@@ -111,88 +121,97 @@
   }
   
   .iconContainer {
-    width: 50px;
-    height: 50px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.25rem;
-    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
     color: white;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 15px rgba(var(--accent-primary-rgb), 0.3);
+    box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.35);
   }
   
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     color: var(--text);
   }
   
   p {
     color: var(--text);
     opacity: 0.8;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.75rem;
+    font-size: 1.05rem;
   }
   
   .contactButton {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.75rem;
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: white;
     text-decoration: none;
     border-radius: 50px;
-    font-size: 0.875rem;
+    font-size: 0.95rem;
     font-weight: 600;
+    margin-top: auto;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(var(--accent-primary-rgb), 0.25);
     
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(var(--accent-primary-rgb), 0.4);
+      box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.4);
     }
   }
 }
 
 .socialsContainer {
   background-color: var(--card-bg);
-  border-radius: 15px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  padding: 2rem 3rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   border: 1px solid var(--border);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   
   h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
     color: var(--text);
   }
   
   .socialIcons {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     
     .socialIcon {
-      width: 45px;
-      height: 45px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       background-color: var(--card-bg);
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       color: var(--text);
       transition: all 0.3s ease;
       
       &:hover {
-        transform: translateY(-3px);
+        transform: translateY(-5px);
         background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
         color: white;
         border-color: transparent;
-        box-shadow: 0 5px 15px rgba(var(--accent-primary-rgb), 0.3);
+        box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.35);
       }
     }
   }
@@ -313,6 +332,14 @@
     padding: 4rem 0;
   }
   
+  .contactContent {
+    gap: 2rem;
+  }
+
+  .contactCards {
+    gap: 1.25rem;
+  }
+  
   .sectionHeader {
     margin-bottom: 2rem;
     
@@ -326,20 +353,67 @@
   }
   
   .infoCard {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
     
     .iconContainer {
-      width: 40px;
-      height: 40px;
-      font-size: 1rem;
+      width: 56px;
+      height: 56px;
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
     }
     
     h3 {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
+    }
+
+    p {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .contactButton {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  .socialsContainer {
+    padding: 1.75rem 2rem;
+
+    h3 {
+      margin-bottom: 1.25rem;
+    }
+    
+    .socialIcons {
+      gap: 1.25rem;
+      
+      .socialIcon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+      }
     }
   }
   
   .contactForm {
     padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .contactCards {
+    grid-template-columns: 1fr;
+  }
+  
+  .infoCard {
+    padding: 1.75rem 1.25rem;
+  }
+  
+  .socialsContainer {
+    padding: 1.5rem;
+    
+    .socialIcons {
+      gap: 1rem;
+    }
   }
 }
