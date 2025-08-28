@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import styles from "./ProjectShowcase.module.scss";
@@ -82,7 +82,7 @@ const ProjectShowcase = () => {
       id: 3,
       name: "BrowzPot",
       description:
-        "An AI-powered SaaS platform that helps businesses optimize their web presence and customer engagement.",
+        "AI powered chrome extension Software that helps in your day to day productivity automation from writing emails to getting summaries from web pages to taking notes instantly on your browser and many more ! (Under Development)",
       image: "/images/projects/selfWork/browzpot-app.png",
       technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       liveLink: "https://browzpot.com",
@@ -175,8 +175,27 @@ const ProjectShowcase = () => {
 
 // Project Card Component
 const ProjectCard = ({ project, openVideoPopup }) => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   const [ref, inView] = useInView({
-    threshold: 0.3,
+    threshold: isMobile ? 0.1 : 0.3, // Lower threshold on mobile for earlier triggering
     triggerOnce: true,
   });
 
@@ -184,9 +203,13 @@ const ProjectCard = ({ project, openVideoPopup }) => {
     <motion.div
       ref={ref}
       className={styles.projectCard}
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+      initial={{ opacity: 0, y: isMobile ? 20 : 50 }} // Smaller initial y-offset on mobile
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 20 : 50 }}
+      transition={{ 
+        duration: isMobile ? 0.3 : 0.6, // Faster animation on mobile
+        ease: isMobile ? "easeIn" : "easeOut",
+        opacity: { duration: isMobile ? 0.2 : 0.4 } // Faster opacity transition
+      }}
     >
       {/* Project Image */}
       <div className={styles.projectImageWrapper}>

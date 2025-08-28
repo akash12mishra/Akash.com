@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./ExperienceTestimonial.module.scss";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -8,14 +8,17 @@ import { IoPersonCircle } from "react-icons/io5";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const ExperienceTestimonial = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
-  const autoScrollRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [direction, setDirection] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const cardsRef = useRef(null);
   const [ref, inView] = useInView({
     threshold: 0.3,
     triggerOnce: false,
   });
-  
+
   // Experience data with full details from the original timeline
   const experiences = [
     {
@@ -87,47 +90,102 @@ const ExperienceTestimonial = () => {
   ];
 
   // Auto scroll to cycle through experiences - set to 3 seconds
+  // Check if we're on mobile device
+  // Define handleNext and handlePrevious first to avoid reference error
+  const handleNext = useCallback(() => {
+    setActiveIndex((prevIndex) => (prevIndex + 1) % experiences.length);
+    setDirection("right");
+  }, [experiences.length]);
+
+  const handlePrevious = useCallback(() => {
+    setActiveIndex((prevIndex) => (prevIndex - 1 + experiences.length) % experiences.length);
+    setDirection("left");
+  }, [experiences.length]);
+  
   useEffect(() => {
-    if (isAutoScrolling && inView) {
-      autoScrollRef.current = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % experiences.length);
-      }, 3000); // Changed from 5000 to 3000 (3 seconds)
-    }
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile);
 
     return () => {
-      if (autoScrollRef.current) {
-        clearInterval(autoScrollRef.current);
-      }
+      window.removeEventListener("resize", checkMobile);
     };
-  }, [isAutoScrolling, experiences.length, inView]);
+  }, []);
 
-  // Pause auto-scrolling when user interacts with experience cards
-  const pauseAutoScroll = () => {
-    setIsAutoScrolling(false);
-    if (autoScrollRef.current) {
-      clearInterval(autoScrollRef.current);
+  useEffect(() => {
+    // Auto-scroll functionality
+    if (isVisible && !isPaused) {
+      const interval = setInterval(() => {
+        handleNext();
+      }, isMobile ? 6000 : 5000); // Longer interval on mobile for smoother transitions
+
+      return () => clearInterval(interval);
     }
-    
-    // Resume after 30 seconds of inactivity
-    setTimeout(() => {
-      setIsAutoScrolling(true);
-    }, 30000);
+  }, [isVisible, isPaused, activeIndex, isMobile, handleNext]);
+
+  useEffect(() => {
+    setIsVisible(inView);
+  }, [inView]);
+
+  const handleCardClick = (idx) => {
+    setActiveIndex(idx);
   };
-  
-  // Navigate to previous experience card
-  const goToPrevious = () => {
-    pauseAutoScroll();
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? experiences.length - 1 : prevIndex - 1
-    );
-  };
-  
-  // Navigate to next experience card
-  const goToNext = () => {
-    pauseAutoScroll();
-    setCurrentIndex((prevIndex) => 
-      (prevIndex + 1) % experiences.length
-    );
+
+  const variants = {
+    active: {
+      scale: 1,
+      x: 0,
+      opacity: 1,
+      zIndex: 30,
+      transition: {
+        duration: isMobile ? 0.3 : 0.5,
+        ease: isMobile ? "easeIn" : "easeOut",
+        type: isMobile ? "tween" : "spring",
+      },
+      filter: "brightness(1)",
+    },
+    previous: (custom) => ({
+      scale: isMobile ? 0.92 : 0.9,
+      x: custom === "left" ? (isMobile ? "-15%" : "-20%") : (isMobile ? "15%" : "20%"),
+      opacity: isMobile ? 0.75 : 0.7,
+      zIndex: 20,
+      transition: {
+        duration: isMobile ? 0.3 : 0.5,
+        ease: isMobile ? "easeIn" : "easeOut",
+        type: isMobile ? "tween" : "spring",
+      },
+      filter: "brightness(0.9)",
+    }),
+    next: (custom) => ({
+      scale: isMobile ? 0.92 : 0.9,
+      x: custom === "left" ? (isMobile ? "15%" : "20%") : (isMobile ? "-15%" : "-20%"),
+      opacity: isMobile ? 0.75 : 0.7,
+      zIndex: 20,
+      transition: {
+        duration: isMobile ? 0.3 : 0.5,
+        ease: isMobile ? "easeIn" : "easeOut",
+        type: isMobile ? "tween" : "spring",
+      },
+      filter: "brightness(0.9)",
+    }),
+    hidden: (custom) => ({
+      scale: isMobile ? 0.85 : 0.8,
+      x: custom === "left" ? (isMobile ? "-30%" : "-40%") : (isMobile ? "30%" : "40%"),
+      opacity: 0,
+      zIndex: 10,
+      transition: {
+        duration: isMobile ? 0.3 : 0.5,
+        ease: isMobile ? "easeIn" : "easeOut",
+        type: isMobile ? "tween" : "spring",
+      },
+      filter: "brightness(0.8)",
+    }),
   };
 
   return (
@@ -173,68 +231,31 @@ const ExperienceTestimonial = () => {
 
           {/* Right side: Experience Cards */}
           <div className={styles.experienceCards}>
-            {experiences.map((exp, index) => {
-              // Calculate stacking order and animations
-              const isActive = index === currentIndex;
-              const isPrevious = (index === currentIndex - 1) || 
-                (currentIndex === 0 && index === experiences.length - 1);
-              const isNext = (index === currentIndex + 1) || 
-                (currentIndex === experiences.length - 1 && index === 0);
-              
-              // Define position based on order
-              let position = "hidden";
-              if (isActive) position = "active";
-              else if (isPrevious) position = "previous";
-              else if (isNext) position = "next";
-              
+            {experiences.map((exp, idx) => {
+              const cardPosition = idx === activeIndex ? "active" : idx < activeIndex ? "previous" : idx > activeIndex ? "next" : "hidden";
+
               return (
                 <motion.div
-                  key={exp.id}
-                  className={`${styles.experienceCard} ${styles[position]}`}
+                  ref={cardsRef}
+                  key={idx}
+                  custom={direction}
+                  variants={variants}
                   initial="hidden"
-                  animate={position}
-                  onClick={() => {
-                    pauseAutoScroll();
-                    setCurrentIndex(index);
-                  }}
-                  variants={{
-                    active: { 
-                      scale: 1, 
-                      y: 0, 
-                      opacity: 1, 
-                      zIndex: 30,
-                      transition: { type: "spring", stiffness: 300, damping: 24 }
-                    },
-                    previous: { 
-                      scale: 0.95, 
-                      y: 30, 
-                      opacity: 0.7, 
-                      zIndex: 20,
-                      transition: { type: "spring", stiffness: 300, damping: 24 }
-                    },
-                    next: { 
-                      scale: 0.95, 
-                      y: -30, 
-                      opacity: 0.7, 
-                      zIndex: 20,
-                      transition: { type: "spring", stiffness: 300, damping: 24 }
-                    },
-                    hidden: { 
-                      scale: 0.9, 
-                      y: 60, 
-                      opacity: 0, 
-                      zIndex: 10,
-                      transition: { type: "spring", stiffness: 300, damping: 24 }
-                    }
-                  }}
+                  animate={cardPosition}
+                  className={`${styles.experienceCard} ${styles[cardPosition]}`}
+                  whileHover={!isMobile ? { scale: cardPosition === "active" ? 1.02 : 1, cursor: "grab" } : {}}
+                  onMouseEnter={() => !isMobile && setIsPaused(true)}
+                  onMouseLeave={() => !isMobile && setIsPaused(false)}
+                  onClick={() => cardPosition !== "active" && handleCardClick(idx)}
+                  layout={!isMobile}
                 >
                   <div className={styles.cardContent}>
                     {/* Client avatar */}
-                    <div 
-                      className={styles.avatar} 
-                      style={{ 
+                    <div
+                      className={styles.avatar}
+                      style={{
                         backgroundColor: `rgba(${parseInt(exp.color.slice(1, 3), 16)}, ${parseInt(exp.color.slice(3, 5), 16)}, ${parseInt(exp.color.slice(5, 7), 16)}, 0.2)`,
-                        color: exp.color 
+                        color: exp.color,
                       }}
                     >
                       {exp.icon}
@@ -259,34 +280,44 @@ const ExperienceTestimonial = () => {
                 </motion.div>
               );
             })}
-            
+
             {/* Navigation arrows */}
             <div className={styles.navigationArrows}>
-              <button 
-                className={styles.navArrow} 
-                onClick={goToPrevious}
-                aria-label="Previous experience"
+              <motion.button
+                className={styles.navArrow}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevious();
+                }}
+                whileHover={!isMobile ? { scale: 1.1 } : {}}
+                whileTap={!isMobile ? { scale: 0.95 } : { scale: 0.98 }}
+                aria-label="Previous experience card"
               >
                 <FiChevronLeft />
-              </button>
-              <button 
-                className={styles.navArrow} 
-                onClick={goToNext}
-                aria-label="Next experience"
+              </motion.button>
+              <motion.button
+                className={styles.navArrow}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+                whileHover={!isMobile ? { scale: 1.1 } : {}}
+                whileTap={!isMobile ? { scale: 0.95 } : { scale: 0.98 }}
+                aria-label="Next experience card"
               >
                 <FiChevronRight />
-              </button>
+              </motion.button>
             </div>
-            
+
             {/* Pagination indicators */}
             <div className={styles.pagination}>
               {experiences.map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.paginationDot} ${index === currentIndex ? styles.active : ''}`}
+                  className={`${styles.paginationDot} ${index === activeIndex ? styles.active : ""}`}
                   onClick={() => {
-                    pauseAutoScroll();
-                    setCurrentIndex(index);
+                    setIsPaused(true);
+                    setActiveIndex(index);
                   }}
                 />
               ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./About.module.scss";
 import Image from "next/image";
 import logoImg from "../../../assets/images/arka.png";
@@ -8,6 +8,21 @@ import { FaCode, FaLaptopCode, FaRobot } from "react-icons/fa";
 
 const About = () => {
   const sectionRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile devices
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -18,7 +33,7 @@ const About = () => {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: isMobile ? 0.1 : 0.2 } // Lower threshold for mobile
     );
 
     const current = sectionRef.current;
@@ -31,7 +46,7 @@ const About = () => {
         observer.unobserve(current);
       }
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <section id="about" className={styles.aboutSection} ref={sectionRef}>

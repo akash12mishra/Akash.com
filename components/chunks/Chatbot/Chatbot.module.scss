@@ -316,22 +316,28 @@
   .chatbotInput {
     position: relative;
     width: 100%;
-    padding: 10px;
+    padding: 10px 10px 12px 10px;
     display: flex;
     border-top: 1px solid rgba(99, 102, 241, 0.2);
     background: rgba(15, 15, 20, 0.4);
     transform: translateZ(0); /* Force hardware acceleration */
     font-size: 16px; /* Base font size for mobile */
+    
+    @media (max-width: 480px) {
+      padding: 10px 8px 12px 8px;
+    }
 
     form {
       width: 100%;
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: nowrap;
+      max-width: 100%;
 
       input {
         flex: 1;
-        padding: 10px 16px;
+        padding: 10px 14px;
         border-radius: 20px;
         border: 1px solid rgba(99, 102, 241, 0.3);
         background: rgba(20, 20, 25, 0.8);
@@ -343,6 +349,13 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) inset;
         -webkit-appearance: none; /* Prevent browser default styling */
         appearance: none;
+        min-width: 0; /* Important for flexbox to allow shrinking below content size */
+        width: 100%;
+        
+        @media (max-width: 480px) {
+          padding: 8px 12px;
+          font-size: 15px;
+        }
         
         &::placeholder {
           color: rgba(255, 255, 255, 0.4);
@@ -355,7 +368,7 @@
       }
 
       button {
-        padding: 10px 20px;
+        padding: 8px 16px;
         border-radius: 20px;
         background: linear-gradient(135deg, #6366f1, #8b5cf6);
         color: white;
@@ -368,6 +381,15 @@
         appearance: none;
         box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
         transition: all 0.2s ease;
+        white-space: nowrap;
+        min-width: 70px;
+        flex-shrink: 0;
+        
+        @media (max-width: 480px) {
+          padding: 8px 12px;
+          min-width: 60px;
+          font-size: 14px;
+        }
 
         &:hover {
           transform: translateY(-1px);
