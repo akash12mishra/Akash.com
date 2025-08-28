@@ -6,63 +6,120 @@ import { useInView } from "react-intersection-observer";
 import styles from "./ProjectShowcase.module.scss";
 import Link from "next/link";
 import Image from "next/image";
-import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
+import { FaGithub, FaExternalLinkAlt, FaYoutube } from "react-icons/fa";
+import VideoPopup from "./VideoPopup";
 
 const ProjectShowcase = () => {
   const [showAll, setShowAll] = useState(false);
+  const [videoPopup, setVideoPopup] = useState({
+    isOpen: false,
+    videoId: "",
+  });
+
+  // Open video popup
+  const openVideoPopup = (videoId) => {
+    setVideoPopup({
+      isOpen: true,
+      videoId,
+    });
+  };
+
+  // Close video popup
+  const closeVideoPopup = () => {
+    setVideoPopup({
+      isOpen: false,
+      videoId: "",
+    });
+  };
 
   // Project data
   const allProjects = [
     {
       id: 1,
       name: "CawLab",
-      description: "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
+      description:
+        "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
       image: "/images/projects/clientWork/cawlab-app.png",
       technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       liveLink: "https://cawlab.ai",
-      githubLink: "#",
-      featured: true
+      githubLink: null,
+      featured: true,
+      demoVideo: "https://youtu.be/egetCm7cjJM",
     },
+    // Commented out Disco project as requested
+    // {
+    //   id: 2,
+    //   name: "Disco",
+    //   description: "Influencer marketing platform connecting brands with social media influencers.",
+    //   image: "/images/projects/clientWork/disco-app.png",
+    //   technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
+    //   liveLink: null,
+    //   githubLink: null,
+    //   featured: true
+    // },
     {
       id: 2,
-      name: "Disco",
-      description: "Influencer marketing platform connecting brands with social media influencers.",
-      image: "/images/projects/clientWork/disco-app.png",
-      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
-      liveLink: null,
+      name: "AI RAG Copilot",
+      description:
+        "Advanced AI Integrated RAG system chatbot agent, where you can chat with your created knowledge base data and allow LLM Models to take actions on your behalf.",
+      image: "/images/projects/clientWork/copilot-app.png",
+      technologies: [
+        "NextJS",
+        "LangChain",
+        "OpenRouter",
+        "OpenAI",
+        "NodeJS",
+        "RAG",
+        "Vector DB",
+        "Prisma",
+      ],
+      liveLink: "https://youtu.be/CtTtYksEmxs",
       githubLink: null,
-      featured: true
+      featured: true,
+      demoVideo: "https://youtu.be/CtTtYksEmxs",
     },
     {
       id: 3,
       name: "BrowzPot",
-      description: "An AI-powered SaaS platform that helps businesses optimize their web presence and customer engagement.",
+      description:
+        "An AI-powered SaaS platform that helps businesses optimize their web presence and customer engagement.",
       image: "/images/projects/selfWork/browzpot-app.png",
       technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       liveLink: "https://browzpot.com",
       githubLink: "https://github.com/arkalal/BrowzPot",
-      featured: true
+      featured: true,
+      demoVideo: "https://youtu.be/FWaDZX17rEE",
     },
     {
       id: 4,
       name: "Quenlo AI",
-      description: "AI-driven content generation and marketing automation platform.",
+      description:
+        "AI-driven content generation and marketing automation platform.",
       image: "/images/projects/clientWork/quenlo-app.png",
-      technologies: ["NextJS", "Python", "Clerk Auth", "Supabase", "Prisma", "OpenAI"],
+      technologies: [
+        "NextJS",
+        "Python",
+        "Clerk Auth",
+        "Supabase",
+        "Prisma",
+        "OpenAI",
+      ],
       liveLink: null,
       githubLink: null,
-      featured: true
+      featured: true,
     },
     {
       id: 5,
       name: "TalTracker",
-      description: "Advanced talent tracking and management platform for recruiting professionals.",
+      description:
+        "Advanced talent tracking and management platform for recruiting professionals.",
       image: "/images/projects/clientWork/taltracker-app.png",
       technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
       liveLink: "https://taltracker.io",
       githubLink: null,
-      featured: true
-    }
+      featured: true,
+      demoVideo: "https://youtu.be/zAr0qU9_onk",
+    },
   ];
 
   // Determine which projects to show based on showAll state
@@ -82,13 +139,18 @@ const ProjectShowcase = () => {
             Recent <span>Work</span>
           </h2>
           <p className={styles.subheading}>
-            A selection of my recent projects and applications built with modern technologies.
+            A selection of my recent projects and applications built with modern
+            technologies.
           </p>
         </div>
 
         <div className={styles.projectsGrid}>
           {displayProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              openVideoPopup={openVideoPopup}
+            />
           ))}
         </div>
 
@@ -99,13 +161,20 @@ const ProjectShowcase = () => {
             </button>
           )}
         </div>
+
+        {/* Video Popup Component */}
+        <VideoPopup
+          isOpen={videoPopup.isOpen}
+          onClose={closeVideoPopup}
+          videoId={videoPopup.videoId}
+        />
       </div>
     </section>
   );
 };
 
 // Project Card Component
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, openVideoPopup }) => {
   const [ref, inView] = useInView({
     threshold: 0.3,
     triggerOnce: true,
@@ -121,11 +190,11 @@ const ProjectCard = ({ project }) => {
     >
       {/* Project Image */}
       <div className={styles.projectImageWrapper}>
-        <Image 
-          src={project.image} 
-          alt={project.name} 
-          width={600} 
-          height={340} 
+        <Image
+          src={project.image}
+          alt={project.name}
+          width={600}
+          height={340}
           className={styles.projectImage}
         />
       </div>
@@ -134,7 +203,7 @@ const ProjectCard = ({ project }) => {
       <div className={styles.projectContent}>
         <h3 className={styles.projectName}>{project.name}</h3>
         <p className={styles.projectDescription}>{project.description}</p>
-        
+
         <div className={styles.techStack}>
           {project.technologies.map((tech, index) => (
             <span key={index} className={styles.techBadge}>
@@ -142,24 +211,45 @@ const ProjectCard = ({ project }) => {
             </span>
           ))}
         </div>
-        
-        {/* Only show project links if the project should have them */}
-        {(project.id === 1 || project.id === 3 || project.id === 5) && (
-          <div className={styles.projectLinks}>
-            {/* Show GitHub link for CawLab and BrowzPot */}
-            {(project.id === 1 || project.id === 3) && project.githubLink && (
-              <a href={project.githubLink} className={styles.projectLink} target="_blank" rel="noopener noreferrer">
-                <FaGithub /> Code
-              </a>
-            )}
-            {/* Show Live Demo for CawLab, BrowzPot and TalTracker */}
-            {project.liveLink && (
-              <a href={project.liveLink} className={`${styles.projectLink} ${styles.liveLink}`} target="_blank" rel="noopener noreferrer">
-                <FaExternalLinkAlt /> Live Demo
-              </a>
-            )}
-          </div>
-        )}
+
+        <div className={styles.projectLinks}>
+          {/* GitHub code link when available */}
+          {project.githubLink && (
+            <a
+              href={project.githubLink}
+              className={styles.projectLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaGithub /> Code
+            </a>
+          )}
+
+          {/* Demo video button */}
+          {project.demoVideo && (
+            <button
+              className={`${styles.projectLink} ${styles.liveLink}`}
+              onClick={(e) => {
+                e.preventDefault();
+                openVideoPopup(project.demoVideo);
+              }}
+            >
+              <FaYoutube /> Live Demo
+            </button>
+          )}
+
+          {/* External link when there's no demo video */}
+          {project.liveLink && !project.demoVideo && (
+            <a
+              href={project.liveLink}
+              className={`${styles.projectLink} ${styles.liveLink}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaExternalLinkAlt /> Live Demo
+            </a>
+          )}
+        </div>
       </div>
     </motion.div>
   );

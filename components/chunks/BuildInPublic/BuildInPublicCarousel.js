@@ -21,57 +21,57 @@ const linkedInPosts = [
   {
     id: 1,
     image: linkPost1,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_saas-ai-startups-activity-7365767471435345921-G37X?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   {
     id: 2,
     image: linkPost2,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_ai-mvpdevelopment-softwareengineering-activity-7365586268459626496-5UV-?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   {
     id: 3,
     image: linkPost3,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_ai-saas-chromeextension-activity-7364635102699548673-QeJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   // Duplicate posts for infinite scrolling effect
   {
     id: 4,
     image: linkPost1,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_saas-ai-startups-activity-7365767471435345921-G37X?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   {
     id: 5,
     image: linkPost2,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_ai-mvpdevelopment-softwareengineering-activity-7365586268459626496-5UV-?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   {
     id: 6,
     image: linkPost3,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_ai-saas-chromeextension-activity-7364635102699548673-QeJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   // Additional duplicates for smoother infinite effect
   {
     id: 7,
     image: linkPost1,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_saas-ai-startups-activity-7365767471435345921-G37X?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   {
     id: 8,
     image: linkPost2,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_ai-mvpdevelopment-softwareengineering-activity-7365586268459626496-5UV-?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
   {
     id: 9,
     image: linkPost3,
-    link: "https://www.linkedin.com/in/arkalal/",
+    link: "https://www.linkedin.com/posts/arkalal_ai-saas-chromeextension-activity-7364635102699548673-QeJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
     platform: "LinkedIn",
   },
 ];
@@ -80,57 +80,57 @@ const twitterPosts = [
   {
     id: 1,
     image: xPost1,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1959639336426570178",
     platform: "Twitter",
   },
   {
     id: 2,
     image: xPost2,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1959458143244886277",
     platform: "Twitter",
   },
   {
     id: 3,
     image: xPost3,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1958422709966188795",
     platform: "Twitter",
   },
   // Duplicate posts for infinite scrolling effect
   {
     id: 4,
     image: xPost1,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1959639336426570178",
     platform: "Twitter",
   },
   {
     id: 5,
     image: xPost2,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1959458143244886277",
     platform: "Twitter",
   },
   {
     id: 6,
     image: xPost3,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1958422709966188795",
     platform: "Twitter",
   },
   // Additional duplicates for smoother infinite effect
   {
     id: 7,
     image: xPost1,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1959639336426570178",
     platform: "Twitter",
   },
   {
     id: 8,
     image: xPost2,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1959458143244886277",
     platform: "Twitter",
   },
   {
     id: 9,
     image: xPost3,
-    link: "https://x.com/arka_codes",
+    link: "https://x.com/arka_codes/status/1958422709966188795",
     platform: "Twitter",
   },
 ];
