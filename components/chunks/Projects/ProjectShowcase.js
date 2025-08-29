@@ -195,41 +195,53 @@ const ProjectCard = ({ project, openVideoPopup }) => {
   }, []);
 
   const [ref, inView] = useInView({
-    threshold: 0.1, // Use a consistently low threshold for both mobile and desktop
+    threshold: 0.05, // Very low threshold to trigger earlier
     triggerOnce: true,
-    rootMargin: "0px 0px -10% 0px" // Trigger earlier before item comes into view
+    rootMargin: "100px", // Much larger margin to preload before element is visible
   });
   
-  // Prerender the card with willChange property to optimize
+  // Apply optimizations for mobile rendering to prevent flicker
   useEffect(() => {
-    if (inView) {
-      // Force layout recalculation when in view to prevent blinking
-      const cardElement = ref.current;
-      if (cardElement) {
-        cardElement.style.willChange = 'opacity, transform';
-        
-        // Schedule cleanup
-        return () => {
-          cardElement.style.willChange = 'auto';
-        };
-      }
+    // Store the ref value in a variable to use in cleanup
+    const currentRef = ref.current;
+    
+    if (currentRef) {
+      // Apply will-change before element is in view
+      currentRef.style.willChange = 'opacity';
+      currentRef.style.backfaceVisibility = 'hidden';
+      currentRef.style.webkitBackfaceVisibility = 'hidden';
+      
+      // Force hardware acceleration
+      currentRef.style.transform = 'translateZ(0)';
+      
+      return () => {
+        if (currentRef) {
+          currentRef.style.willChange = 'auto';
+          currentRef.style.backfaceVisibility = 'visible';
+          currentRef.style.webkitBackfaceVisibility = 'visible';
+        }
+      };
     }
-  }, [inView, ref]);
+  }, [ref]);
 
   return (
     <motion.div
       ref={ref}
       className={styles.projectCard}
-      initial={{ opacity: 0, y: 0 }} // Start with 0 opacity but no y-offset to reduce visible jumps
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0 }}
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ 
-        duration: 0.2, // Very fast animation to reduce blinking
-        ease: "easeOut",
-        opacity: { duration: 0.3 } // Slightly longer opacity for smooth fade-in
+        duration: isMobile ? 0.1 : 0.3, // Ultra fast on mobile to prevent flickering
+        ease: "linear",
       }}
       style={{ 
-        willChange: inView ? 'opacity, transform' : 'auto', // Hardware acceleration hint
-        transform: 'translateZ(0)' // Force GPU acceleration
+        // Apply styles that help with mobile rendering
+        transform: 'translate3d(0,0,0)', 
+        WebkitTransform: 'translate3d(0,0,0)',
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden',
+        perspective: 1000,
+        WebkitPerspective: 1000
       }}
     >
       {/* Project Image */}
