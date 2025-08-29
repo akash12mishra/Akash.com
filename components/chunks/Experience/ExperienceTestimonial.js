@@ -220,7 +220,7 @@ const ExperienceTestimonial = () => {
 
             {/* Call-to-action buttons */}
             <div className={styles.ctaButtons}>
-              <a href="/assets/doc/Arka resume 2024 - AI new.pdf" download="Arka_Lal_Chakravarty_Resume.pdf" className={styles.btnOutline}>
+              <a href="/assets/doc/Arka resume 2025 - AI new.pdf" download="Arka_Lal_Chakravarty_Resume.pdf" className={styles.btnOutline}>
                 Download CV
               </a>
               <a href="#contact" className={styles.btnFilled}>

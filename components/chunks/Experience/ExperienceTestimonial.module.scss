@@ -199,7 +199,8 @@
   perspective: 1000px;
   
   @media (max-width: 768px) {
-    height: 380px;
+    height: 450px; /* Increased height to accommodate longer content */
+    min-height: 450px;
   }
 }
 
@@ -207,10 +208,11 @@
   position: absolute;
   width: 100%;
   height: auto;
+  max-height: 100%; /* Ensure card doesn't exceed container height */
   border-radius: 16px;
   background-color: var(--card-bg);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible to prevent cut-off */
   transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -233,6 +235,7 @@
 
 .cardContent {
   padding: 1.5rem;
+  padding-bottom: 2rem; /* Extra padding at bottom to prevent cut-off */
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -400,6 +403,18 @@
   
   .cardContent {
     padding: 1.25rem;
+    padding-bottom: 2rem; /* Extra bottom padding on mobile */
+    overflow-y: visible; /* Ensure content isn't cut */
+  }
+  
+  .experienceList {
+    margin-bottom: 0.5rem; /* Add space below the list */
+    
+    .experienceItem {
+      font-size: 0.9rem; /* Slightly smaller font on mobile */
+      line-height: 1.5; /* Tighter line height on mobile */
+      margin-bottom: 0.6rem; /* Less space between items */
+    }
   }
   
   .avatar {

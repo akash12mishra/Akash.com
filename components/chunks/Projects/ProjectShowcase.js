@@ -195,20 +195,41 @@ const ProjectCard = ({ project, openVideoPopup }) => {
   }, []);
 
   const [ref, inView] = useInView({
-    threshold: isMobile ? 0.1 : 0.3, // Lower threshold on mobile for earlier triggering
+    threshold: 0.1, // Use a consistently low threshold for both mobile and desktop
     triggerOnce: true,
+    rootMargin: "0px 0px -10% 0px" // Trigger earlier before item comes into view
   });
+  
+  // Prerender the card with willChange property to optimize
+  useEffect(() => {
+    if (inView) {
+      // Force layout recalculation when in view to prevent blinking
+      const cardElement = ref.current;
+      if (cardElement) {
+        cardElement.style.willChange = 'opacity, transform';
+        
+        // Schedule cleanup
+        return () => {
+          cardElement.style.willChange = 'auto';
+        };
+      }
+    }
+  }, [inView, ref]);
 
   return (
     <motion.div
       ref={ref}
       className={styles.projectCard}
-      initial={{ opacity: 0, y: isMobile ? 20 : 50 }} // Smaller initial y-offset on mobile
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: isMobile ? 20 : 50 }}
+      initial={{ opacity: 0, y: 0 }} // Start with 0 opacity but no y-offset to reduce visible jumps
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0 }}
       transition={{ 
-        duration: isMobile ? 0.3 : 0.6, // Faster animation on mobile
-        ease: isMobile ? "easeIn" : "easeOut",
-        opacity: { duration: isMobile ? 0.2 : 0.4 } // Faster opacity transition
+        duration: 0.2, // Very fast animation to reduce blinking
+        ease: "easeOut",
+        opacity: { duration: 0.3 } // Slightly longer opacity for smooth fade-in
+      }}
+      style={{ 
+        willChange: inView ? 'opacity, transform' : 'auto', // Hardware acceleration hint
+        transform: 'translateZ(0)' // Force GPU acceleration
       }}
     >
       {/* Project Image */}

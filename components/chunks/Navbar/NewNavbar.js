@@ -54,7 +54,7 @@ const NewNavbar = () => {
           <div className={styles.actions}>
             
             <a 
-              href="/assets/doc/Arka resume 2024 - AI new.pdf" 
+              href="/assets/doc/Arka resume 2025 - AI new.pdf" 
               download="Arka_Lal_Chakravarty_Resume.pdf" 
               className={styles.githubButton}
             >
@@ -84,7 +84,7 @@ const NewNavbar = () => {
 
             
             <a 
-              href="/assets/doc/Arka resume 2024 - AI new.pdf" 
+              href="/assets/doc/Arka resume 2025 - AI new.pdf" 
               download="Arka_Lal_Chakravarty_Resume.pdf" 
               className={styles.mobileGithubButton}
             >
