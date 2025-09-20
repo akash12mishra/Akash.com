@@ -427,6 +427,24 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
     }
   }, []);
 
+  // Add meta for mobile devices to prevent horizontal scrolling
+  useEffect(() => {
+    const preventHorizontalScroll = (e) => {
+      // If the chatbot is visible, prevent horizontal scrolling
+      const chatbotElement = ref.current;
+      if (chatbotElement && chatbotElement.contains(e.target)) {
+        e.preventDefault();
+      }
+    };
+    
+    // Add touch event listeners
+    document.addEventListener('touchmove', preventHorizontalScroll, { passive: false });
+    
+    return () => {
+      document.removeEventListener('touchmove', preventHorizontalScroll);
+    };
+  }, [ref]);
+
   return (
     <div ref={ref} className={styles.Chatbot}>
       <div className={styles.chatbotBox} ref={chatbotBoxRef}>

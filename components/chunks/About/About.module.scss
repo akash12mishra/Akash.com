@@ -64,6 +64,12 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba(99, 102, 241, 0.3);
     
+    @media (max-width: 768px) {
+      /* Minimal fixes for mobile gradient glitch */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+    }
+    
     &::before {
       content: '';
       position: absolute;
@@ -74,6 +80,11 @@
       border-radius: 8px;
       border: 1px solid rgba(139, 92, 246, 0.3);
       box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+      
+      @media (max-width: 768px) {
+        /* Reduce glow intensity on mobile to fix visual glitch */
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.15);
+      }
     }
   }
   
