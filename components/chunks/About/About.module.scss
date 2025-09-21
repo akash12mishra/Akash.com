@@ -69,7 +69,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
+      width: 100%; /* Ensure it stays within boundaries */
       height: 100%;
       border-radius: 8px;
       border: 1px solid rgba(139, 92, 246, 0.3);
@@ -77,12 +77,15 @@
     }
     
     @media (max-width: 768px) {
-      /* Fix blue glitch without affecting position */
-      background-clip: padding-box; /* Prevents background from extending beyond border */
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      /* Complete overhaul for mobile to fix the glitch */
+      background: rgba(99, 102, 241, 0.15); 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      overflow: hidden; /* Contain everything inside */
+      transform: translateZ(0); /* Force GPU acceleration */
+      z-index: 1; /* Ensure proper stacking */
       
       &::before {
-        box-shadow: none; /* Remove shadow that might be causing the glitch */
+        display: none; /* Remove the problematic pseudo-element on mobile */
       }
     }
   }
