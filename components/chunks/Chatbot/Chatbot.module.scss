@@ -343,7 +343,7 @@
         background: rgba(20, 20, 25, 0.8);
         color: rgba(255, 255, 255, 0.9);
         outline: none;
-        font-size: 16px; /* Increased to 16px to prevent mobile zoom */
+        font-size: 16px; /* 16px minimum to prevent mobile zoom */
         line-height: 1.2;
         transition: all 0.2s ease;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) inset;
@@ -351,10 +351,14 @@
         appearance: none;
         min-width: 0; /* Important for flexbox to allow shrinking below content size */
         width: 100%;
+        text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+        transform: translateZ(0); /* Force hardware acceleration */
+        touch-action: manipulation; /* Improves touch behavior */
         
         @media (max-width: 480px) {
           padding: 8px 12px;
-          font-size: 15px;
+          font-size: 16px; /* Ensure minimum 16px on all mobile devices */
         }
         
         &::placeholder {

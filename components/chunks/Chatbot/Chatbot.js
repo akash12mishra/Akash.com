@@ -471,6 +471,10 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
         <form onSubmit={handleFormSubmit}>
           <input
             type="text"
+            inputMode="text"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck="false"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
