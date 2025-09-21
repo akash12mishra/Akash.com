@@ -52,7 +52,15 @@ const About = () => {
     <section id="about" className={styles.aboutSection} ref={sectionRef}>
       <div className={styles.container}>
         <div className={styles.sectionHeader}>
-          <span className={styles.sectionTag}>About Me</span>
+          {isMobile ? (
+            /* Mobile version of the button with minimal styling */
+            <div className={styles.mobileTagWrapper}>
+              <span className={styles.mobileSectionTag}>About Me</span>
+            </div>
+          ) : (
+            /* Desktop version remains unchanged */
+            <span className={styles.sectionTag}>About Me</span>
+          )}
           <h2 className={styles.sectionTitle}>Who I Am</h2>
         </div>
 
