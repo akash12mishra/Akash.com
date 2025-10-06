@@ -52,14 +52,22 @@ const NewNavbar = () => {
           </ul>
           
           <div className={styles.actions}>
-            
             <a 
               href="/assets/doc/Arka resume 2025 - AI new.pdf" 
               download="Arka_Lal_Chakravarty_Resume.pdf" 
+              className={styles.cvButton}
+            >
+              <FaFileDownload size={18} />
+              <span>Download CV</span>
+            </a>
+            <a 
+              href="https://github.com/arkalal"
+              target="_blank"
+              rel="noopener noreferrer"
               className={styles.githubButton}
             >
-              <FaFileDownload size={20} />
-              <span>Download CV</span>
+              <FaGithub size={18} />
+              <span>GitHub</span>
             </a>
           </div>
         </div>
@@ -81,15 +89,22 @@ const NewNavbar = () => {
             </li>
           ))}
           <li className={styles.mobileActions}>
-
-            
             <a 
               href="/assets/doc/Arka resume 2025 - AI new.pdf" 
               download="Arka_Lal_Chakravarty_Resume.pdf" 
-              className={styles.mobileGithubButton}
+              className={styles.mobileCvButton}
             >
               <FaFileDownload size={20} />
               <span>Download CV</span>
+            </a>
+            <a 
+              href="https://github.com/arkalal"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.mobileGithubButton}
+            >
+              <FaGithub size={20} />
+              <span>GitHub</span>
             </a>
           </li>
         </ul>

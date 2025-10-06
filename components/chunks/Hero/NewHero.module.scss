@@ -145,6 +145,11 @@
   height: 260px;
   perspective: 1000px;
   margin-bottom: 2rem;
+  transform-style: preserve-3d;
+  transform: translateZ(0);
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  will-change: transform;
 
   @media (max-width: 640px) {
     width: 220px;
@@ -165,7 +170,14 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 8px rgba(0, 0, 0, 0.2),
       inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     padding: 1.5rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Use the same cubic-bezier timing as in the JS component for consistency */
+    transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
 
     &:hover {
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2), 0 1px 10px rgba(0, 0, 0, 0.3),

@@ -195,18 +195,19 @@
 // Right Side - Experience Cards
 .experienceCards {
   position: relative;
-  height: 420px;
+  height: 480px; /* Further increased base height */
   perspective: 1000px;
   
   @media (max-width: 768px) {
-    height: 450px; /* Increased height to accommodate longer content */
-    min-height: 450px;
+    height: 500px; /* Significantly increased height on mobile */
+    min-height: 500px;
   }
 }
 
 .experienceCard {
   position: absolute;
   width: 100%;
+  min-height: 460px; /* Set a minimum height for all cards */
   height: auto;
   max-height: 100%; /* Ensure card doesn't exceed container height */
   border-radius: 16px;
@@ -217,6 +218,8 @@
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0.1);
   will-change: transform, opacity;
+  display: flex;
+  flex-direction: column;
   
   &.active {
     z-index: 30;
@@ -235,10 +238,30 @@
 
 .cardContent {
   padding: 1.5rem;
-  padding-bottom: 2rem; /* Extra padding at bottom to prevent cut-off */
+  padding-bottom: 3rem; /* Significantly increased padding at bottom to prevent cut-off */
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  flex: 1;
+  position: relative; /* For proper positioning of child elements */
+}
+
+.moreContentCard .cardContent {
+  padding-bottom: 3.5rem; /* Even more padding for cards with more content */
+}
+
+.infojiniCard {
+  min-height: 500px; /* Specifically for the Infojini card */
+  
+  .cardContent {
+    padding-bottom: 4.5rem; /* Much more padding for the Infojini card */
+  }
+}
+
+/* Extra spacing element for the Infojini card */
+.extraSpacing {
+  height: 20px; /* Fixed height spacer */
+  width: 100%;
 }
 
 .avatar {
@@ -284,6 +307,7 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
+  margin-bottom: 1.5rem; // Increased bottom margin to fix spacing issue
   
   .experienceItem {
     position: relative;
@@ -401,14 +425,34 @@
     margin-top: 1rem;
   }
   
+  .experienceCard {
+    min-height: 480px; /* Increased minimum height on mobile */
+  }
+  
   .cardContent {
     padding: 1.25rem;
-    padding-bottom: 2rem; /* Extra bottom padding on mobile */
+    padding-bottom: 3.5rem; /* Significantly increased bottom padding on mobile */
     overflow-y: visible; /* Ensure content isn't cut */
+  }
+
+  .moreContentCard .cardContent {
+    padding-bottom: 4rem; /* More padding for cards with more content on mobile */
+  }
+  
+  .infojiniCard {
+    min-height: 520px; /* Specifically for the Infojini card on mobile */
+    
+    .cardContent {
+      padding-bottom: 5rem; /* Much more padding for the Infojini card on mobile */
+    }
+  }
+  
+  .extraSpacing {
+    height: 30px; /* Taller spacer on mobile */
   }
   
   .experienceList {
-    margin-bottom: 0.5rem; /* Add space below the list */
+    margin-bottom: 1.5rem; /* Maintain space below the list on mobile */
     
     .experienceItem {
       font-size: 0.9rem; /* Slightly smaller font on mobile */

@@ -41,29 +41,19 @@ const NewHero = () => {
       heroRef.current.style.transform = 'none';
     };
     
-    // Handle mouse move without triggering state updates that cause re-renders
-    const handleMouseMove = (e) => {
-      // Skip mouse move animations completely on mobile devices
-      if (isMobile || !avatarRef.current) return;
-      
-      const { clientX, clientY } = e;
-      mousePositionRef.current = {
-        x: (clientX / window.innerWidth - 0.5) * 20,
-        y: (clientY / window.innerHeight - 0.5) * 20
-      };
-      
-      // Apply the transform directly to the DOM element
-      if (avatarRef.current) {
-        avatarRef.current.style.transform = `perspective(1000px) rotateY(${mousePositionRef.current.x}deg) rotateX(${-mousePositionRef.current.y}deg)`;
-      }
-    };
+    // Store current hover state to avoid conflicts with mouse move effect
+    let isHovering = false;
+    
+    // Store ref value to fix lint warning
+    const currentAvatarRef = avatarRef.current;
+    
+    // Disable mouse move effect completely to avoid any conflicts with hover
+    // This ensures the hover animation works perfectly without any interference
     
     window.addEventListener("scroll", handleScroll);
-    window.addEventListener("mousemove", handleMouseMove);
     
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [isMobile]);
   
@@ -114,8 +104,18 @@ const NewHero = () => {
             className={styles.avatarContainer}
             ref={avatarRef}
             variants={itemVariants}
+            animate={{ scale: 1 }}
+            initial={{ scale: 1 }}
             whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
+            transition={{ 
+              type: "tween", 
+              ease: [0.25, 0.1, 0.25, 1],
+              duration: 0.4,
+            }}
+            style={{
+              transformOrigin: "center center",
+              transform: "perspective(1000px)"
+            }}
           >
             <div className={styles.glassCard}>
               <Image 

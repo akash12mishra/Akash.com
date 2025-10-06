@@ -117,21 +117,38 @@
     }
   }
 
-  .githubButton {
+  .cvButton, .githubButton {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     border-radius: 50px;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    color: white;
     font-weight: 500;
     transition: all 0.3s ease;
     cursor: pointer;
-
+  }
+  
+  .cvButton {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    
     &:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+  }
+  
+  .githubButton {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: var(--text);
+    
+    &:hover {
+      transform: translateY(-2px);
+      background: rgba(99, 102, 241, 0.1);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
   }
 }
@@ -211,7 +228,7 @@
       gap: 1rem;
       margin-top: 2rem;
 
-      .mobileThemeToggle, .mobileGithubButton {
+      .mobileThemeToggle, .mobileCvButton, .mobileGithubButton {
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -231,9 +248,16 @@
         cursor: pointer;
       }
 
-      .mobileGithubButton {
+      .mobileCvButton {
         background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
         color: white;
+        margin-bottom: 0.75rem;
+      }
+      
+      .mobileGithubButton {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        color: var(--text);
       }
     }
   }

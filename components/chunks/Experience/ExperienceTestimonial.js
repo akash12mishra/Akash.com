@@ -29,7 +29,7 @@ const ExperienceTestimonial = () => {
       descriptions: [
         "Developing AI-driven SaaS MVPs for diverse clients, enhancing their operational efficiency",
         "Implementing agentic automation solutions, streamlining workflows and reducing manual effort by up to 30%",
-        "Collaborating closely with clients to understand their needs, ensuring tailored solutions that drive business growth"
+        "Collaborating closely with clients to understand their needs, ensuring tailored solutions that drive business growth",
       ],
       icon: <IoPersonCircle />,
       color: "#6366F1",
@@ -42,7 +42,7 @@ const ExperienceTestimonial = () => {
       descriptions: [
         "Developed a social media content automation platform as a contractor",
         "Built and coded multiple agentic workflows using Microsoft Autogen and Python FastAPI",
-        "Created a LinkedIn automation Chrome extension, enhancing user engagement and efficiency"
+        "Created a LinkedIn automation Chrome extension, enhancing user engagement and efficiency",
       ],
       icon: <IoPersonCircle />,
       color: "#3B82F6",
@@ -55,7 +55,7 @@ const ExperienceTestimonial = () => {
       descriptions: [
         "Developed AI-powered solutions using NextJS and SCSS",
         "Implemented scalable AI technologies for business applications",
-        "Built efficient and maintainable code for AI systems"
+        "Built efficient and maintainable code for AI systems",
       ],
       icon: <IoPersonCircle />,
       color: "#8B5CF6",
@@ -69,7 +69,7 @@ const ExperienceTestimonial = () => {
         "Worked on US State Govt projects including healthcare domain applications",
         "Developed a full working CMS web app for Lee County State using ReactJS",
         "Contributed to legacy code maintenance in AngularJS for CMS projects",
-        "Developed generative AI features for client and internal projects"
+        "Developed generative AI features for client and internal projects",
       ],
       icon: <IoPersonCircle />,
       color: "#EC4899",
@@ -82,7 +82,7 @@ const ExperienceTestimonial = () => {
       descriptions: [
         "Developed E-commerce products from scratch using HTML5, CSS3 and JavaScript",
         "Built data dashboards to analyze sales reports and customer engagement",
-        "Implemented responsive designs for web applications"
+        "Implemented responsive designs for web applications",
       ],
       icon: <IoPersonCircle />,
       color: "#10B981",
@@ -98,10 +98,12 @@ const ExperienceTestimonial = () => {
   }, [experiences.length]);
 
   const handlePrevious = useCallback(() => {
-    setActiveIndex((prevIndex) => (prevIndex - 1 + experiences.length) % experiences.length);
+    setActiveIndex(
+      (prevIndex) => (prevIndex - 1 + experiences.length) % experiences.length
+    );
     setDirection("left");
   }, [experiences.length]);
-  
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -123,11 +125,11 @@ const ExperienceTestimonial = () => {
     if (isVisible && !isPaused) {
       const interval = setInterval(() => {
         handleNext();
-      }, isMobile ? 6000 : 5000); // Longer interval on mobile for smoother transitions
+      }, 3000); // Consistent 3 second interval for all devices
 
       return () => clearInterval(interval);
     }
-  }, [isVisible, isPaused, activeIndex, isMobile, handleNext]);
+  }, [isVisible, isPaused, handleNext]); // Removed dependency on activeIndex and isMobile
 
   useEffect(() => {
     setIsVisible(inView);
@@ -152,7 +154,14 @@ const ExperienceTestimonial = () => {
     },
     previous: (custom) => ({
       scale: isMobile ? 0.92 : 0.9,
-      x: custom === "left" ? (isMobile ? "-15%" : "-20%") : (isMobile ? "15%" : "20%"),
+      x:
+        custom === "left"
+          ? isMobile
+            ? "-15%"
+            : "-20%"
+          : isMobile
+          ? "15%"
+          : "20%",
       opacity: isMobile ? 0.75 : 0.7,
       zIndex: 20,
       transition: {
@@ -164,7 +173,14 @@ const ExperienceTestimonial = () => {
     }),
     next: (custom) => ({
       scale: isMobile ? 0.92 : 0.9,
-      x: custom === "left" ? (isMobile ? "15%" : "20%") : (isMobile ? "-15%" : "-20%"),
+      x:
+        custom === "left"
+          ? isMobile
+            ? "15%"
+            : "20%"
+          : isMobile
+          ? "-15%"
+          : "-20%",
       opacity: isMobile ? 0.75 : 0.7,
       zIndex: 20,
       transition: {
@@ -176,7 +192,14 @@ const ExperienceTestimonial = () => {
     }),
     hidden: (custom) => ({
       scale: isMobile ? 0.85 : 0.8,
-      x: custom === "left" ? (isMobile ? "-30%" : "-40%") : (isMobile ? "30%" : "40%"),
+      x:
+        custom === "left"
+          ? isMobile
+            ? "-30%"
+            : "-40%"
+          : isMobile
+          ? "30%"
+          : "40%",
       opacity: 0,
       zIndex: 10,
       transition: {
@@ -199,13 +222,14 @@ const ExperienceTestimonial = () => {
               Professional <span>Journey</span>
             </h2>
             <p className={styles.subheading}>
-              A timeline of my career growth and technical expertise across multiple roles.
+              A timeline of my career growth and technical expertise across
+              multiple roles.
             </p>
 
             {/* Statistics */}
             <div className={styles.statsContainer}>
               <div className={styles.statBox}>
-                <h3>3+</h3>
+                <h3>3.7+</h3>
                 <p>Years Experience</p>
               </div>
               <div className={styles.statBox}>
@@ -220,7 +244,11 @@ const ExperienceTestimonial = () => {
 
             {/* Call-to-action buttons */}
             <div className={styles.ctaButtons}>
-              <a href="/assets/doc/Arka resume 2025 - AI new.pdf" download="Arka_Lal_Chakravarty_Resume.pdf" className={styles.btnOutline}>
+              <a
+                href="/assets/doc/Arka resume 2025 - AI new.pdf"
+                download="Arka_Lal_Chakravarty_Resume.pdf"
+                className={styles.btnOutline}
+              >
                 Download CV
               </a>
               <a href="#contact" className={styles.btnFilled}>
@@ -232,7 +260,14 @@ const ExperienceTestimonial = () => {
           {/* Right side: Experience Cards */}
           <div className={styles.experienceCards}>
             {experiences.map((exp, idx) => {
-              const cardPosition = idx === activeIndex ? "active" : idx < activeIndex ? "previous" : idx > activeIndex ? "next" : "hidden";
+              const cardPosition =
+                idx === activeIndex
+                  ? "active"
+                  : idx < activeIndex
+                  ? "previous"
+                  : idx > activeIndex
+                  ? "next"
+                  : "hidden";
 
               return (
                 <motion.div
@@ -242,11 +277,20 @@ const ExperienceTestimonial = () => {
                   variants={variants}
                   initial="hidden"
                   animate={cardPosition}
-                  className={`${styles.experienceCard} ${styles[cardPosition]}`}
-                  whileHover={!isMobile ? { scale: cardPosition === "active" ? 1.02 : 1, cursor: "grab" } : {}}
-                  onMouseEnter={() => !isMobile && setIsPaused(true)}
-                  onMouseLeave={() => !isMobile && setIsPaused(false)}
-                  onClick={() => cardPosition !== "active" && handleCardClick(idx)}
+                  className={`${styles.experienceCard} ${styles[cardPosition]} ${exp.id === 4 ? `${styles.moreContentCard} ${styles.infojiniCard}` : ''}`}
+                  whileHover={
+                    !isMobile
+                      ? {
+                          scale: cardPosition === "active" ? 1.02 : 1,
+                          cursor: "grab",
+                        }
+                      : {}
+                  }
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
+                  onClick={() =>
+                    cardPosition !== "active" && handleCardClick(idx)
+                  }
                   layout={!isMobile}
                 >
                   <div className={styles.cardContent}>
@@ -254,7 +298,13 @@ const ExperienceTestimonial = () => {
                     <div
                       className={styles.avatar}
                       style={{
-                        backgroundColor: `rgba(${parseInt(exp.color.slice(1, 3), 16)}, ${parseInt(exp.color.slice(3, 5), 16)}, ${parseInt(exp.color.slice(5, 7), 16)}, 0.2)`,
+                        backgroundColor: `rgba(${parseInt(
+                          exp.color.slice(1, 3),
+                          16
+                        )}, ${parseInt(exp.color.slice(3, 5), 16)}, ${parseInt(
+                          exp.color.slice(5, 7),
+                          16
+                        )}, 0.2)`,
                         color: exp.color,
                       }}
                     >
@@ -276,6 +326,8 @@ const ExperienceTestimonial = () => {
                         </li>
                       ))}
                     </ul>
+                    {/* Add extra spacing specifically for Infojini card with inline style for more reliability */}
+                    {exp.id === 4 && <div style={{ height: '50px', width: '100%', flexShrink: 0, marginBottom: '15px' }}></div>}
                   </div>
                 </motion.div>
               );
@@ -314,11 +366,16 @@ const ExperienceTestimonial = () => {
               {experiences.map((_, index) => (
                 <button
                   key={index}
-                  className={`${styles.paginationDot} ${index === activeIndex ? styles.active : ""}`}
+                  className={`${styles.paginationDot} ${
+                    index === activeIndex ? styles.active : ""
+                  }`}
                   onClick={() => {
-                    setIsPaused(true);
                     setActiveIndex(index);
+                    // Brief pause when clicking pagination, but will resume on mouseout
+                    setIsPaused(true);
                   }}
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
                 />
               ))}
             </div>
