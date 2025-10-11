@@ -125,7 +125,7 @@ export async function GET() {
                   }
                 }
               }
-              contributions(last: 1) {
+              contributions(first: 100) {
                 totalCount
                 nodes {
                   occurredAt

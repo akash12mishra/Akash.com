@@ -140,13 +140,15 @@ const GitHubAnalytics = () => {
   const recentContributionRepos = commitRepos
     .map((item) => {
       const nodes = item?.contributions?.nodes || [];
-      let latestAt = 0;
+      let latestCommitAt = 0;
       for (let i = 0; i < nodes.length; i++) {
         const t = new Date(nodes[i].occurredAt).getTime();
-        if (!Number.isNaN(t) && t > latestAt) latestAt = t;
+        if (!Number.isNaN(t) && t > latestCommitAt) latestCommitAt = t;
       }
-      const fallback = item?.repository?.pushedAt || item?.repository?.updatedAt;
-      if (!latestAt && fallback) latestAt = new Date(fallback).getTime();
+      const pushedTime = item?.repository?.pushedAt
+        ? new Date(item.repository.pushedAt).getTime()
+        : (item?.repository?.updatedAt ? new Date(item.repository.updatedAt).getTime() : 0);
+      const latestAt = Math.max(latestCommitAt, pushedTime);
       return {
         ...item.repository,
         commitsInRange: item?.contributions?.totalCount || 0,
@@ -344,6 +346,10 @@ const GitHubAnalytics = () => {
                       )}
                       
                       <div className={styles.repoStats}>
+                        <div className={styles.repoStat}>
+                          <GoCommit className={styles.repoStatIcon} />
+                          <span>{formatNumber(repo?.defaultBranchRef?.target?.history?.totalCount || 0)} commits</span>
+                        </div>
                         <div className={styles.repoStat}>
                           <FaStar className={styles.repoStatIcon} />
                           <span>{formatNumber(repo.stargazerCount)}</span>
