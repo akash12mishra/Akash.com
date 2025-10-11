@@ -176,21 +176,21 @@ const ProjectShowcase = () => {
 // Project Card Component
 const ProjectCard = ({ project, openVideoPopup }) => {
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Detect mobile device
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     // Initial check
     checkMobile();
-    
+
     // Add resize listener
-    window.addEventListener('resize', checkMobile);
-    
+    window.addEventListener("resize", checkMobile);
+
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
@@ -199,26 +199,26 @@ const ProjectCard = ({ project, openVideoPopup }) => {
     triggerOnce: true,
     rootMargin: "100px", // Much larger margin to preload before element is visible
   });
-  
+
   // Apply optimizations for mobile rendering to prevent flicker
   useEffect(() => {
     // Store the ref value in a variable to use in cleanup
     const currentRef = ref.current;
-    
+
     if (currentRef) {
       // Apply will-change before element is in view
-      currentRef.style.willChange = 'opacity';
-      currentRef.style.backfaceVisibility = 'hidden';
-      currentRef.style.webkitBackfaceVisibility = 'hidden';
-      
+      currentRef.style.willChange = "opacity";
+      currentRef.style.backfaceVisibility = "hidden";
+      currentRef.style.webkitBackfaceVisibility = "hidden";
+
       // Force hardware acceleration
-      currentRef.style.transform = 'translateZ(0)';
-      
+      currentRef.style.transform = "translateZ(0)";
+
       return () => {
         if (currentRef) {
-          currentRef.style.willChange = 'auto';
-          currentRef.style.backfaceVisibility = 'visible';
-          currentRef.style.webkitBackfaceVisibility = 'visible';
+          currentRef.style.willChange = "auto";
+          currentRef.style.backfaceVisibility = "visible";
+          currentRef.style.webkitBackfaceVisibility = "visible";
         }
       };
     }
@@ -230,18 +230,18 @@ const ProjectCard = ({ project, openVideoPopup }) => {
       className={styles.projectCard}
       initial={{ opacity: 0 }}
       animate={inView ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ 
+      transition={{
         duration: isMobile ? 0.1 : 0.3, // Ultra fast on mobile to prevent flickering
         ease: "linear",
       }}
-      style={{ 
+      style={{
         // Apply styles that help with mobile rendering
-        transform: 'translate3d(0,0,0)', 
-        WebkitTransform: 'translate3d(0,0,0)',
-        backfaceVisibility: 'hidden',
-        WebkitBackfaceVisibility: 'hidden',
+        transform: "translate3d(0,0,0)",
+        WebkitTransform: "translate3d(0,0,0)",
+        backfaceVisibility: "hidden",
+        WebkitBackfaceVisibility: "hidden",
         perspective: 1000,
-        WebkitPerspective: 1000
+        WebkitPerspective: 1000,
       }}
     >
       {/* Project Image */}

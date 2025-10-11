@@ -12,6 +12,8 @@ import CTASection from "../../chunks/CTASection/CTASection";
 import NewFooter from "../../chunks/Footer/NewFooter";
 import TechStack from "../../chunks/TechStack/TechStack";
 import ChatBubble from "../../chunks/ChatBubble/ChatBubble";
+import GitHubContributionHeatmap from "../../chunks/GitHubContributions/GitHubContributionHeatmap";
+import GitHubAnalytics from "../../chunks/GitHubAnalytics/GitHubAnalytics";
 
 const NewHome = () => {
   return (
@@ -22,6 +24,8 @@ const NewHome = () => {
       <TechStack />
       <ExperienceTestimonial />
       <ProjectShowcase />
+      <GitHubContributionHeatmap />
+      <GitHubAnalytics />
       <BuildInPublicCarousel />
       <Contact />
       <CTASection />
