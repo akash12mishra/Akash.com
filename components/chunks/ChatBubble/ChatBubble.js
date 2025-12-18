@@ -12,27 +12,31 @@ import { motion, AnimatePresence } from "framer-motion";
 const ChatBubble = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  
+
   // Check for mobile devices
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     // Initial check
     checkMobile();
-    
+
     // Add resize listener
-    window.addEventListener('resize', checkMobile);
-    
+    window.addEventListener("resize", checkMobile);
+
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
   useEffect(() => {
     const onOpenBubble = () => {
-      if (typeof window !== "undefined" && !window.bubbleClosed && !isChatOpen) {
+      if (
+        typeof window !== "undefined" &&
+        !window.bubbleClosed &&
+        !isChatOpen
+      ) {
         setIsChatOpen(true);
       }
     };
@@ -46,7 +50,7 @@ const ChatBubble = () => {
 
   const handleToggleChat = (e) => {
     if (e) e.stopPropagation(); // Prevent click from bubbling up
-    setIsChatOpen(prev => !prev);
+    setIsChatOpen((prev) => !prev);
   };
 
   return (
@@ -54,16 +58,16 @@ const ChatBubble = () => {
       {/* Chat Window */}
       <AnimatePresence>
         {isChatOpen && (
-          <motion.div 
+          <motion.div
             className={styles.chatWindow}
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{
-              type: isMobile ? "tween" : "spring", // Use simpler animation on mobile
-              stiffness: isMobile ? 100 : 300, // Lower stiffness on mobile 
-              damping: isMobile ? 15 : 25,    // Adjusted damping
-              duration: isMobile ? 0.2 : 0.3   // Faster animation on mobile
+              type: "spring",
+              stiffness: 400,
+              damping: 30,
+              duration: 0.3,
             }}
           >
             <div className={styles.chatHeader}>
@@ -71,7 +75,7 @@ const ChatBubble = () => {
                 <span className={styles.pulseDot}></span>
                 <h3>Ask me about Arka</h3>
               </div>
-              <button 
+              <button
                 className={styles.closeButton}
                 onClick={handleToggleChat}
                 aria-label="Close chat"
@@ -96,14 +100,14 @@ const ChatBubble = () => {
         aria-label="Open chat assistant"
       >
         {!isChatOpen && (
-          <motion.div 
+          <motion.div
             className={styles.bubbleContent}
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{
               type: isMobile ? "tween" : "spring", // Use simpler animation on mobile
-              duration: isMobile ? 0.2 : 0.3      // Faster animation on mobile
+              duration: isMobile ? 0.2 : 0.3, // Faster animation on mobile
             }}
           >
             <FaRobot className={styles.robotIcon} />

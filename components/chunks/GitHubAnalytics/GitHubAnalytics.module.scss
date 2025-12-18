@@ -1,109 +1,96 @@
 .githubSection {
-  padding: 7rem 0;
-  background-color: #0d1117;
-  color: #e6edf3;
+  padding: 60px 0;
+  background-color: var(--background);
+  color: var(--text-primary);
 
   .container {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 40px;
+
+    @media (max-width: 768px) {
+      padding: 0 24px;
+    }
   }
 
   .sectionHeader {
-    margin-bottom: 3rem;
-    text-align: center;
+    margin-bottom: 20px;
+    text-align: left;
     position: relative;
 
     .sectionTag {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      background-color: rgba(45, 212, 191, 0.1);
-      color: #2dd4bf;
-      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      background: none;
+      color: var(--text-secondary);
       font-size: 0.85rem;
       font-weight: 500;
-      letter-spacing: 0.05em;
-      margin-bottom: 1.25rem;
     }
 
     .heading {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 1.25rem;
-      color: #e6edf3;
-
-      span {
-        color: #2dd4bf;
-      }
-
-      @media (max-width: 768px) {
-        font-size: 2rem;
-      }
+      display: none;
     }
 
     .subheading {
-      font-size: 1.2rem;
-      color: #8b949e;
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
+      display: none;
     }
   }
-  
-  // Profile Card
+
   .profileCard {
-    background-color: #161b22;
-    border-radius: 0.75rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
     overflow: hidden;
-    
+
     .profileHeader {
-      padding: 1.5rem;
-      
+      padding: 20px;
+
       .profileInfo {
         display: flex;
         flex-direction: column;
         align-items: center;
-        
+
         @media (min-width: 768px) {
           flex-direction: row;
           justify-content: space-between;
         }
-        
+
         .stats {
           display: flex;
           flex-wrap: wrap;
           gap: 1.5rem;
-          margin-bottom: 1.5rem;
-          
+          margin-bottom: 1rem;
+
           @media (min-width: 768px) {
             margin-bottom: 0;
           }
-          
+
           .statItem {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            
+
             .statIcon {
-              font-size: 1.5rem;
-              color: #2dd4bf;
+              font-size: 1.25rem;
+              color: var(--accent-primary);
             }
-            
+
             div {
               display: flex;
               flex-direction: column;
-              
+
               .statValue {
-                font-size: 1.25rem;
-                font-weight: 700;
-                color: #e6edf3;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--text-primary);
               }
-              
+
               .statLabel {
-                font-size: 0.85rem;
-                color: #8b949e;
+                font-size: 0.8rem;
+                color: var(--text-secondary);
               }
             }
           }
@@ -111,279 +98,287 @@
       }
     }
   }
-  
-  // View Profile Button
+
   .viewProfileButton {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    background-color: #238636;
-    color: #ffffff;
-    border-radius: 0.375rem;
-    font-size: 0.9rem;
+    padding: 10px 18px;
+    background-color: var(--text-primary);
+    color: var(--background);
+    border-radius: 8px;
+    font-size: 0.85rem;
     font-weight: 500;
     text-decoration: none;
-    transition: background-color 0.2s ease;
-    
+    transition: all 0.2s ease;
+
     &:hover {
-      background-color: #2ea043;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
   }
-  
+
   // Year Selector
   .yearSelector {
-    margin: 2rem 0;
-    
+    margin: 1.5rem 0;
+
     h3 {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-      color: #e6edf3;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
     }
-    
+
     .yearButtons {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      
+      gap: 8px;
+
       .yearButton {
-        padding: 0.5rem 1rem;
-        background-color: #21262d;
-        border: 1px solid #30363d;
-        border-radius: 0.375rem;
-        color: #c9d1d9;
-        font-size: 0.9rem;
+        padding: 8px 16px;
+        background-color: var(--background-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
         cursor: pointer;
         transition: all 0.2s ease;
-        
+
         &:hover {
-          background-color: #30363d;
+          border-color: var(--text-primary);
+          color: var(--text-primary);
         }
-        
+
         &.active {
-          background-color: #2dd4bf;
-          border-color: #2dd4bf;
-          color: #0d1117;
+          background-color: var(--text-primary);
+          border-color: var(--text-primary);
+          color: var(--background);
           font-weight: 500;
         }
       }
-      
+
       .viewMoreYears {
-        padding: 0.5rem 1rem;
+        padding: 8px 16px;
         background-color: transparent;
         border: none;
-        color: #2dd4bf;
-        font-size: 0.9rem;
+        color: var(--accent-primary);
+        font-size: 0.85rem;
         cursor: pointer;
-        
+
         &:hover {
           text-decoration: underline;
         }
       }
     }
   }
-  
+
   // Tabs
   .tabsContainer {
-    margin-top: 3rem;
-    
+    margin-top: 1.5rem;
+
     .tabs {
       display: flex;
-      border-bottom: 1px solid #30363d;
-      margin-bottom: 1.5rem;
+      gap: 8px;
+      margin-bottom: 1rem;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-      
+
       .tabButton {
-        padding: 0.75rem 1.25rem;
-        color: #8b949e;
-        background-color: transparent;
-        border: none;
-        border-bottom: 2px solid transparent;
-        font-size: 1rem;
+        padding: 8px 16px;
+        color: var(--text-secondary);
+        background-color: var(--background-secondary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.85rem;
         cursor: pointer;
         white-space: nowrap;
         transition: all 0.2s ease;
-        
+
         &:hover {
-          color: #c9d1d9;
+          border-color: var(--text-primary);
+          color: var(--text-primary);
         }
-        
+
         &.active {
-          color: #2dd4bf;
-          border-bottom-color: #2dd4bf;
+          background-color: var(--text-primary);
+          border-color: var(--text-primary);
+          color: var(--background);
         }
       }
     }
-    
+
     .tabContent {
-      min-height: 300px;
-      
+      min-height: 200px;
+
       h4 {
-        font-size: 1.25rem;
-        margin-bottom: 1.5rem;
-        color: #e6edf3;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
       }
     }
   }
-  
+
   // Overview Tab
   .contributionTypes {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1.5rem;
-    
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+
     .contributionTypeItem {
       display: flex;
       align-items: center;
-      gap: 1rem;
-      padding: 1.25rem;
-      background-color: #161b22;
-      border-radius: 0.5rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      
+      gap: 12px;
+      padding: 16px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+
       .contributionTypeIcon {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 3rem;
-        height: 3rem;
-        border-radius: 50%;
-        background-color: rgba(45, 212, 191, 0.1);
-        color: #2dd4bf;
-        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background-color: var(--background-secondary);
+        color: var(--text-secondary);
+        font-size: 1.1rem;
       }
-      
+
       .contributionTypeDetails {
         display: flex;
         flex-direction: column;
-        
+
         .contributionTypeValue {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #e6edf3;
+          font-size: 1.1rem;
+          font-weight: 600;
+          color: var(--text-primary);
         }
-        
+
         .contributionTypeLabel {
-          font-size: 0.85rem;
-          color: #8b949e;
+          font-size: 0.8rem;
+          color: var(--text-secondary);
         }
       }
     }
   }
-  
+
   // Empty State
   .emptyStateContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 200px;
+    min-height: 150px;
     padding: 2rem;
-    background-color: rgba(22, 27, 34, 0.5);
-    border-radius: 0.5rem;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
     text-align: center;
-    
+
     p {
-      color: #8b949e;
+      color: var(--text-secondary);
       margin-bottom: 1rem;
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
-    
+
     .refreshDataButton {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      background-color: rgba(45, 212, 191, 0.1);
-      border: 1px solid rgba(45, 212, 191, 0.3);
-      color: #2dd4bf;
-      border-radius: 0.375rem;
-      font-size: 0.9rem;
+      padding: 10px 18px;
+      background-color: var(--background);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      border-radius: 8px;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s ease;
-      
+
       &:hover {
-        background-color: rgba(45, 212, 191, 0.2);
+        border-color: var(--text-primary);
       }
-      
+
       .spinning {
         animation: spin 1s linear infinite;
       }
     }
   }
-  
+
   // Repos Tab & Activity Tab
-  .reposList, .contributedReposList {
+  .reposList,
+  .contributedReposList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-    
+    grid-template-columns: 1fr;
+    gap: 12px;
+
     .repoCard {
-      padding: 1.5rem;
-      background-color: #161b22;
-      border-radius: 0.5rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      padding: 16px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       display: flex;
       flex-direction: column;
-      height: 100%;
-      
+
       .repoName {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         font-weight: 600;
-        margin-bottom: 0.75rem;
-        color: #e6edf3;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
       }
-      
+
       .repoDescription {
-        font-size: 0.9rem;
-        color: #8b949e;
-        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.75rem;
         line-height: 1.5;
         flex-grow: 1;
       }
-      
+
       .repoLanguage {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         margin-bottom: 1rem;
-        
+
         .languageColor {
           width: 0.75rem;
           height: 0.75rem;
           border-radius: 50%;
           display: block;
         }
-        
+
         .languageName {
           font-size: 0.85rem;
           color: #c9d1d9;
         }
       }
-      
+
       .repoStats {
         display: flex;
         gap: 1.25rem;
         margin-bottom: 1.25rem;
-        
+
         .repoStat {
           display: flex;
           align-items: center;
           gap: 0.375rem;
           font-size: 0.85rem;
           color: #8b949e;
-          
+
           .repoStatIcon {
             font-size: 0.9rem;
           }
         }
       }
-      
+
       .repoActions {
         margin-top: auto;
       }
-      
+
       .repoLink {
         display: inline-flex;
         align-items: center;
@@ -392,14 +387,14 @@
         color: #2dd4bf;
         text-decoration: none;
         transition: color 0.2s ease;
-        
+
         &:hover {
           color: lighten(#2dd4bf, 10%);
         }
       }
     }
   }
-  
+
   // Other repositories count styling
   .otherReposCount {
     margin-top: 1.5rem;
@@ -412,21 +407,22 @@
     color: #8b949e;
     font-style: italic;
   }
-  
+
   // Loading & Error States
-  .loadingContainer, .errorContainer {
+  .loadingContainer,
+  .errorContainer {
     height: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    
+
     p {
       color: #8b949e;
     }
   }
-  
+
   .loadingPulse {
     width: 50px;
     height: 50px;
@@ -434,7 +430,7 @@
     background-color: rgba(45, 212, 191, 0.2);
     animation: pulse 1.5s ease-in-out infinite;
   }
-  
+
   @keyframes pulse {
     0% {
       transform: scale(0.8);
@@ -449,10 +445,10 @@
       opacity: 0.5;
     }
   }
-  
+
   .errorContainer {
     color: #f85149;
-    
+
     .retryButton {
       background-color: rgba(248, 81, 73, 0.1);
       border: 1px solid rgba(248, 81, 73, 0.3);
@@ -464,17 +460,17 @@
       gap: 0.5rem;
       transition: all 0.2s ease;
       cursor: pointer;
-      
+
       &:hover {
         background-color: rgba(248, 81, 73, 0.2);
       }
-      
+
       &.spinning svg {
         animation: spin 1s linear infinite;
       }
     }
   }
-  
+
   .refreshButton {
     position: absolute;
     top: 5px;
@@ -490,31 +486,36 @@
     border-radius: 4px;
     transition: all 0.2s ease;
     font-size: 1rem;
-    
+
     &:hover {
       color: #2dd4bf;
       background-color: rgba(45, 212, 191, 0.1);
     }
-    
+
     &.spinning {
       animation: spin 1s linear infinite;
     }
   }
-  
+
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
-  
+
   // Media Queries
   @media (max-width: 768px) {
     padding: 4rem 0;
-    
+
     .contributionTypes {
       grid-template-columns: 1fr;
     }
-    
-    .reposList, .contributedReposList {
+
+    .reposList,
+    .contributedReposList {
       grid-template-columns: 1fr;
     }
   }

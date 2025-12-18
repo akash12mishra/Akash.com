@@ -13,56 +13,43 @@
 
 .chatBubble {
   position: relative;
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  border: none;
+  background: var(--accent-primary);
+  border: 2px solid var(--background);
   outline: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 
-    0 4px 15px rgba(99, 102, 241, 0.4),
-    0 0 0 1px rgba(99, 102, 241, 0.2),
-    0 0 20px rgba(99, 102, 241, 0.3);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3),
+    0 0 0 1px rgba(255, 107, 53, 0.1);
+  transition: all 0.2s ease;
   overflow: hidden;
   z-index: 101;
-  
+
   @media (max-width: 768px) {
-    transition: all 0.2s ease; // Faster transition on mobile
-    box-shadow: // Simplified shadow for better performance
-      0 4px 15px rgba(99, 102, 241, 0.4),
-      0 0 0 1px rgba(99, 102, 241, 0.2);
-  }
-  
-  @media (max-width: 480px) {
-    transition: all 0.15s ease; // Even faster transition on smaller devices
+    width: 52px;
+    height: 52px;
+    transition: all 0.15s ease;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
   }
 
   &:hover {
-    box-shadow: 
-      0 8px 25px rgba(99, 102, 241, 0.5),
-      0 0 0 1px rgba(99, 102, 241, 0.3),
-      0 0 30px rgba(99, 102, 241, 0.5);
-      
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4),
+      0 0 0 1px rgba(255, 107, 53, 0.2);
+
     @media (max-width: 768px) {
-      box-shadow: // Less intensive shadow effect on mobile
-        0 6px 20px rgba(99, 102, 241, 0.4),
-        0 0 0 1px rgba(99, 102, 241, 0.2);
-    }
-    
-    @media (max-width: 480px) {
-      box-shadow: // Even simpler shadow on smaller devices
-        0 4px 15px rgba(99, 102, 241, 0.4),
-        0 0 0 1px rgba(99, 102, 241, 0.2);
+      transform: scale(1.02);
+      box-shadow: 0 5px 14px rgba(255, 107, 53, 0.3);
     }
   }
 
   &:focus {
-    outline: none;
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
   }
 }
 
@@ -84,19 +71,23 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-  opacity: 0.2;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 70%
+  );
+  opacity: 0.4;
   mix-blend-mode: overlay;
   animation: pulse 2s infinite alternate;
-  
+
   @media (max-width: 768px) {
-    animation-duration: 3s; // Slower pulse animation on mobile
-    opacity: 0.15; // Slightly less intense glow
+    animation-duration: 3s;
+    opacity: 0.2;
   }
-  
+
   @media (max-width: 480px) {
-    animation: none; // Disable animation on smaller devices
-    opacity: 0.1; // Even less intense glow
+    animation: none;
+    opacity: 0.15;
   }
 }
 
@@ -104,37 +95,26 @@
   position: absolute;
   bottom: 80px;
   right: 0;
-  width: 350px;
-  height: 500px;
-  background: rgba(15, 15, 20, 0.8);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
+  width: 380px;
+  height: 550px;
+  background: var(--background);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 
-    0 10px 25px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(99, 102, 241, 0.1),
-    0 0 40px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--border);
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: none;
 
   @media (max-width: 768px) {
-    width: 320px;
-    height: 450px;
+    width: 340px;
+    height: 500px;
     bottom: 70px;
     right: 0;
-    box-shadow: // Simplified shadow for better performance
-      0 10px 25px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(99, 102, 241, 0.1);
-    backdrop-filter: blur(8px); // Less intensive blur
-  }
-
-  @media (max-width: 480px) {
-    backdrop-filter: blur(5px); // Even less intensive blur
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--border);
   }
 
   @media (max-width: 380px) {
-    width: 300px;
+    width: 310px;
     right: -10px;
   }
 }
@@ -143,9 +123,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background: linear-gradient(to right, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
-  border-bottom: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 16px 20px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 107, 53, 0.08),
+    rgba(255, 140, 66, 0.08)
+  );
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
 }
 
 .chatTitle {
@@ -157,7 +142,7 @@
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: white;
+    color: var(--text-primary);
     letter-spacing: 0.3px;
   }
 }
@@ -169,22 +154,22 @@
   background-color: #4ade80;
   box-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
   animation: pulse 1.5s infinite;
-  
+
   @media (max-width: 768px) {
-    animation-duration: 2s; // Slower pulse on mobile
-    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5); // Less intensive shadow
+    animation-duration: 2s;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
   }
-  
+
   @media (max-width: 480px) {
-    animation: pulseMobile 2.5s infinite; // Simplified animation
-    box-shadow: 0 0 5px rgba(74, 222, 128, 0.4); // Even less intensive shadow
+    animation: pulseMobile 2.5s infinite;
+    box-shadow: 0 0 5px rgba(74, 222, 128, 0.4);
   }
 }
 
 .closeButton {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 20px;
   cursor: pointer;
   padding: 4px;
@@ -193,27 +178,19 @@
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s ease;
-  
+
   @media (max-width: 768px) {
-    transition: all 0.15s ease; // Faster transition on mobile
-  }
-  
-  @media (max-width: 480px) {
-    transition: none; // Disable transitions on smaller devices
+    transition: all 0.15s ease;
   }
 
   &:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-    
-    @media (max-width: 480px) {
-      // No hover effects on smaller touchscreen devices
-      background: transparent;
-    }
+    color: var(--text-primary);
+    background: var(--background-secondary);
   }
 
   &:focus {
-    outline: none;
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
   }
 }
 
@@ -223,7 +200,7 @@
   height: calc(100% - 50px);
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   touch-action: manipulation; /* Improves touch behavior */
-  
+
   @media (max-width: 768px) {
     width: 100%;
     transform: translateZ(0); /* Force hardware acceleration */
@@ -246,7 +223,8 @@
 
 // Simplified animation for mobile devices
 @keyframes pulseMobile {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.7;
   }
   50% {

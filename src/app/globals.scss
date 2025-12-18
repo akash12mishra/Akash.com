@@ -1,39 +1,27 @@
 :root {
-  /* Light theme variables */
-  --background: #fdfdfd;
-  --text: #1f1f1f;
-  --text-primary: #1f1f1f;
-  --text-secondary: #303030;
-  --text-tertiary: #505050;
-  --text-hover: #6366F1;
-  --accent-primary: #6366F1;
-  --accent-secondary: #7C3AED;
-  --accent-primary-rgb: 99, 102, 241;
-  --accent-secondary-rgb: 124, 58, 237;
+  /* Minimal light theme - matching reference design */
+  --background: #ffffff;
+  --background-secondary: #f8f8f8;
+  --text: #000000;
+  --text-primary: #000000;
+  --text-secondary: #4a4a4a;
+  --text-tertiary: #6b6b6b;
+  --text-light: #8a8a8a;
+  --text-hover: #ff6b35;
+  --accent-primary: #ff6b35;
+  --accent-secondary: #ff8c42;
+  --accent-primary-rgb: 255, 107, 53;
+  --accent-secondary-rgb: 255, 140, 66;
   --card-bg: #ffffff;
-  --card-shadow: rgba(0, 0, 0, 0.08);
-  --border: rgba(0, 0, 0, 0.1);
-  --nav-bg: rgba(253, 253, 253, 0.85);
-  --policy-text: #303030;
-  --card-hover-bg: rgba(99, 102, 241, 0.05);
-}
-
-[data-theme="dark"] {
-  --background: #0e0e10;
-  --text: #fafafa;
-  --text-primary: #fafafa;
-  --text-secondary: #e0e0e0;
-  --text-tertiary: #b0b0b0;
-  --text-hover: #ffffff;
-  --accent-primary: #38BDF8;
-  --accent-secondary: #3B82F6;
-  --accent-primary-rgb: 56, 189, 248;
-  --accent-secondary-rgb: 59, 130, 246;
-  --card-bg: #1a1a1c;
-  --border: #2a2a2c;
-  --nav-bg: rgba(14, 14, 16, 0.8);
-  --policy-text: #e0e0e0;
-  --card-hover-bg: rgba(56, 189, 248, 0.1);
+  --card-shadow: rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: rgba(0, 0, 0, 0.12);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-light: rgba(0, 0, 0, 0.05);
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --policy-text: #4a4a4a;
+  --card-hover-bg: rgba(255, 107, 53, 0.04);
+  --badge-bg: #f5f5f5;
+  --badge-text: #2a2a2a;
 }
 
 * {
@@ -53,13 +41,27 @@ body {
   height: auto;
   background-color: var(--background);
   color: var(--text);
-  transition: background-color 0.3s, color 0.3s;
-  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Space Grotesk', sans-serif;
-  font-weight: 700;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
+    sans-serif;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
 img,
@@ -69,11 +71,18 @@ video {
 }
 
 a {
-  color: var(--accent-primary);
+  color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 a:hover {
-  color: var(--accent-secondary);
+  color: var(--accent-primary);
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
