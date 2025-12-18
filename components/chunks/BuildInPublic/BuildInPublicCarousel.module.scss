@@ -1,328 +1,168 @@
 .buildinPublicSection {
   width: 100%;
-  padding: 6rem 0;
-  background-color: var(--bg);
+  padding: 60px 0;
+  background-color: var(--background);
   overflow: hidden;
 
   &.visible {
     opacity: 1;
     transform: translateY(0);
   }
+
+  @media (max-width: 768px) {
+    padding: 40px 0;
+  }
 }
 
 .container {
-  width: 100%;
-  max-width: 1400px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 40px;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 0 24px;
+  }
 }
 
 .sectionHeader {
-  text-align: center;
-  margin-bottom: 2rem;
+  text-align: left;
+  margin-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .sectionTag {
-  color: var(--accent-primary);
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
-  text-transform: lowercase;
-  letter-spacing: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0;
 }
 
 .sectionTitle {
-  font-size: 2.8rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--text);
-  
-  @media (max-width: 768px) {
-    font-size: 2.2rem;
-  }
+  display: none;
 }
 
 .sectionDescription {
-  max-width: 600px;
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
+  display: none;
 }
 
 .carouselContainer {
+  width: 100%;
+}
+
+.bentoGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+}
+
+.bentoColumn {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  width: 100%;
-  position: relative;
-  padding: 0;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.platformHeader {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.2rem;
-  padding: 0 3rem;
-  
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 1rem;
-    color: var(--text);
-  }
-  
-  .platformIcon {
-    font-size: 1.6rem;
-    color: var(--accent-primary);
-  }
-  
-  .followButton {
-    margin-left: auto;
-    padding: 0.5rem 1.2rem;
-    border-radius: 2rem;
-    background-color: transparent;
-    border: 1px solid var(--accent-primary);
-    color: var(--accent-primary);
-    font-weight: 500;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    font-size: 0.9rem;
-    
-    &:hover {
-      background-color: var(--accent-primary);
-      color: white;
-    }
-  }
-}
-
-.carouselRow {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  padding: 0;
-  margin-bottom: 3rem;
-  
-  // Create mask with faded edges
-  &::before, &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    width: 15%;
-    height: 100%;
-    z-index: 10;
-    pointer-events: none;
-  }
-  
-  &::before {
-    left: 0;
-    background: linear-gradient(to right, rgba(10, 10, 15, 1) 0%, rgba(10, 10, 15, 0) 100%);
-  }
-  
-  &::after {
-    right: 0;
-    background: linear-gradient(to left, rgba(10, 10, 15, 1) 0%, rgba(10, 10, 15, 0) 100%);
-  }
-}
-
-.carouselTrack {
-  display: flex;
   gap: 1rem;
-  width: fit-content;
-  padding: 1rem 0;
+
+  @media (min-width: 768px) {
+    gap: 1.25rem;
+  }
 }
 
-.postCard {
-  flex-shrink: 0;
+.bentoCard {
   position: relative;
-  border-radius: 0.5rem;
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-  margin: 0 0.5rem;
-  
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    z-index: 5;
-    
-    .overlay {
-      opacity: 1;
-    }
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: rgba(255, 107, 53, 0.25);
   }
 }
 
-.imageWrapper {
-  position: relative;
-  width: 380px;
-  height: 230px;
-  
-  @media (max-width: 1200px) {
-    width: 340px;
-    height: 210px;
-  }
-  
-  @media (max-width: 768px) {
-    width: 300px;
-    height: 180px;
-  }
-  
-  @media (max-width: 480px) {
-    width: 260px;
-    height: 170px;
-  }
-  
-  .postImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 0.8rem;
-  }
-}
-
-.overlay {
+.openPost {
   position: absolute;
-  inset: 0;
-  display: flex;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.85); /* Darker overlay for better contrast */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 0.8rem; /* Match the same as .postImage */
-}
-
-.viewButton {
-  padding: 0.8rem 1.8rem;
-  background-color: var(--accent-primary);
-  color: white;
-  border-radius: 2rem;
-  font-weight: 700; /* Bolder text */
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #333;
   text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  display: inline-block;
-  border: 2px solid white; /* White border for better visibility */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.5px; /* Improved readability */
-  
+  opacity: 0;
+
+  .bentoCard:hover & {
+    opacity: 1;
+  }
+
   &:hover {
-    background-color: white; /* White background on hover */
-    color: var(--accent-primary); /* Accent color text on hover for contrast */
     transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
   }
 }
 
-/* Marquee effect for truly infinite scrolling */
-.marqueeContainer {
+.linkedinFrame {
   width: 100%;
-  overflow: hidden;
-  position: relative;
-  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 1) 5%, rgba(0, 0, 0, 1) 95%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 1) 5%, rgba(0, 0, 0, 1) 95%, transparent 100%);
+  height: 400px;
+  border: 0;
+  display: block;
+
+  @media (min-width: 768px) {
+    height: 450px;
+  }
 }
 
-.marqueeRow {
+.tweetEmbed {
   width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.marqueeTrack {
+  min-height: 200px;
   display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  animation: marqueeRight 40s linear infinite;
-  width: max-content;
-  will-change: transform;
-  transform: translateZ(0);
-  
-  &:hover {
-    animation-play-state: paused;
-  }
-}
+  justify-content: center;
 
-.marqueeTrackLeft {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem 0;
-  animation: marqueeLeft 40s linear infinite;
-  width: max-content;
-  will-change: transform;
-  transform: translateZ(0);
-  
-  &:hover {
-    animation-play-state: paused;
+  :global(.twitter-tweet) {
+    margin: 0 !important;
+    max-width: 100% !important;
   }
-}
 
-@keyframes marqueeRight {
-  0% {
-    transform: translateX(-50%);
+  :global(.twitter-tweet-rendered) {
+    margin: 0 !important;
+    max-width: 100% !important;
   }
-  100% {
-    transform: translateX(0);
-  }
-}
 
-@keyframes marqueeLeft {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-/* Media Queries */
-@media (max-width: 768px) {
-  .buildinPublicSection {
-    padding: 4rem 0;
-  }
-  
-  .container {
-    gap: 2rem;
-  }
-  
-  .carouselContainer {
-    gap: 2rem;
+  :global(iframe) {
+    border-radius: 0 !important;
+    max-width: 100% !important;
   }
 }
 
 @media (max-width: 480px) {
-  .container {
-    padding: 0 1rem;
-  }
-  
-  .platformHeader {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    
-    h3 {
-      font-size: 1.1rem;
-    }
-    
-    .platformIcon {
-      font-size: 1.4rem;
-    }
-    
-    .followButton {
-      margin-left: 0;
-      width: 100%;
-      text-align: center;
-      margin-top: 0.5rem;
-    }
+  .linkedinFrame {
+    height: 380px;
   }
 }
