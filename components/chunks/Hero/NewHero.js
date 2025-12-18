@@ -1,232 +1,460 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./NewHero.module.scss";
 import Image from "next/image";
-import Typewriter from "../../../utils/Typewriter";
-import { FaArrowDown, FaLinkedin, FaXTwitter, FaGithub } from "react-icons/fa6";
+import { FaEnvelope } from "react-icons/fa6";
+import { FaFileAlt } from "react-icons/fa";
+import { HiOutlineBriefcase, HiOutlineLightBulb } from "react-icons/hi";
+import { FiMapPin, FiCode, FiLayers, FiArrowDown } from "react-icons/fi";
+import {
+  SiNextdotjs,
+  SiReact,
+  SiPython,
+  SiOpenai,
+  SiMongodb,
+  SiNodedotjs,
+} from "react-icons/si";
 import { motion } from "framer-motion";
 import logoImg from "../../../assets/images/arka.png";
 
-
 const NewHero = () => {
-  const heroRef = useRef(null);
-  const avatarRef = useRef(null);
-  const mousePositionRef = useRef({ x: 0, y: 0 });
-  
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Check if we're on mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    // Initial check
-    checkMobile();
-    
-    // Add event listener for window resize
-    window.addEventListener('resize', checkMobile);
-    
-    // Cleanup
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!heroRef.current) return;
-      
-      // Keep the hero section fully visible with no fade or movement animations
-      heroRef.current.style.opacity = 1;
-      heroRef.current.style.transform = 'none';
-    };
-    
-    // Store current hover state to avoid conflicts with mouse move effect
-    let isHovering = false;
-    
-    // Store ref value to fix lint warning
-    const currentAvatarRef = avatarRef.current;
-    
-    // Disable mouse move effect completely to avoid any conflicts with hover
-    // This ensures the hover animation works perfectly without any interference
-    
-    window.addEventListener("scroll", handleScroll);
-    
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isMobile]);
-  
-  // Optimize animations for mobile
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        staggerChildren: isMobile ? 0.05 : 0.2, // Reduce stagger time on mobile
-        delayChildren: isMobile ? 0.1 : 0.3,   // Reduce delay on mobile
-        duration: isMobile ? 0.3 : 0.5         // Faster animations on mobile
-      }
-    }
-  };
-  
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
       opacity: 1,
       transition: {
-        type: isMobile ? "tween" : "spring", // Use simpler animation type on mobile
-        stiffness: isMobile ? 50 : 100,    // Reduce spring stiffness on mobile
-        damping: isMobile ? 15 : 10,       // Increase damping on mobile for quicker settle
-        duration: isMobile ? 0.2 : 0.3      // Shorter animation duration on mobile
-      }
-    }
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 15, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut",
+      },
+    },
   };
 
   return (
     <section id="home" className={styles.heroSection}>
-      <div className={styles.heroBackground}>
-        <div className={styles.gradientOverlay}></div>
-        <div className={styles.gridPattern}></div>
-      </div>
-      
-      <motion.div 
-        className={styles.container} 
-        ref={heroRef}
+      <motion.div
+        className={styles.container}
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        transition={{ duration: isMobile ? 0.2 : 0.5 }} // Faster transitions on mobile
       >
-        <motion.div className={styles.content} variants={containerVariants}>
-          <motion.div 
-            className={styles.avatarContainer}
-            ref={avatarRef}
-            variants={itemVariants}
-            animate={{ scale: 1 }}
-            initial={{ scale: 1 }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ 
-              type: "tween", 
-              ease: [0.25, 0.1, 0.25, 1],
-              duration: 0.4,
+        {/* Top Bar */}
+        <motion.div className={styles.topBar} variants={itemVariants}>
+          <a
+            href="mailto:admin@arkalalchakravarty.com"
+            className={styles.emailTag}
+          >
+            <FaEnvelope size={14} />
+            <span>admin@arkalalchakravarty.com</span>
+          </a>
+          <motion.a
+            href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
+            download="Arka_Lal_Chakravarty_Resume.pdf"
+            className={styles.downloadButton}
+            whileHover="hover"
+            whileTap={{ scale: 0.95 }}
+            initial="initial"
+            animate="animate"
+            variants={{
+              initial: {},
+              animate: {
+                boxShadow: [
+                  "0 2px 8px rgba(255, 107, 53, 0.25)",
+                  "0 4px 16px rgba(255, 107, 53, 0.4)",
+                  "0 2px 8px rgba(255, 107, 53, 0.25)",
+                ],
+              },
+              hover: {
+                scale: 1.05,
+              },
             }}
-            style={{
-              transformOrigin: "center center",
-              transform: "perspective(1000px)"
+            transition={{
+              boxShadow: {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+              scale: {
+                duration: 0.2,
+              },
             }}
           >
-            <div className={styles.glassCard}>
-              <Image 
-                src={logoImg} 
-                alt="Arka Lal Chakravarty" 
-                width={220} 
-                height={220} 
-                className={styles.avatar} 
-                priority
-              />
-              <div className={styles.avatarGlow}></div>
-              <div className={styles.avatarRing}></div>
-            </div>
-          </motion.div>
-          
-          <motion.div className={styles.textContent} variants={containerVariants}>
-            <motion.h1 className={styles.title} variants={itemVariants}>
-              <motion.span className={styles.greeting} variants={itemVariants}>Hello, I&apos;m</motion.span>
-              <motion.span className={styles.name} variants={itemVariants}>Arka Lal Chakravarty</motion.span>
-              <motion.span className={styles.role} variants={itemVariants}>
-                <span className={styles.rolePrefix}>I&apos;m a </span>
-                <Typewriter
-                  words={["AI Engineer", "Full Stack Developer", "Automation Architect"]}
-                  typeSpeed={70}
-                  deleteSpeed={50}
-                  delaySpeed={2000}
-                  cursorStyle="|"
-                />
-              </motion.span>
-            </motion.h1>
-            
-            <motion.p className={styles.description} variants={itemVariants}>
-              Building cutting-edge AI-powered SaaS products, automation workflows, and web platforms.
-              Specializing in advanced AI integrations, high-performance applications, and custom solutions.
-            </motion.p>
-            
-            <motion.div className={styles.actionButtons} variants={itemVariants}>
-              <motion.a 
-                href="#projects" 
-                className={`${styles.button} ${styles.primary}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                View Projects
-              </motion.a>
-              <motion.a 
-                href="#contact" 
-                className={`${styles.button} ${styles.secondary}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                Contact Me
-              </motion.a>
-            </motion.div>
-            
-            <motion.div className={styles.socialLinks} variants={itemVariants}>
-              <motion.a 
-                href="https://www.linkedin.com/in/arkalal/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                aria-label="LinkedIn Profile"
-                className={styles.socialLink}
-                whileHover={{ y: -5, scale: 1.2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <FaLinkedin size={22} />
-              </motion.a>
-              <motion.a 
-                href="https://github.com/arkalal" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                aria-label="GitHub Profile"
-                className={styles.socialLink}
-                whileHover={{ y: -5, scale: 1.2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <FaGithub size={22} />
-              </motion.a>
-              <motion.a 
-                href="https://x.com/arka_codes" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                aria-label="Twitter/X Profile"
-                className={styles.socialLink}
-                whileHover={{ y: -5, scale: 1.2 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
-                <FaXTwitter size={20} />
-              </motion.a>
-            </motion.div>
-          </motion.div>
+            <motion.span
+              className={styles.downloadIcon}
+              variants={{
+                initial: { y: 0 },
+                animate: { y: [0, 3, 0] },
+                hover: { y: [0, 10, 0] },
+              }}
+              transition={{
+                y: {
+                  duration: 0.6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                },
+              }}
+            >
+              <FaFileAlt size={18} />
+            </motion.span>
+            <span className={styles.buttonText}>Download Resume</span>
+            <motion.span
+              className={styles.arrowDown}
+              variants={{
+                initial: { opacity: 0, y: -10 },
+                hover: {
+                  opacity: [0, 1, 0],
+                  y: [0, 15, 20],
+                },
+              }}
+              transition={{
+                duration: 0.8,
+                repeat: Infinity,
+                ease: "easeIn",
+              }}
+            >
+              <FiArrowDown size={16} />
+            </motion.span>
+            <span className={styles.shineEffect}></span>
+          </motion.a>
         </motion.div>
-        
-        <motion.div 
-          className={styles.scrollIndicator}
-          variants={itemVariants}
-          animate={{ 
-            y: [0, 10, 0],
-          }}
-          transition={{
-            repeat: Infinity,
-            duration: 2
-          }}
-        >
-          <span>Scroll Down</span>
-          <FaArrowDown size={16} className={styles.scrollIcon} />
+
+        {/* Hero Content */}
+        <motion.div className={styles.heroContent} variants={containerVariants}>
+          <motion.h1 className={styles.mainHeading} variants={itemVariants}>
+            <span className={styles.line1}>
+              Hi, I&apos;m{" "}
+              <span className={styles.avatarInline}>
+                <Image
+                  src={logoImg}
+                  alt="Arka Lal Chakravarty"
+                  width={52}
+                  height={52}
+                  className={styles.avatar}
+                  priority
+                />
+              </span>{" "}
+              Arka Lal Chakravarty!
+            </span>
+          </motion.h1>
+
+          <motion.h2 className={styles.roleHeading} variants={itemVariants}>
+            <span className={styles.rolePrefix}>I&apos;m an </span>
+            <span className={styles.roleHighlight}>AI Engineer</span>
+            <span className={styles.roleText}> & </span> <br />
+            <span className={styles.roleHighlight}>
+              Full Stack Developer.
+            </span>{" "}
+            <br />
+            <span className={styles.statusBadge}>
+              <span className={styles.statusDot}></span>
+              Open to Collaborate
+            </span>
+          </motion.h2>
+
+          {/* CTA Section */}
+          <motion.div className={styles.ctaRow} variants={itemVariants}>
+            <a href="#contact" className={styles.ctaButton}>
+              Book a call
+            </a>
+            <p className={styles.ctaText}>
+              Feel free to explore my portfolio and reach out
+              <br />
+              —I&apos;d love to connect!
+            </p>
+          </motion.div>
+
+          {/* Bento Cards Grid */}
+          <motion.div className={styles.bentoGrid} variants={containerVariants}>
+            {/* Experience Card with Timeline */}
+            <motion.div
+              className={`${styles.bentoCard} ${styles.experienceCard}`}
+              variants={itemVariants}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
+              <div className={styles.cardHeader}>
+                <HiOutlineBriefcase className={styles.cardIcon} />
+                <span className={styles.cardTitle}>My Experience</span>
+              </div>
+              <div className={styles.experienceTimeline}>
+                <ExperienceItem
+                  role="Freelance Software Engineer"
+                  company="arkalalchakravarty.com"
+                  period="2025"
+                  type="Freelance"
+                  index={0}
+                />
+                <ExperienceItem
+                  role="AI Engineer"
+                  company="Helionix"
+                  period="2025"
+                  type="Contract"
+                  index={1}
+                />
+                <ExperienceItem
+                  role="AI Engineer"
+                  company="ScaleGenAI"
+                  period="2024"
+                  type="Full-time"
+                  index={2}
+                />
+                <ExperienceItem
+                  role="Software Developer"
+                  company="Infojini Inc"
+                  period="2022-24"
+                  type="Full-time"
+                  index={3}
+                />
+                <ExperienceItem
+                  role="Frontend Web Developer"
+                  company="CRIMSON INTELLIGENCE SA"
+                  period="2021-22"
+                  type="Full-time"
+                  index={4}
+                  isLast
+                />
+              </div>
+            </motion.div>
+
+            {/* Tech Stack Card with Floating Icons */}
+            <motion.div
+              className={`${styles.bentoCard} ${styles.techCard}`}
+              variants={itemVariants}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
+              <div className={styles.cardHeader}>
+                <FiCode className={styles.cardIcon} />
+                <span className={styles.cardTitle}>Tech Stack</span>
+              </div>
+              <div className={styles.techIconsGrid}>
+                <TechIcon Icon={SiNextdotjs} name="NextJS" delay={0} />
+                <TechIcon
+                  Icon={SiReact}
+                  name="React"
+                  delay={0.1}
+                  color="#61DAFB"
+                />
+                <TechIcon
+                  Icon={SiPython}
+                  name="Python"
+                  delay={0.2}
+                  color="#3776AB"
+                />
+                <TechIcon Icon={SiOpenai} name="OpenAI" delay={0.3} />
+                <TechIcon
+                  Icon={SiMongodb}
+                  name="MongoDB"
+                  delay={0.4}
+                  color="#47A248"
+                />
+                <TechIcon
+                  Icon={SiNodedotjs}
+                  name="Node.js"
+                  delay={0.5}
+                  color="#339933"
+                />
+              </div>
+            </motion.div>
+
+            {/* What I Build Card */}
+            <motion.div
+              className={`${styles.bentoCard} ${styles.buildCard}`}
+              variants={itemVariants}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
+              <div className={styles.cardHeader}>
+                <FiLayers className={styles.cardIcon} />
+                <span className={styles.cardTitle}>What I Build</span>
+              </div>
+              <p className={styles.buildText}>
+                AI-powered SaaS products, automation tools, and full-stack web
+                applications that solve real problems.
+              </p>
+            </motion.div>
+
+            {/* Location Card with Map Animation */}
+            <motion.div
+              className={`${styles.bentoCard} ${styles.locationCard}`}
+              variants={itemVariants}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            >
+              <div className={styles.cardHeader}>
+                <FiMapPin className={styles.cardIcon} />
+                <span className={styles.cardTitle}>Location</span>
+              </div>
+              <div className={styles.locationContent}>
+                <div className={styles.mapContainer}>
+                  <div className={styles.mapGrid}>
+                    {[...Array(25)].map((_, i) => (
+                      <div key={i} className={styles.mapDot} />
+                    ))}
+                  </div>
+                  <motion.div
+                    className={styles.locationPin}
+                    animate={{
+                      y: [0, -6, 0],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
+                    <FiMapPin />
+                    <motion.div
+                      className={styles.pinPulse}
+                      animate={{
+                        scale: [1, 1.8, 1],
+                        opacity: [0.6, 0, 0.6],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        ease: "easeOut",
+                      }}
+                    />
+                  </motion.div>
+                </div>
+                <div className={styles.locationText}>
+                  <span className={styles.city}>KOLKATA</span>
+                  <span className={styles.country}>INDIA</span>
+                  <span className={styles.remote}>Available Remotely</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* How I Work Card with Step Animation */}
+            <HowIWorkCard itemVariants={itemVariants} />
+          </motion.div>
         </motion.div>
       </motion.div>
     </section>
+  );
+};
+
+// Experience Item Component with Timeline
+const ExperienceItem = ({ role, company, period, type, index, isLast }) => (
+  <motion.div
+    className={styles.expItem}
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ delay: index * 0.15, duration: 0.4 }}
+  >
+    <div className={styles.expTimeline}>
+      <motion.div
+        className={styles.expDot}
+        animate={{
+          boxShadow: [
+            "0 0 0 0 rgba(255, 107, 53, 0.4)",
+            "0 0 0 6px rgba(255, 107, 53, 0)",
+            "0 0 0 0 rgba(255, 107, 53, 0.4)",
+          ],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          delay: index * 0.3,
+        }}
+      />
+      {!isLast && <div className={styles.expLine} />}
+    </div>
+    <div className={styles.expContent}>
+      <div className={styles.expInfo}>
+        <span className={styles.expRole}>{role}</span>
+        <span className={styles.expCompany}>{company}</span>
+      </div>
+      <span className={styles.expPeriod}>
+        {period} · {type}
+      </span>
+    </div>
+  </motion.div>
+);
+
+// Tech Icon Component with Floating Animation
+const TechIcon = ({ Icon, name, delay, color }) => (
+  <motion.div
+    className={styles.techIconWrapper}
+    animate={{
+      y: [0, -4, 0],
+    }}
+    transition={{
+      duration: 2.5,
+      repeat: Infinity,
+      delay: delay,
+      ease: "easeInOut",
+    }}
+  >
+    <Icon
+      className={styles.techIcon}
+      style={{ color: color || "var(--text-primary)" }}
+    />
+    <span className={styles.techName}>{name}</span>
+  </motion.div>
+);
+
+// How I Work Card with Step Animation
+const HowIWorkCard = ({ itemVariants }) => {
+  const [activeStep, setActiveStep] = useState(0);
+  const steps = [
+    { number: "01", label: "Discovery" },
+    { number: "02", label: "Design" },
+    { number: "03", label: "Develop" },
+    { number: "04", label: "Deploy" },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % steps.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [steps.length]);
+
+  return (
+    <motion.div
+      className={`${styles.bentoCard} ${styles.workCard}`}
+      variants={itemVariants}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+    >
+      <div className={styles.cardHeader}>
+        <HiOutlineLightBulb className={styles.cardIcon} />
+        <span className={styles.cardTitle}>How I Work</span>
+      </div>
+      <div className={styles.workSteps}>
+        {steps.map((step, index) => (
+          <motion.div
+            key={step.number}
+            className={`${styles.workStep} ${
+              index === activeStep ? styles.activeStep : ""
+            }`}
+            animate={{
+              scale: index === activeStep ? 1.02 : 1,
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            <span className={styles.stepNumber}>{step.number}</span>
+            <span className={styles.stepLabel}>{step.label}</span>
+          </motion.div>
+        ))}
+      </div>
+      <div className={styles.stepProgress}>
+        <motion.div
+          className={styles.stepProgressFill}
+          animate={{ width: `${((activeStep + 1) / steps.length) * 100}%` }}
+          transition={{ duration: 0.4 }}
+        />
+      </div>
+    </motion.div>
   );
 };
 

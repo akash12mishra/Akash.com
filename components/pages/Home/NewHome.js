@@ -1,24 +1,23 @@
 "use client";
 
 import React from "react";
-import NewNavbar from "../../chunks/Navbar/NewNavbar";
+import styles from "./NewHome.module.scss";
 import NewHero from "../../chunks/Hero/NewHero";
 import About from "../../chunks/About/About";
-import ProjectShowcase from "../../chunks/Projects/ProjectShowcase";
+import TechStack from "../../chunks/TechStack/TechStack";
 import ExperienceTestimonial from "../../chunks/Experience/ExperienceTestimonial";
+import ProjectShowcase from "../../chunks/Projects/ProjectShowcase";
+import GitHubContributionHeatmap from "../../chunks/GitHubContributions/GitHubContributionHeatmap";
+import GitHubAnalytics from "../../chunks/GitHubAnalytics/GitHubAnalytics";
 import BuildInPublicCarousel from "../../chunks/BuildInPublic/BuildInPublicCarousel";
 import Contact from "../../chunks/Contact/Contact";
 import CTASection from "../../chunks/CTASection/CTASection";
 import NewFooter from "../../chunks/Footer/NewFooter";
-import TechStack from "../../chunks/TechStack/TechStack";
 import ChatBubble from "../../chunks/ChatBubble/ChatBubble";
-import GitHubContributionHeatmap from "../../chunks/GitHubContributions/GitHubContributionHeatmap";
-import GitHubAnalytics from "../../chunks/GitHubAnalytics/GitHubAnalytics";
 
 const NewHome = () => {
   return (
-    <div>
-      <NewNavbar />
+    <div className={styles.pageWrapper}>
       <NewHero />
       <About />
       <TechStack />

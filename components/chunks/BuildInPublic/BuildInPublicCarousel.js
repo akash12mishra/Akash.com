@@ -1,145 +1,60 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import styles from "./BuildInPublicCarousel.module.scss";
-import Image from "next/image";
-import { FaTwitter, FaLinkedin } from "react-icons/fa";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-
-// LinkedIn post images
-import linkPost1 from "../../../assets/images/Socials/linkPost1.png";
-import linkPost2 from "../../../assets/images/Socials/linkPost2.png";
-import linkPost3 from "../../../assets/images/Socials/linkPost3.png";
-
-// Twitter/X post images
-import xPost1 from "../../../assets/images/Socials/xPost1.png";
-import xPost2 from "../../../assets/images/Socials/xPost2.png";
-import xPost3 from "../../../assets/images/Socials/xPost3.png";
+import Script from "next/script";
+import { FiExternalLink } from "react-icons/fi";
 
 const linkedInPosts = [
   {
-    id: 1,
-    image: linkPost1,
-    link: "https://www.linkedin.com/posts/arkalal_saas-ai-startups-activity-7365767471435345921-G37X?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
+    id: "li-1",
+    src: "https://www.linkedin.com/embed/feed/update/urn:li:share:7393220213707739136",
   },
   {
-    id: 2,
-    image: linkPost2,
-    link: "https://www.linkedin.com/posts/arkalal_ai-mvpdevelopment-softwareengineering-activity-7365586268459626496-5UV-?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
+    id: "li-2",
+    src: "https://www.linkedin.com/embed/feed/update/urn:li:share:7393219927739940864",
   },
   {
-    id: 3,
-    image: linkPost3,
-    link: "https://www.linkedin.com/posts/arkalal_ai-saas-chromeextension-activity-7364635102699548673-QeJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
-  },
-  // Duplicate posts for infinite scrolling effect
-  {
-    id: 4,
-    image: linkPost1,
-    link: "https://www.linkedin.com/posts/arkalal_saas-ai-startups-activity-7365767471435345921-G37X?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
-  },
-  {
-    id: 5,
-    image: linkPost2,
-    link: "https://www.linkedin.com/posts/arkalal_ai-mvpdevelopment-softwareengineering-activity-7365586268459626496-5UV-?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
-  },
-  {
-    id: 6,
-    image: linkPost3,
-    link: "https://www.linkedin.com/posts/arkalal_ai-saas-chromeextension-activity-7364635102699548673-QeJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
-  },
-  // Additional duplicates for smoother infinite effect
-  {
-    id: 7,
-    image: linkPost1,
-    link: "https://www.linkedin.com/posts/arkalal_saas-ai-startups-activity-7365767471435345921-G37X?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
-  },
-  {
-    id: 8,
-    image: linkPost2,
-    link: "https://www.linkedin.com/posts/arkalal_ai-mvpdevelopment-softwareengineering-activity-7365586268459626496-5UV-?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
-  },
-  {
-    id: 9,
-    image: linkPost3,
-    link: "https://www.linkedin.com/posts/arkalal_ai-saas-chromeextension-activity-7364635102699548673-QeJV?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
-    platform: "LinkedIn",
+    id: "li-3",
+    src: "https://www.linkedin.com/embed/feed/update/urn:li:share:7389239436724719617",
   },
 ];
 
-const twitterPosts = [
+const xPosts = [
   {
-    id: 1,
-    image: xPost1,
-    link: "https://x.com/arka_codes/status/1959639336426570178",
-    platform: "Twitter",
+    id: "x-1",
+    html: `<blockquote class="twitter-tweet" data-theme="light" data-width="100%"><p lang="en" dir="ltr">3.7 years ago — I just wanted to learn how to code.<br><br>Today — I build &amp; ship AI SaaS MVPs in ≤21 days for founders worldwide ⚡<br><br>From working on US Gov healthcare projects → to launching my own agency → to helping startups scale fast.<br><br>Every step was a lesson in execution &amp;…</p>&mdash; Arka Lal Chakravarty (@arka_codes) <a href="https://twitter.com/arka_codes/status/1987905587892330618?ref_src=twsrc%5Etfw">November 10, 2025</a></blockquote>`,
+    link: "https://twitter.com/arka_codes/status/1987905587892330618",
   },
   {
-    id: 2,
-    image: xPost2,
-    link: "https://x.com/arka_codes/status/1959458143244886277",
-    platform: "Twitter",
+    id: "x-2",
+    html: `<blockquote class="twitter-tweet" data-theme="light" data-width="100%"><p lang="en" dir="ltr">AI isn't killing jobs — it's killing slow execution.<br><br>The best builders now use:<br>⚙️ Agents to automate workflows<br>🧠 RAG pipelines for memory<br>⚡ Fast MVP cycles to stay ahead<br><br>We're entering the Agentic SaaS Era —<br>where apps think, act, and improve on their own.<br><br>Learn this stack…</p>&mdash; Arka Lal Chakravarty (@arka_codes) <a href="https://twitter.com/arka_codes/status/1983919323950543094?ref_src=twsrc%5Etfw">October 30, 2025</a></blockquote>`,
+    link: "https://twitter.com/arka_codes/status/1983919323950543094",
   },
   {
-    id: 3,
-    image: xPost3,
-    link: "https://x.com/arka_codes/status/1958422709966188795",
-    platform: "Twitter",
-  },
-  // Duplicate posts for infinite scrolling effect
-  {
-    id: 4,
-    image: xPost1,
-    link: "https://x.com/arka_codes/status/1959639336426570178",
-    platform: "Twitter",
-  },
-  {
-    id: 5,
-    image: xPost2,
-    link: "https://x.com/arka_codes/status/1959458143244886277",
-    platform: "Twitter",
-  },
-  {
-    id: 6,
-    image: xPost3,
-    link: "https://x.com/arka_codes/status/1958422709966188795",
-    platform: "Twitter",
-  },
-  // Additional duplicates for smoother infinite effect
-  {
-    id: 7,
-    image: xPost1,
-    link: "https://x.com/arka_codes/status/1959639336426570178",
-    platform: "Twitter",
-  },
-  {
-    id: 8,
-    image: xPost2,
-    link: "https://x.com/arka_codes/status/1959458143244886277",
-    platform: "Twitter",
-  },
-  {
-    id: 9,
-    image: xPost3,
-    link: "https://x.com/arka_codes/status/1958422709966188795",
-    platform: "Twitter",
+    id: "x-3",
+    html: `<blockquote class="twitter-tweet" data-theme="light" data-width="100%"><p lang="en" dir="ltr">Most SaaS founders fail quietly — not because of bad ideas,<br>but because they never launch.<br><br>Here's my 21-day playbook to go from idea → live MVP 👇<br><br>1️⃣ Days 1-3: Validate ONE painful problem.<br>2️⃣ Days 4-10: Build the core value only.<br>3️⃣ Days 11-17: Add AI-powered automation to…</p>&mdash; Arka Lal Chakravarty (@arka_codes) <a href="https://twitter.com/arka_codes/status/1983773028132462664?ref_src=twsrc%5Etfw">October 30, 2025</a></blockquote>`,
+    link: "https://twitter.com/arka_codes/status/1983773028132462664",
   },
 ];
 
 const BuildInPublicCarousel = () => {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: false,
-  });
+  const sectionRef = useRef(null);
+  const loadXWidgets = (rootEl) => {
+    if (typeof window === "undefined") return;
+    if (!window?.twttr?.widgets?.load) return;
+    window.twttr.widgets.load(rootEl || undefined);
+  };
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      loadXWidgets(sectionRef.current);
+    }, 50);
+
+    return () => {
+      window.clearTimeout(id);
+    };
+  }, []);
 
   // No animation controls for posts - using CSS animations instead
 
@@ -149,8 +64,14 @@ const BuildInPublicCarousel = () => {
     <section
       id="buildinpublic"
       className={styles.buildinPublicSection}
-      ref={ref}
+      ref={sectionRef}
     >
+      <Script
+        src="https://platform.twitter.com/widgets.js"
+        strategy="afterInteractive"
+        charSet="utf-8"
+        onLoad={() => loadXWidgets(sectionRef.current)}
+      />
       <div className={styles.container}>
         <div className={styles.sectionHeader}>
           <span className={styles.sectionTag}>#buildinpublic</span>
@@ -162,143 +83,50 @@ const BuildInPublicCarousel = () => {
         </div>
 
         <div className={styles.carouselContainer}>
-          {/* LinkedIn Posts Row */}
-          <div className={styles.platformHeader}>
-            <FaLinkedin className={styles.platformIcon} />
-            <h3>LinkedIn Updates</h3>
-            <a
-              href="https://www.linkedin.com/in/arkalal/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.followButton}
-            >
-              Follow
-            </a>
-          </div>
-
-          <div className={styles.marqueeContainer}>
-            <div className={styles.marqueeRow}>
-              <div className={styles.marqueeTrackLeft}>
-                {/* First set of LinkedIn posts */}
-                {linkedInPosts.map((post) => (
-                  <div key={`first-${post.id}`} className={styles.postCard}>
-                    <div className={styles.imageWrapper}>
-                      <Image
-                        src={post.image}
-                        alt="LinkedIn post"
-                        width={380}
-                        height={230}
-                        className={styles.postImage}
-                        priority={post.id === 1}
-                      />
-                      <div className={styles.overlay}>
-                        <a
-                          href={post.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.viewButton}
-                        >
-                          View Post
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {/* Second set of LinkedIn posts (duplicate for seamless loop) */}
-                {linkedInPosts.map((post) => (
-                  <div key={`second-${post.id}`} className={styles.postCard}>
-                    <div className={styles.imageWrapper}>
-                      <Image
-                        src={post.image}
-                        alt="LinkedIn post"
-                        width={380}
-                        height={230}
-                        className={styles.postImage}
-                      />
-                      <div className={styles.overlay}>
-                        <a
-                          href={post.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.viewButton}
-                        >
-                          View Post
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className={styles.bentoGrid}>
+            <div className={styles.bentoColumn}>
+              {linkedInPosts.map((post) => (
+                <div key={post.id} className={styles.bentoCard}>
+                  <a
+                    href={post.src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.openPost}
+                    aria-label="Open LinkedIn post"
+                  >
+                    <FiExternalLink size={14} />
+                    <span>Open</span>
+                  </a>
+                  <iframe
+                    src={post.src}
+                    title={`LinkedIn post ${post.id}`}
+                    className={styles.linkedinFrame}
+                    loading="lazy"
+                    frameBorder="0"
+                    allowFullScreen
+                  />
+                </div>
+              ))}
             </div>
-          </div>
 
-          {/* Twitter/X Posts Row */}
-          <div className={styles.platformHeader}>
-            <FaTwitter className={styles.platformIcon} />
-            <h3>X/Twitter Updates</h3>
-            <a
-              href="https://x.com/arka_codes"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.followButton}
-            >
-              Follow
-            </a>
-          </div>
-
-          <div className={styles.marqueeContainer}>
-            <div className={styles.marqueeRow}>
-              <div className={styles.marqueeTrack}>
-                {/* First set of posts */}
-                {twitterPosts.map((post) => (
-                  <div key={`first-${post.id}`} className={styles.postCard}>
-                    <div className={styles.imageWrapper}>
-                      <Image
-                        src={post.image}
-                        alt="Twitter post"
-                        width={380}
-                        height={230}
-                        className={styles.postImage}
-                        priority={post.id === 1}
-                      />
-                      <div className={styles.overlay}>
-                        <a
-                          href={post.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.viewButton}
-                        >
-                          View Post
-                        </a>
-                      </div>
-                    </div>
+            <div className={styles.bentoColumn}>
+              {xPosts.map((post) => (
+                <div key={post.id} className={styles.bentoCard}>
+                  <a
+                    href={post.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.openPost}
+                    aria-label="Open X post"
+                  >
+                    <FiExternalLink size={14} />
+                    <span>Open</span>
+                  </a>
+                  <div className={styles.tweetEmbed}>
+                    <div dangerouslySetInnerHTML={{ __html: post.html }} />
                   </div>
-                ))}
-                {/* Second set of posts (duplicate for seamless loop) */}
-                {twitterPosts.map((post) => (
-                  <div key={`second-${post.id}`} className={styles.postCard}>
-                    <div className={styles.imageWrapper}>
-                      <Image
-                        src={post.image}
-                        alt="Twitter post"
-                        width={380}
-                        height={230}
-                        className={styles.postImage}
-                      />
-                      <div className={styles.overlay}>
-                        <a
-                          href={post.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.viewButton}
-                        >
-                          View Post
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

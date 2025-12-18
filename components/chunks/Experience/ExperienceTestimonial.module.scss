@@ -1,485 +1,221 @@
 .experienceSection {
-  padding: 6rem 0;
-  position: relative;
-  overflow: hidden;
-  background-color: var(--bg);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  
+  padding: 60px 0;
+  background-color: var(--background);
+
   @media (max-width: 768px) {
-    padding: 4rem 0;
-    min-height: auto;
+    padding: 40px 0;
   }
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 0 2rem;
-  position: relative;
-  z-index: 1;
-}
+  padding: 0 40px;
 
-.experienceGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-  
-  @media (max-width: 991px) {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-}
-
-// Left Side - Introduction and Stats
-.experienceIntro {
-  display: flex;
-  flex-direction: column;
-  
-  .sectionTag {
-    display: inline-block;
-    padding: 0.5rem 1.5rem;
-    background: rgba(var(--accent-primary-rgb), 0.1);
-    color: var(--accent-primary);
-    border-radius: 50px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    position: relative;
-    width: fit-content;
-    
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 50px;
-      border: 1px solid var(--accent-primary);
-      opacity: 0.2;
-    }
-  }
-  
-  .heading {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--text);
-    
-    span {
-      color: rgba(var(--text-rgb), 0.6);
-      font-weight: 300;
-    }
-    
-    @media (max-width: 768px) {
-      font-size: 2.5rem;
-    }
-  }
-  
-  .subheading {
-    font-size: 1.125rem;
-    line-height: 1.6;
-    margin-bottom: 3rem;
-    color: var(--text);
-    opacity: 0.8;
-    max-width: 90%;
-  }
-}
-
-// Stats boxes
-.statsContainer {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 3rem;
-  
   @media (max-width: 768px) {
-    gap: 1rem;
-  }
-  
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    padding: 0 24px;
   }
 }
 
-.statBox {
-  background-color: rgba(var(--card-bg-rgb), 0.6);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
-  }
-  
-  h3 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    
-    @media (max-width: 768px) {
-      font-size: 2rem;
-    }
-  }
-  
-  p {
-    font-size: 0.875rem;
-    color: var(--text);
-    opacity: 0.7;
-    margin: 0;
-  }
-}
+.sectionHeader {
+  margin-bottom: 32px;
 
-// CTA buttons
-.ctaButtons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-  
-  @media (max-width: 480px) {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  a {
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 0.875rem 1.75rem;
-    border-radius: 50px;
-    transition: all 0.3s ease;
+  .sectionTag {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    
-    &:hover {
-      transform: translateY(-3px);
-    }
-  }
-}
-
-.btnOutline {
-  border: 2px solid rgba(var(--accent-primary-rgb), 0.7);
-  color: var(--accent-primary);
-  background-color: transparent;
-  
-  &:hover {
-    background-color: rgba(var(--accent-primary-rgb), 0.1);
-  }
-}
-
-.btnFilled {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: #fff;
-  border: none;
-  box-shadow: 0 5px 15px rgba(var(--accent-primary-rgb), 0.3);
-  
-  &:hover {
-    box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.4);
-  }
-}
-
-// Right Side - Experience Cards
-.experienceCards {
-  position: relative;
-  height: 480px; /* Further increased base height */
-  perspective: 1000px;
-  
-  @media (max-width: 768px) {
-    height: 500px; /* Significantly increased height on mobile */
-    min-height: 500px;
-  }
-}
-
-.experienceCard {
-  position: absolute;
-  width: 100%;
-  min-height: 460px; /* Set a minimum height for all cards */
-  height: auto;
-  max-height: 100%; /* Ensure card doesn't exceed container height */
-  border-radius: 16px;
-  background-color: var(--card-bg);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  overflow: visible; /* Changed from hidden to visible to prevent cut-off */
-  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  will-change: transform, opacity;
-  display: flex;
-  flex-direction: column;
-  
-  &.active {
-    z-index: 30;
-  }
-  
-  &.previous, &.next {
-    z-index: 20;
-    filter: brightness(0.9);
-  }
-  
-  &.hidden {
-    z-index: 10;
-    pointer-events: none;
-  }
-}
-
-.cardContent {
-  padding: 1.5rem;
-  padding-bottom: 3rem; /* Significantly increased padding at bottom to prevent cut-off */
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  flex: 1;
-  position: relative; /* For proper positioning of child elements */
-}
-
-.moreContentCard .cardContent {
-  padding-bottom: 3.5rem; /* Even more padding for cards with more content */
-}
-
-.infojiniCard {
-  min-height: 500px; /* Specifically for the Infojini card */
-  
-  .cardContent {
-    padding-bottom: 4.5rem; /* Much more padding for the Infojini card */
-  }
-}
-
-/* Extra spacing element for the Infojini card */
-.extraSpacing {
-  height: 20px; /* Fixed height spacer */
-  width: 100%;
-}
-
-.avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.clientDetails {
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0 0 0.25rem 0;
-    color: var(--text);
-  }
-  
-  .company {
+    gap: 8px;
+    color: var(--text-secondary);
     font-size: 0.9rem;
-    color: var(--text);
-    opacity: 0.7;
-    margin: 0 0 0.25rem 0;
-  }
-  
-  .duration {
-    font-size: 0.85rem;
     font-weight: 500;
-    color: var(--accent-primary);
-    margin: 0 0 0.75rem 0;
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    background: rgba(var(--accent-primary-rgb), 0.1);
-    border-radius: 4px;
-  }
-}
 
-
-.experienceList {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  margin-bottom: 1.5rem; // Increased bottom margin to fix spacing issue
-  
-  .experienceItem {
-    position: relative;
-    padding-left: 1.5rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--text);
-    opacity: 0.85;
-    
-    &:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0.5rem;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: linear-gradient(
-        135deg,
-        var(--accent-primary),
-        var(--accent-secondary)
-      );
-    }
-    
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-}
-
-// Navigation arrows
-.navigationArrows {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  transform: translateY(-50%);
-  z-index: 40;
-  pointer-events: none; // This ensures clicks pass through to cards except on buttons
-  
-  .navArrow {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: var(--text);
-    font-size: 1.25rem;
-    transition: all 0.2s ease;
-    pointer-events: auto; // Re-enable pointer events for the buttons themselves
-    opacity: 0.7;
-    transform: translateX(0);
-    
-    &:hover {
-      opacity: 1;
-      background-color: var(--accent-primary);
-      color: white;
-      transform: scale(1.1);
-    }
-    
-    &:first-child {
-      margin-left: -20px;
-    }
-    
-    &:last-child {
-      margin-right: -20px;
-    }
-    
-    @media (max-width: 768px) {
-      width: 36px;
-      height: 36px;
+    svg {
       font-size: 1.1rem;
     }
   }
 }
 
-// Pagination dots
-.pagination {
-  position: absolute;
-  bottom: -30px;
-  left: 0;
-  width: 100%;
+.timeline {
   display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  
-  .paginationDot {
-    width: 10px;
-    height: 10px;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 20px;
+  cursor: pointer;
+
+  &:hover .card {
+    border-color: var(--border);
+    background: var(--background);
+  }
+}
+
+.timelineTrack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20px;
+  flex-shrink: 0;
+  padding-top: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 3px solid var(--background);
+  box-shadow: 0 0 0 2px var(--border);
+  flex-shrink: 0;
+  z-index: 2;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.activeDot {
+  background: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-primary), 0 0 12px rgba(255, 107, 53, 0.6);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    background-color: rgba(var(--text-rgb), 0.2);
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    
-    &.active {
-      background-color: var(--accent-primary);
-      transform: scale(1.2);
-    }
+    background: radial-gradient(
+      circle,
+      rgba(255, 107, 53, 0.3) 0%,
+      transparent 70%
+    );
+    z-index: -1;
   }
 }
 
-// Media queries for responsive design
-@media (max-width: 768px) {
-  .experienceCards {
-    margin-top: 1rem;
-  }
-  
-  .experienceCard {
-    min-height: 480px; /* Increased minimum height on mobile */
-  }
-  
-  .cardContent {
-    padding: 1.25rem;
-    padding-bottom: 3.5rem; /* Significantly increased bottom padding on mobile */
-    overflow-y: visible; /* Ensure content isn't cut */
+.line {
+  width: 2px;
+  flex: 1;
+  min-height: 100%;
+  background: var(--border);
+  margin-top: 8px;
+}
+
+.card {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.expanded .card {
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.cardHeader {
+  margin-bottom: 10px;
+}
+
+.titleSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.role {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.company {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.typeBadge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  &[data-type="freelance"] {
+    background: rgba(255, 107, 53, 0.1);
+    color: #ff6b35;
   }
 
-  .moreContentCard .cardContent {
-    padding-bottom: 4rem; /* More padding for cards with more content on mobile */
+  &[data-type="contract"] {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
   }
-  
-  .infojiniCard {
-    min-height: 520px; /* Specifically for the Infojini card on mobile */
-    
-    .cardContent {
-      padding-bottom: 5rem; /* Much more padding for the Infojini card on mobile */
-    }
-  }
-  
-  .extraSpacing {
-    height: 30px; /* Taller spacer on mobile */
-  }
-  
-  .experienceList {
-    margin-bottom: 1.5rem; /* Maintain space below the list on mobile */
-    
-    .experienceItem {
-      font-size: 0.9rem; /* Slightly smaller font on mobile */
-      line-height: 1.5; /* Tighter line height on mobile */
-      margin-bottom: 0.6rem; /* Less space between items */
-    }
-  }
-  
-  .avatar {
-    width: 50px;
-    height: 50px;
-    font-size: 2rem;
+
+  &[data-type="full-time"] {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
   }
 }
 
-// Animation for card entrance
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+.meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-light);
+
+  svg {
+    font-size: 0.85rem;
+    color: var(--text-light);
   }
 }
 
-.experienceIntro {
-  animation: fadeInUp 0.8s ease-out forwards;
+.expandedContent {
+  overflow: hidden;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.description {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.skillTag {
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  border-radius: 6px;
+  background: var(--background-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }

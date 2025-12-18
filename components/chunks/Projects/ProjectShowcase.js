@@ -123,7 +123,7 @@ const ProjectShowcase = () => {
   ];
 
   // Determine which projects to show based on showAll state
-  const displayProjects = showAll ? allProjects : allProjects.slice(0, 3);
+  const displayProjects = showAll ? allProjects : allProjects.slice(0, 4);
 
   // Handle the "See More Projects" button click
   const handleSeeMoreClick = () => {
