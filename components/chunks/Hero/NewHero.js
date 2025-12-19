@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./NewHero.module.scss";
 import Image from "next/image";
 import { FaEnvelope } from "react-icons/fa6";
-import { FaFileAlt } from "react-icons/fa";
+import { FaFileAlt, FaGithub } from "react-icons/fa";
 import { HiOutlineBriefcase, HiOutlineLightBulb } from "react-icons/hi";
 import { FiMapPin, FiCode, FiLayers, FiArrowDown } from "react-icons/fi";
 import {
@@ -19,6 +19,16 @@ import { motion } from "framer-motion";
 import logoImg from "../../../assets/images/arka.png";
 
 const NewHero = () => {
+  const [buttonFallen, setButtonFallen] = useState(false);
+
+  const handleDownloadClick = (e) => {
+    if (buttonFallen) {
+      e.preventDefault();
+      return;
+    }
+    setButtonFallen(true);
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -59,75 +69,130 @@ const NewHero = () => {
             <FaEnvelope size={14} />
             <span>admin@arkalalchakravarty.com</span>
           </a>
-          <motion.a
-            href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
-            download="Arka_Lal_Chakravarty_Resume.pdf"
-            className={styles.downloadButton}
-            whileHover="hover"
-            whileTap={{ scale: 0.95 }}
-            initial="initial"
-            animate="animate"
-            variants={{
-              initial: {},
-              animate: {
-                boxShadow: [
-                  "0 2px 8px rgba(255, 107, 53, 0.25)",
-                  "0 4px 16px rgba(255, 107, 53, 0.4)",
-                  "0 2px 8px rgba(255, 107, 53, 0.25)",
-                ],
-              },
-              hover: {
-                scale: 1.05,
-              },
-            }}
-            transition={{
-              boxShadow: {
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-              scale: {
-                duration: 0.2,
-              },
-            }}
-          >
-            <motion.span
-              className={styles.downloadIcon}
-              variants={{
-                initial: { y: 0 },
-                animate: { y: [0, 3, 0] },
-                hover: { y: [0, 10, 0] },
-              }}
-              transition={{
-                y: {
-                  duration: 0.6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-              }}
+          <div className={styles.topBarActions}>
+            <a
+              href="https://github.com/arkalal/arkalalchakravarty.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.sourceButton}
+              title="View Source Code"
             >
-              <FaFileAlt size={18} />
-            </motion.span>
-            <span className={styles.buttonText}>Download Resume</span>
-            <motion.span
-              className={styles.arrowDown}
-              variants={{
-                initial: { opacity: 0, y: -10 },
-                hover: {
-                  opacity: [0, 1, 0],
-                  y: [0, 15, 20],
-                },
-              }}
-              transition={{
-                duration: 0.8,
-                repeat: Infinity,
-                ease: "easeIn",
-              }}
-            >
-              <FiArrowDown size={16} />
-            </motion.span>
-            <span className={styles.shineEffect}></span>
-          </motion.a>
+              <FaGithub size={18} />
+              <span>Source</span>
+            </a>
+            <div className={styles.downloadButtonWrapper}>
+              {/* Invisible placeholder to maintain layout */}
+              <div className={styles.downloadButtonPlaceholder}>
+                <FaFileAlt size={18} />
+                <span>Download Resume</span>
+              </div>
+              {/* Actual button - absolutely positioned */}
+              {!buttonFallen ? (
+                <motion.a
+                  href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
+                  download="Arka_Lal_Chakravarty_Resume.pdf"
+                  className={styles.downloadButton}
+                  onClick={handleDownloadClick}
+                  whileHover="hover"
+                  initial="initial"
+                  animate="animate"
+                  variants={{
+                    initial: { rotate: 0 },
+                    animate: {
+                      boxShadow: [
+                        "0 2px 8px rgba(255, 107, 53, 0.25)",
+                        "0 4px 16px rgba(255, 107, 53, 0.4)",
+                        "0 2px 8px rgba(255, 107, 53, 0.25)",
+                      ],
+                    },
+                    hover: {
+                      rotate: 15,
+                      scale: 1.05,
+                    },
+                  }}
+                  transition={{
+                    boxShadow: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                    rotate: {
+                      duration: 0.1,
+                      ease: "easeOut",
+                    },
+                    scale: {
+                      duration: 0.1,
+                    },
+                  }}
+                >
+                  <motion.span
+                    className={styles.downloadIcon}
+                    variants={{
+                      initial: { y: 0 },
+                      animate: { y: [0, 3, 0] },
+                      hover: { y: [0, 10, 0] },
+                    }}
+                    transition={{
+                      y: {
+                        duration: 0.6,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      },
+                    }}
+                  >
+                    <FaFileAlt size={18} />
+                  </motion.span>
+                  <span className={styles.buttonText}>Download Resume</span>
+                  <motion.span
+                    className={styles.arrowDown}
+                    variants={{
+                      initial: { opacity: 0, y: -10 },
+                      hover: {
+                        opacity: [0, 1, 0],
+                        y: [0, 15, 20],
+                      },
+                    }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Infinity,
+                      ease: "easeIn",
+                    }}
+                  >
+                    <FiArrowDown size={16} />
+                  </motion.span>
+                  <span className={styles.shineEffect}></span>
+                </motion.a>
+              ) : (
+                <motion.div
+                  className={styles.downloadButtonFalling}
+                  initial={{
+                    y: 0,
+                    x: 0,
+                    rotate: 15,
+                    opacity: 1,
+                  }}
+                  animate={{
+                    y: [0, 800, 780, 850, 840, 870, 865, 880, 878, 885, 2000],
+                    x: [0, 50, 55, 80, 85, 100, 105, 115, 118, 125, 200],
+                    rotate: [
+                      15, 180, 175, 220, 215, 250, 245, 270, 268, 280, 360,
+                    ],
+                    opacity: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0.8, 0],
+                  }}
+                  transition={{
+                    duration: 1.8,
+                    times: [
+                      0, 0.25, 0.3, 0.4, 0.45, 0.55, 0.6, 0.7, 0.75, 0.85, 1,
+                    ],
+                    ease: [0.55, 0.085, 0.68, 0.53],
+                  }}
+                >
+                  <FaFileAlt size={18} />
+                  <span>Download Resume</span>
+                </motion.div>
+              )}
+            </div>
+          </div>
         </motion.div>
 
         {/* Hero Content */}
@@ -165,7 +230,12 @@ const NewHero = () => {
 
           {/* CTA Section */}
           <motion.div className={styles.ctaRow} variants={itemVariants}>
-            <a href="#contact" className={styles.ctaButton}>
+            <a
+              href="https://calendly.com/arkalal-chakravarty/30min"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.ctaButton}
+            >
               Book a call
             </a>
             <p className={styles.ctaText}>

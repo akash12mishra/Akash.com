@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import styles from "./ProjectShowcase.module.scss";
@@ -8,6 +8,192 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaGithub, FaExternalLinkAlt, FaYoutube } from "react-icons/fa";
 import VideoPopup from "./VideoPopup";
+
+let youTubeIframeApiPromise;
+
+const getYouTubeVideoId = (url) => {
+  if (!url) return "";
+  if (url.includes("youtu.be")) {
+    const id = url.split("/").pop();
+    return id || "";
+  }
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2] && match[2].length === 11 ? match[2] : "";
+};
+
+const loadYouTubeIframeApi = () => {
+  if (typeof window === "undefined") return Promise.resolve(false);
+  if (window.YT && window.YT.Player) return Promise.resolve(true);
+
+  if (youTubeIframeApiPromise) return youTubeIframeApiPromise;
+
+  youTubeIframeApiPromise = new Promise((resolve) => {
+    if (!window.__ytIframeApiReadyCallbacks) {
+      window.__ytIframeApiReadyCallbacks = [];
+    }
+
+    window.__ytIframeApiReadyCallbacks.push(() => resolve(true));
+
+    const existingScript = document.getElementById("youtube-iframe-api");
+    if (!existingScript) {
+      const tag = document.createElement("script");
+      tag.id = "youtube-iframe-api";
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+    }
+
+    const previousReady = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof previousReady === "function") previousReady();
+      const callbacks = window.__ytIframeApiReadyCallbacks || [];
+      window.__ytIframeApiReadyCallbacks = [];
+      callbacks.forEach((cb) => {
+        try {
+          cb();
+        } catch (e) {
+          return;
+        }
+      });
+    };
+  });
+
+  return youTubeIframeApiPromise;
+};
+
+const YouTubePreview = ({ videoUrl, poster, title, active }) => {
+  const videoId = getYouTubeVideoId(videoUrl);
+  const playerHostRef = useRef(null);
+  const playerRef = useRef(null);
+  const [playerReady, setPlayerReady] = useState(false);
+
+  const [mediaRef, mediaInView] = useInView({
+    threshold: 0.35,
+    triggerOnce: false,
+    rootMargin: "200px",
+  });
+
+  useEffect(() => {
+    if (!videoId) return;
+    let isCancelled = false;
+
+    loadYouTubeIframeApi().then((ok) => {
+      if (!ok || isCancelled) return;
+      if (!playerHostRef.current) return;
+      if (playerRef.current) return;
+
+      playerRef.current = new window.YT.Player(playerHostRef.current, {
+        host: "https://www.youtube-nocookie.com",
+        videoId,
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          iv_load_policy: 3,
+          loop: 1,
+          modestbranding: 1,
+          playsinline: 1,
+          rel: 0,
+          playlist: videoId,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: (event) => {
+            if (isCancelled) return;
+            setPlayerReady(true);
+            try {
+              event.target.mute();
+              if (active && mediaInView) event.target.playVideo();
+            } catch (e) {
+              return;
+            }
+          },
+          onStateChange: (event) => {
+            if (isCancelled) return;
+            if (event.data === window.YT.PlayerState.ENDED) {
+              try {
+                event.target.seekTo(0);
+                event.target.playVideo();
+              } catch (e) {
+                return;
+              }
+            }
+          },
+        },
+      });
+    });
+
+    return () => {
+      isCancelled = true;
+      if (
+        playerRef.current &&
+        typeof playerRef.current.destroy === "function"
+      ) {
+        try {
+          playerRef.current.destroy();
+        } catch (e) {
+          return;
+        }
+      }
+      playerRef.current = null;
+      setPlayerReady(false);
+    };
+  }, [videoId]);
+
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!playerReady || !player) return;
+
+    try {
+      if (active && mediaInView) {
+        player.mute();
+        player.playVideo();
+        return;
+      }
+
+      player.pauseVideo();
+      if (!active) {
+        player.seekTo(0);
+      }
+    } catch (e) {
+      return;
+    }
+  }, [active, mediaInView, playerReady]);
+
+  if (!videoId) {
+    return (
+      <Image
+        src={poster}
+        alt={title}
+        width={600}
+        height={340}
+        className={styles.projectImage}
+      />
+    );
+  }
+
+  return (
+    <div ref={mediaRef} className={styles.projectMediaRoot}>
+      <Image
+        src={poster}
+        alt={title}
+        width={600}
+        height={340}
+        className={styles.projectImage}
+      />
+      <div
+        className={`${styles.youtubePreview} ${
+          playerReady && active ? styles.youtubePreviewReady : ""
+        }`}
+      >
+        <div className={styles.youtubePlayer}>
+          <div ref={playerHostRef} className={styles.youtubePlayerHost} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProjectShowcase = () => {
   const [showAll, setShowAll] = useState(false);
@@ -176,6 +362,7 @@ const ProjectShowcase = () => {
 // Project Card Component
 const ProjectCard = ({ project, openVideoPopup }) => {
   const [isMobile, setIsMobile] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
   // Detect mobile device
   useEffect(() => {
@@ -193,6 +380,12 @@ const ProjectCard = ({ project, openVideoPopup }) => {
       window.removeEventListener("resize", checkMobile);
     };
   }, []);
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsHovering(false);
+    }
+  }, [isMobile]);
 
   const [ref, inView] = useInView({
     threshold: 0.05, // Very low threshold to trigger earlier
@@ -245,14 +438,31 @@ const ProjectCard = ({ project, openVideoPopup }) => {
       }}
     >
       {/* Project Image */}
-      <div className={styles.projectImageWrapper}>
-        <Image
-          src={project.image}
-          alt={project.name}
-          width={600}
-          height={340}
-          className={styles.projectImage}
-        />
+      <div
+        className={styles.projectImageWrapper}
+        onMouseEnter={() => {
+          if (!isMobile) setIsHovering(true);
+        }}
+        onMouseLeave={() => {
+          if (!isMobile) setIsHovering(false);
+        }}
+      >
+        {project.demoVideo ? (
+          <YouTubePreview
+            videoUrl={project.demoVideo}
+            poster={project.image}
+            title={project.name}
+            active={!isMobile && isHovering}
+          />
+        ) : (
+          <Image
+            src={project.image}
+            alt={project.name}
+            width={600}
+            height={340}
+            className={styles.projectImage}
+          />
+        )}
       </div>
 
       {/* Project Content */}

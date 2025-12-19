@@ -41,8 +41,76 @@
   }
 }
 
-.downloadButton {
+.topBarActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.sourceButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 10px;
   position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 0 15px rgba(255, 107, 53, 0.4),
+    0 0 30px rgba(255, 107, 53, 0.2);
+
+  &:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: rgba(255, 107, 53, 0.08);
+    box-shadow:
+      0 0 20px rgba(255, 107, 53, 0.5),
+      0 0 40px rgba(255, 107, 53, 0.3);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 640px) {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+}
+
+.downloadButtonWrapper {
+  display: inline-flex;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.downloadButtonPlaceholder {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
+
+  @media (max-width: 640px) {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+}
+
+.downloadButton {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -115,6 +183,32 @@
   50%,
   100% {
     left: 150%;
+  }
+}
+
+.downloadButtonFalling {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #ff8c42 100%);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.5);
+  transform-origin: center center;
+  white-space: nowrap;
+  text-decoration: none;
+
+  @media (max-width: 640px) {
+    font-size: 0.85rem;
+    padding: 8px 16px;
   }
 }
 

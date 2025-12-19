@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./NewNavbar.module.scss";
 import Image from "next/image";
 import logoImg from "../../../assets/images/arka.png";
-import { FaGithub, FaFileDownload } from "react-icons/fa";
+import { FaGithub, FaFileDownload, FaCode } from "react-icons/fa";
 import { useTheme } from "../../ThemeProvider";
 import Link from "next/link";
 
@@ -12,13 +12,13 @@ const NewNavbar = () => {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // Track scrolling for navbar background change
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -36,7 +36,13 @@ const NewNavbar = () => {
       <div className={styles.container}>
         <div className={styles.logoSection}>
           <Link href="/">
-            <Image src={logoImg} alt="Arka Lal Chakravarty" className={styles.logo} width={50} height={50} />
+            <Image
+              src={logoImg}
+              alt="Arka Lal Chakravarty"
+              className={styles.logo}
+              width={50}
+              height={50}
+            />
           </Link>
           <h1 className={styles.name}>Arka Lal Chakravarty</h1>
         </div>
@@ -50,38 +56,50 @@ const NewNavbar = () => {
               </li>
             ))}
           </ul>
-          
+
           <div className={styles.actions}>
-            <a 
-              href="/assets/doc/Arka resume 2025 - AI new.pdf" 
-              download="Arka_Lal_Chakravarty_Resume.pdf" 
+            <a
+              href="https://github.com/arkalal/arkalalchakravarty.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.sourceButton}
+              title="View Source Code"
+            >
+              <FaGithub size={18} />
+              <span>Source</span>
+            </a>
+            <a
+              href="/assets/doc/Arka resume 2025 - AI new.pdf"
+              download="Arka_Lal_Chakravarty_Resume.pdf"
               className={styles.cvButton}
             >
               <FaFileDownload size={18} />
               <span>Download CV</span>
             </a>
-            <a 
-              href="https://github.com/arkalal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.githubButton}
-            >
-              <FaGithub size={18} />
-              <span>GitHub</span>
-            </a>
           </div>
         </div>
 
         {/* Mobile Menu Button */}
-        <div className={styles.mobileMenuButton} onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          <div className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ''}`}></div>
-          <div className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ''}`}></div>
-          <div className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ''}`}></div>
+        <div
+          className={styles.mobileMenuButton}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          <div
+            className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ""}`}
+          ></div>
+          <div
+            className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ""}`}
+          ></div>
+          <div
+            className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ""}`}
+          ></div>
         </div>
       </div>
 
       {/* Mobile Navigation */}
-      <div className={`${styles.mobileNav} ${mobileMenuOpen ? styles.open : ''}`}>
+      <div
+        className={`${styles.mobileNav} ${mobileMenuOpen ? styles.open : ""}`}
+      >
         <ul className={styles.mobileNavLinks}>
           {navLinks.map((link, index) => (
             <li key={index} onClick={() => setMobileMenuOpen(false)}>
@@ -89,22 +107,22 @@ const NewNavbar = () => {
             </li>
           ))}
           <li className={styles.mobileActions}>
-            <a 
-              href="/assets/doc/Arka resume 2025 - AI new.pdf" 
-              download="Arka_Lal_Chakravarty_Resume.pdf" 
+            <a
+              href="https://github.com/arkalal/arkalalchakravarty.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.mobileSourceButton}
+            >
+              <FaGithub size={20} />
+              <span>View Source</span>
+            </a>
+            <a
+              href="/assets/doc/Arka resume 2025 - AI new.pdf"
+              download="Arka_Lal_Chakravarty_Resume.pdf"
               className={styles.mobileCvButton}
             >
               <FaFileDownload size={20} />
               <span>Download CV</span>
-            </a>
-            <a 
-              href="https://github.com/arkalal"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.mobileGithubButton}
-            >
-              <FaGithub size={20} />
-              <span>GitHub</span>
             </a>
           </li>
         </ul>
