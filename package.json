@@ -28,11 +28,11 @@
     "sass": "^1.83.0",
     "tsparticles": "^3.9.0",
     "tsparticles-slim": "^2.12.0",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "eslint": "^8",
-    "eslint-config-next": "16.1.0",
-    "react-icons": "^5.5.0"
+    "eslint-config-next": "16.1.0"
   }
 }
