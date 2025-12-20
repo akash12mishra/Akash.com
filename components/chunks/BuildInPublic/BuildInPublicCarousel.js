@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styles from "./BuildInPublicCarousel.module.scss";
 import Script from "next/script";
 import { FiExternalLink } from "react-icons/fi";
+import { FaLinkedin, FaXTwitter } from "react-icons/fa6";
 
 const linkedInPosts = [
   {
@@ -40,19 +41,26 @@ const xPosts = [
 
 const BuildInPublicCarousel = () => {
   const sectionRef = useRef(null);
+  const [twitterLoaded, setTwitterLoaded] = useState(false);
+
   const loadXWidgets = (rootEl) => {
     if (typeof window === "undefined") return;
     if (!window?.twttr?.widgets?.load) return;
     window.twttr.widgets.load(rootEl || undefined);
+    setTwitterLoaded(true);
   };
 
   useEffect(() => {
-    const id = window.setTimeout(() => {
-      loadXWidgets(sectionRef.current);
-    }, 50);
+    // Try loading Twitter widgets multiple times to ensure they render
+    const attempts = [100, 500, 1500, 3000];
+    const timeoutIds = attempts.map((delay) =>
+      window.setTimeout(() => {
+        loadXWidgets(sectionRef.current);
+      }, delay)
+    );
 
     return () => {
-      window.clearTimeout(id);
+      timeoutIds.forEach((id) => window.clearTimeout(id));
     };
   }, []);
 
@@ -97,14 +105,28 @@ const BuildInPublicCarousel = () => {
                     <FiExternalLink size={14} />
                     <span>Open</span>
                   </a>
-                  <iframe
-                    src={post.src}
-                    title={`LinkedIn post ${post.id}`}
-                    className={styles.linkedinFrame}
-                    loading="lazy"
-                    frameBorder="0"
-                    allowFullScreen
-                  />
+                  <div className={styles.embedWrapper}>
+                    <div className={styles.embedPlaceholder}>
+                      <FaLinkedin size={32} />
+                      <span>LinkedIn Post</span>
+                      <a
+                        href={post.src}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.viewButton}
+                      >
+                        View on LinkedIn
+                      </a>
+                    </div>
+                    <iframe
+                      src={post.src}
+                      title={`LinkedIn post ${post.id}`}
+                      className={styles.linkedinFrame}
+                      loading="lazy"
+                      frameBorder="0"
+                      allowFullScreen
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -122,8 +144,22 @@ const BuildInPublicCarousel = () => {
                     <FiExternalLink size={14} />
                     <span>Open</span>
                   </a>
-                  <div className={styles.tweetEmbed}>
-                    <div dangerouslySetInnerHTML={{ __html: post.html }} />
+                  <div className={styles.embedWrapper}>
+                    <div className={styles.embedPlaceholder}>
+                      <FaXTwitter size={32} />
+                      <span>X Post</span>
+                      <a
+                        href={post.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.viewButton}
+                      >
+                        View on X
+                      </a>
+                    </div>
+                    <div className={styles.tweetEmbed}>
+                      <div dangerouslySetInnerHTML={{ __html: post.html }} />
+                    </div>
                   </div>
                 </div>
               ))}

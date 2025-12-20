@@ -20,6 +20,12 @@ import logoImg from "../../../assets/images/arka.png";
 
 const NewHero = () => {
   const [buttonFallen, setButtonFallen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleDownloadClick = (e) => {
     if (buttonFallen) {
@@ -56,8 +62,8 @@ const NewHero = () => {
     <section id="home" className={styles.heroSection}>
       <motion.div
         className={styles.container}
-        initial="hidden"
-        animate="visible"
+        initial={isMounted ? "hidden" : false}
+        animate={isMounted ? "visible" : false}
         variants={containerVariants}
       >
         {/* Top Bar */}
@@ -69,6 +75,48 @@ const NewHero = () => {
             <FaEnvelope size={14} />
             <span>admin@arkalalchakravarty.com</span>
           </a>
+
+          {/* Mobile Hamburger Menu Button */}
+          <div
+            className={styles.mobileMenuButton}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <div
+              className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ""}`}
+            ></div>
+            <div
+              className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ""}`}
+            ></div>
+            <div
+              className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ""}`}
+            ></div>
+          </div>
+
+          {/* Mobile Menu Dropdown */}
+          <div
+            className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.open : ""}`}
+          >
+            <a
+              href="https://github.com/arkalal/arkalalchakravarty.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.mobileSourceButton}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <FaGithub size={18} />
+              <span>Source</span>
+            </a>
+            <a
+              href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
+              download="Arka_Lal_Chakravarty_Resume.pdf"
+              className={styles.mobileDownloadButton}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <FaFileAlt size={18} />
+              <span>Download Resume</span>
+            </a>
+          </div>
+
           <div className={styles.topBarActions}>
             <a
               href="https://github.com/arkalal/arkalalchakravarty.com"

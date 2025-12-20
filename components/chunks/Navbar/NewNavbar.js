@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./NewNavbar.module.scss";
 import Image from "next/image";
 import logoImg from "../../../assets/images/arka.png";
-import { FaGithub, FaFileDownload, FaCode } from "react-icons/fa";
+import { FaGithub, FaFileDownload, FaFileAlt } from "react-icons/fa";
 import { useTheme } from "../../ThemeProvider";
 import Link from "next/link";
 
@@ -112,17 +112,19 @@ const NewNavbar = () => {
               target="_blank"
               rel="noopener noreferrer"
               className={styles.mobileSourceButton}
+              onClick={() => setMobileMenuOpen(false)}
             >
               <FaGithub size={20} />
-              <span>View Source</span>
+              <span>Source</span>
             </a>
             <a
-              href="/assets/doc/Arka resume 2025 - AI new.pdf"
+              href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
               download="Arka_Lal_Chakravarty_Resume.pdf"
               className={styles.mobileCvButton}
+              onClick={() => setMobileMenuOpen(false)}
             >
-              <FaFileDownload size={20} />
-              <span>Download CV</span>
+              <FaFileAlt size={20} />
+              <span>Download Resume</span>
             </a>
           </li>
         </ul>

@@ -141,7 +141,7 @@
   .hamburgerLine {
     width: 100%;
     height: 2px;
-    background-color: var(--text);
+    background-color: var(--text-primary);
     transition: all 0.3s ease;
 
     &.open:nth-child(1) {
@@ -221,8 +221,17 @@
 
       .mobileSourceButton {
         background: transparent;
-        border: 1px solid var(--border);
+        border: 2px solid var(--border);
         color: var(--text-primary);
+        box-shadow:
+          0 0 15px rgba(255, 107, 53, 0.4),
+          0 0 30px rgba(255, 107, 53, 0.2);
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-color: var(--accent-primary);
+          color: var(--accent-primary);
+        }
       }
 
       .mobileCvButton {
@@ -239,6 +248,12 @@
   }
 
   .mobileMenuButton {
-    display: flex;
+    display: flex !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobileMenuButton {
+    display: flex !important;
   }
 }
