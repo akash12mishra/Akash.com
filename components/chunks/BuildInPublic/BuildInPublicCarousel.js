@@ -1,170 +1,92 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import styles from "./BuildInPublicCarousel.module.scss";
-import Script from "next/script";
+import Image from "next/image";
 import { FiExternalLink } from "react-icons/fi";
-import { FaLinkedin, FaXTwitter } from "react-icons/fa6";
 
-const linkedInPosts = [
+import linkPost1 from "../../../assets/images/Socials/linkPost1.png";
+import linkPost2 from "../../../assets/images/Socials/linkPost2.png";
+import linkPost3 from "../../../assets/images/Socials/linkPost3.png";
+import xPost1 from "../../../assets/images/Socials/xPost1.png";
+import xPost2 from "../../../assets/images/Socials/xPost2.png";
+import xPost3 from "../../../assets/images/Socials/xPost3.png";
+
+const allPosts = [
   {
     id: "li-1",
-    src: "https://www.linkedin.com/embed/feed/update/urn:li:share:7393220213707739136",
+    image: linkPost1,
+    platform: "linkedin",
+    link: "https://www.linkedin.com/posts/arkalal_the-harsh-truth-about-building-saas-mvps-activity-7381168964229513216-w0RJ?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
+  },
+  {
+    id: "x-1",
+    image: xPost1,
+    platform: "x",
+    link: "https://x.com/arka_codes/status/1983773028132462664",
   },
   {
     id: "li-2",
-    src: "https://www.linkedin.com/embed/feed/update/urn:li:share:7393219927739940864",
-  },
-  {
-    id: "li-3",
-    src: "https://www.linkedin.com/embed/feed/update/urn:li:share:7389239436724719617",
-  },
-];
-
-const xPosts = [
-  {
-    id: "x-1",
-    html: `<blockquote class="twitter-tweet" data-theme="light" data-width="100%"><p lang="en" dir="ltr">3.7 years ago — I just wanted to learn how to code.<br><br>Today — I build &amp; ship AI SaaS MVPs in ≤21 days for founders worldwide ⚡<br><br>From working on US Gov healthcare projects → to launching my own agency → to helping startups scale fast.<br><br>Every step was a lesson in execution &amp;…</p>&mdash; Arka Lal Chakravarty (@arka_codes) <a href="https://twitter.com/arka_codes/status/1987905587892330618?ref_src=twsrc%5Etfw">November 10, 2025</a></blockquote>`,
-    link: "https://twitter.com/arka_codes/status/1987905587892330618",
+    image: linkPost2,
+    platform: "linkedin",
+    link: "https://www.linkedin.com/posts/arkalal_ive-seen-a-shift-in-how-developers-activity-7383524420293890048-2HJG?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
   },
   {
     id: "x-2",
-    html: `<blockquote class="twitter-tweet" data-theme="light" data-width="100%"><p lang="en" dir="ltr">AI isn't killing jobs — it's killing slow execution.<br><br>The best builders now use:<br>⚙️ Agents to automate workflows<br>🧠 RAG pipelines for memory<br>⚡ Fast MVP cycles to stay ahead<br><br>We're entering the Agentic SaaS Era —<br>where apps think, act, and improve on their own.<br><br>Learn this stack…</p>&mdash; Arka Lal Chakravarty (@arka_codes) <a href="https://twitter.com/arka_codes/status/1983919323950543094?ref_src=twsrc%5Etfw">October 30, 2025</a></blockquote>`,
-    link: "https://twitter.com/arka_codes/status/1983919323950543094",
+    image: xPost2,
+    platform: "x",
+    link: "https://x.com/arka_codes/status/1982832159036432523",
+  },
+  {
+    id: "li-3",
+    image: linkPost3,
+    platform: "linkedin",
+    link: "https://www.linkedin.com/posts/arkalal_building-a-scalable-saas-mvp-isnt-just-about-activity-7393490086593605632-sdBk?utm_source=share&utm_medium=member_desktop&rcm=ACoAACEK0AwBq29eqk-Q-7_FsDHB32Yxq4h0p_s",
   },
   {
     id: "x-3",
-    html: `<blockquote class="twitter-tweet" data-theme="light" data-width="100%"><p lang="en" dir="ltr">Most SaaS founders fail quietly — not because of bad ideas,<br>but because they never launch.<br><br>Here's my 21-day playbook to go from idea → live MVP 👇<br><br>1️⃣ Days 1-3: Validate ONE painful problem.<br>2️⃣ Days 4-10: Build the core value only.<br>3️⃣ Days 11-17: Add AI-powered automation to…</p>&mdash; Arka Lal Chakravarty (@arka_codes) <a href="https://twitter.com/arka_codes/status/1983773028132462664?ref_src=twsrc%5Etfw">October 30, 2025</a></blockquote>`,
-    link: "https://twitter.com/arka_codes/status/1983773028132462664",
+    image: xPost3,
+    platform: "x",
+    link: "https://x.com/arka_codes/status/1982605665861554439",
   },
 ];
 
 const BuildInPublicCarousel = () => {
-  const sectionRef = useRef(null);
-  const [twitterLoaded, setTwitterLoaded] = useState(false);
-
-  const loadXWidgets = (rootEl) => {
-    if (typeof window === "undefined") return;
-    if (!window?.twttr?.widgets?.load) return;
-    window.twttr.widgets.load(rootEl || undefined);
-    setTwitterLoaded(true);
-  };
-
-  useEffect(() => {
-    // Try loading Twitter widgets multiple times to ensure they render
-    const attempts = [100, 500, 1500, 3000];
-    const timeoutIds = attempts.map((delay) =>
-      window.setTimeout(() => {
-        loadXWidgets(sectionRef.current);
-      }, delay)
-    );
-
-    return () => {
-      timeoutIds.forEach((id) => window.clearTimeout(id));
-    };
-  }, []);
-
-  // No animation controls for posts - using CSS animations instead
-
-  // No animation controls for Twitter posts - will use CSS animation instead
-
   return (
-    <section
-      id="buildinpublic"
-      className={styles.buildinPublicSection}
-      ref={sectionRef}
-    >
-      <Script
-        src="https://platform.twitter.com/widgets.js"
-        strategy="afterInteractive"
-        charSet="utf-8"
-        onLoad={() => loadXWidgets(sectionRef.current)}
-      />
+    <section id="buildinpublic" className={styles.buildinPublicSection}>
       <div className={styles.container}>
         <div className={styles.sectionHeader}>
           <span className={styles.sectionTag}>#buildinpublic</span>
-          <h2 className={styles.sectionTitle}>My Journey</h2>
-          <p className={styles.sectionDescription}>
-            Experience my unwavering dedication to building innovative projects
-            and sharing every milestone in real-time on X and LinkedIn.
-          </p>
         </div>
 
-        <div className={styles.carouselContainer}>
-          <div className={styles.bentoGrid}>
-            <div className={styles.bentoColumn}>
-              {linkedInPosts.map((post) => (
-                <div key={post.id} className={styles.bentoCard}>
-                  <a
-                    href={post.src}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.openPost}
-                    aria-label="Open LinkedIn post"
-                  >
-                    <FiExternalLink size={14} />
-                    <span>Open</span>
-                  </a>
-                  <div className={styles.embedWrapper}>
-                    <div className={styles.embedPlaceholder}>
-                      <FaLinkedin size={32} />
-                      <span>LinkedIn Post</span>
-                      <a
-                        href={post.src}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.viewButton}
-                      >
-                        View on LinkedIn
-                      </a>
-                    </div>
-                    <iframe
-                      src={post.src}
-                      title={`LinkedIn post ${post.id}`}
-                      className={styles.linkedinFrame}
-                      loading="lazy"
-                      frameBorder="0"
-                      allowFullScreen
-                    />
-                  </div>
+        <div className={styles.masonryGrid}>
+          {allPosts.map((post) => (
+            <a
+              key={post.id}
+              href={post.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${styles.postCard} ${styles[post.platform]}`}
+            >
+              <div className={styles.cardInner}>
+                <div className={styles.postImageWrapper}>
+                  <Image
+                    src={post.image}
+                    alt={`${post.platform === "linkedin" ? "LinkedIn" : "X"} Post`}
+                    width={400}
+                    height={500}
+                    className={styles.postImage}
+                  />
                 </div>
-              ))}
-            </div>
-
-            <div className={styles.bentoColumn}>
-              {xPosts.map((post) => (
-                <div key={post.id} className={styles.bentoCard}>
-                  <a
-                    href={post.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.openPost}
-                    aria-label="Open X post"
-                  >
+                <div className={styles.cardFooter}>
+                  <span className={styles.viewLink}>
                     <FiExternalLink size={14} />
-                    <span>Open</span>
-                  </a>
-                  <div className={styles.embedWrapper}>
-                    <div className={styles.embedPlaceholder}>
-                      <FaXTwitter size={32} />
-                      <span>X Post</span>
-                      <a
-                        href={post.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.viewButton}
-                      >
-                        View on X
-                      </a>
-                    </div>
-                    <div className={styles.tweetEmbed}>
-                      <div dangerouslySetInnerHTML={{ __html: post.html }} />
-                    </div>
-                  </div>
+                    <span>View Post</span>
+                  </span>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </section>

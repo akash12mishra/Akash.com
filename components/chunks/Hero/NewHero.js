@@ -20,6 +20,7 @@ import logoImg from "../../../assets/images/arka.png";
 
 const NewHero = () => {
   const [buttonFallen, setButtonFallen] = useState(false);
+  const [mobileButtonFallen, setMobileButtonFallen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -33,6 +34,14 @@ const NewHero = () => {
       return;
     }
     setButtonFallen(true);
+  };
+
+  const handleMobileDownloadClick = (e) => {
+    if (mobileButtonFallen) {
+      e.preventDefault();
+      return;
+    }
+    setMobileButtonFallen(true);
   };
 
   const containerVariants = {
@@ -106,15 +115,99 @@ const NewHero = () => {
               <FaGithub size={18} />
               <span>Source</span>
             </a>
-            <a
-              href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
-              download="Arka_Lal_Chakravarty_Resume.pdf"
-              className={styles.mobileDownloadButton}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <FaFileAlt size={18} />
-              <span>Download Resume</span>
-            </a>
+            <div className={styles.mobileDownloadWrapper}>
+              {!mobileButtonFallen ? (
+                <motion.a
+                  href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
+                  download="Arka_Lal_Chakravarty_Resume.pdf"
+                  className={styles.mobileDownloadButton}
+                  onClick={handleMobileDownloadClick}
+                  whileHover="hover"
+                  initial="initial"
+                  animate="animate"
+                  variants={{
+                    initial: { rotate: 0 },
+                    animate: {
+                      boxShadow: [
+                        "0 2px 8px rgba(255, 107, 53, 0.25)",
+                        "0 4px 16px rgba(255, 107, 53, 0.4)",
+                        "0 2px 8px rgba(255, 107, 53, 0.25)",
+                      ],
+                    },
+                    hover: {
+                      rotate: 10,
+                      scale: 1.03,
+                    },
+                  }}
+                  transition={{
+                    boxShadow: {
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                    rotate: { duration: 0.1, ease: "easeOut" },
+                    scale: { duration: 0.1 },
+                  }}
+                >
+                  <motion.span
+                    className={styles.mobileDownloadIcon}
+                    variants={{
+                      initial: { y: 0 },
+                      animate: { y: [0, 3, 0] },
+                      hover: { y: [0, 8, 0] },
+                    }}
+                    transition={{
+                      y: { duration: 0.6, repeat: Infinity, ease: "easeInOut" },
+                    }}
+                  >
+                    <FaFileAlt size={18} />
+                  </motion.span>
+                  <span>Download Resume</span>
+                  <motion.span
+                    className={styles.mobileArrowDown}
+                    variants={{
+                      initial: { opacity: 0, y: -5 },
+                      hover: { opacity: [0, 1, 0], y: [0, 10, 15] },
+                    }}
+                    transition={{
+                      duration: 0.7,
+                      repeat: Infinity,
+                      ease: "easeIn",
+                    }}
+                  >
+                    <FiArrowDown size={14} />
+                  </motion.span>
+                </motion.a>
+              ) : (
+                <motion.div
+                  className={styles.mobileDownloadButtonFalling}
+                  initial={{
+                    y: 0,
+                    x: 0,
+                    rotate: 10,
+                    opacity: 1,
+                  }}
+                  animate={{
+                    y: [0, 400, 385, 420, 410, 440, 435, 450, 448, 455, 800],
+                    x: [0, 25, 28, 40, 43, 50, 53, 58, 60, 63, 100],
+                    rotate: [
+                      10, 90, 88, 110, 108, 125, 123, 135, 134, 140, 180,
+                    ],
+                    opacity: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0.8, 0],
+                  }}
+                  transition={{
+                    duration: 1.8,
+                    times: [
+                      0, 0.25, 0.3, 0.4, 0.45, 0.55, 0.6, 0.7, 0.75, 0.85, 1,
+                    ],
+                    ease: [0.55, 0.085, 0.68, 0.53],
+                  }}
+                >
+                  <FaFileAlt size={18} />
+                  <span>Download Resume</span>
+                </motion.div>
+              )}
+            </div>
           </div>
 
           <div className={styles.topBarActions}>

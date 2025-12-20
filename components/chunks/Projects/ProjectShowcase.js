@@ -363,6 +363,12 @@ const ProjectShowcase = () => {
 const ProjectCard = ({ project, openVideoPopup }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Set mounted state to prevent SSR hydration flicker
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Detect mobile device
   useEffect(() => {
@@ -388,53 +394,26 @@ const ProjectCard = ({ project, openVideoPopup }) => {
   }, [isMobile]);
 
   const [ref, inView] = useInView({
-    threshold: 0.05, // Very low threshold to trigger earlier
+    threshold: 0.05,
     triggerOnce: true,
-    rootMargin: "100px", // Much larger margin to preload before element is visible
+    rootMargin: "100px",
   });
-
-  // Apply optimizations for mobile rendering to prevent flicker
-  useEffect(() => {
-    // Store the ref value in a variable to use in cleanup
-    const currentRef = ref.current;
-
-    if (currentRef) {
-      // Apply will-change before element is in view
-      currentRef.style.willChange = "opacity";
-      currentRef.style.backfaceVisibility = "hidden";
-      currentRef.style.webkitBackfaceVisibility = "hidden";
-
-      // Force hardware acceleration
-      currentRef.style.transform = "translateZ(0)";
-
-      return () => {
-        if (currentRef) {
-          currentRef.style.willChange = "auto";
-          currentRef.style.backfaceVisibility = "visible";
-          currentRef.style.webkitBackfaceVisibility = "visible";
-        }
-      };
-    }
-  }, [ref]);
 
   return (
     <motion.div
       ref={ref}
       className={styles.projectCard}
-      initial={{ opacity: 0 }}
-      animate={inView ? { opacity: 1 } : { opacity: 0 }}
+      initial={isMounted ? { opacity: 0, y: 20 } : false}
+      animate={
+        isMounted
+          ? inView
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 20 }
+          : false
+      }
       transition={{
-        duration: isMobile ? 0.1 : 0.3, // Ultra fast on mobile to prevent flickering
-        ease: "linear",
-      }}
-      style={{
-        // Apply styles that help with mobile rendering
-        transform: "translate3d(0,0,0)",
-        WebkitTransform: "translate3d(0,0,0)",
-        backfaceVisibility: "hidden",
-        WebkitBackfaceVisibility: "hidden",
-        perspective: 1000,
-        WebkitPerspective: 1000,
+        duration: 0.4,
+        ease: [0.25, 0.1, 0.25, 1],
       }}
     >
       {/* Project Image */}
