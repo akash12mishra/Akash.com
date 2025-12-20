@@ -25,6 +25,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
+  position: relative;
 }
 
 .emailTag {
@@ -41,8 +42,185 @@
   }
 }
 
-.downloadButton {
+.topBarActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+/* Mobile Hamburger Menu */
+.mobileMenuButton {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 1001;
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+
+  .hamburgerLine {
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-primary);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+
+    &.open:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    &.open:nth-child(2) {
+      opacity: 0;
+    }
+
+    &.open:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+  }
+}
+
+.mobileMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 180px;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(8px);
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+}
+
+.mobileSourceButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.3);
+
+  &:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+  }
+}
+
+.mobileDownloadButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--accent-primary);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 10px;
+  border: none;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--accent-secondary);
+  }
+}
+
+.sourceButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 10px;
   position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  box-shadow:
+    0 0 15px rgba(255, 107, 53, 0.4),
+    0 0 30px rgba(255, 107, 53, 0.2);
+
+  &:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: rgba(255, 107, 53, 0.08);
+    box-shadow:
+      0 0 20px rgba(255, 107, 53, 0.5),
+      0 0 40px rgba(255, 107, 53, 0.3);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 640px) {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
+}
+
+.downloadButtonWrapper {
+  display: inline-flex;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.downloadButtonPlaceholder {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
+
+  @media (max-width: 640px) {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+}
+
+.downloadButton {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -115,6 +293,32 @@
   50%,
   100% {
     left: 150%;
+  }
+}
+
+.downloadButtonFalling {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #ff8c42 100%);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 10px;
+  z-index: 9999;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.5);
+  transform-origin: center center;
+  white-space: nowrap;
+  text-decoration: none;
+
+  @media (max-width: 640px) {
+    font-size: 0.85rem;
+    padding: 8px 16px;
   }
 }
 

@@ -5,7 +5,7 @@ import { Provider } from "../../Providers";
 import Script from "next/script";
 import GoogleAnalytics from "../../utils/GoogleAnalytics.js";
 import { ThemeProvider } from "../../components/ThemeProvider";
-
+import ScrollToTop from "../../components/ScrollToTop";
 
 export const metadata = {
   metadataBase: new URL("https://arkalalchakravarty.com"),
@@ -63,13 +63,13 @@ export const metadata = {
 };
 
 const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-space-grotesk',
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
 });
 
 const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
+  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 const CustomFont = localFont({
@@ -112,7 +112,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
         <GoogleAnalytics GA_MEASUREMENT_ID="G-8Y1H8JM52G" />
 
         <script
@@ -157,9 +160,12 @@ export default function RootLayout({ children }) {
         />
       </head>
 
-      <body className={`${CustomFont.className} ${spaceGrotesk.variable} ${inter.variable}`}>
+      <body
+        className={`${CustomFont.className} ${spaceGrotesk.variable} ${inter.variable}`}
+      >
         <Provider>
           <ThemeProvider>
+            <ScrollToTop />
             {children}
           </ThemeProvider>
         </Provider>

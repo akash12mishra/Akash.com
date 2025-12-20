@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ExperienceTestimonial.module.scss";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -10,10 +10,15 @@ import { FiMapPin, FiCalendar } from "react-icons/fi";
 const ExperienceTestimonial = () => {
   const [expandedId, setExpandedId] = useState(null);
   const [activeId, setActiveId] = useState(1); // Track which dot is glowing
+  const [isMounted, setIsMounted] = useState(false);
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: true,
   });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const experiences = [
     {
@@ -112,8 +117,10 @@ const ExperienceTestimonial = () => {
         <motion.div
           className={styles.timeline}
           variants={containerVariants}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
+          initial={isMounted ? "hidden" : false}
+          animate={
+            isMounted && inView ? "visible" : isMounted ? "hidden" : false
+          }
         >
           {experiences.map((exp, index) => {
             const isExpanded = expandedId === exp.id;

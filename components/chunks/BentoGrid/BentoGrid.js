@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./BentoGrid.module.scss";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -14,6 +14,11 @@ import {
 import { HiOutlineExternalLink } from "react-icons/hi";
 
 const BentoGrid = () => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -101,8 +106,8 @@ const BentoGrid = () => {
   return (
     <motion.div
       className={styles.bentoContainer}
-      initial="hidden"
-      animate="visible"
+      initial={isMounted ? "hidden" : false}
+      animate={isMounted ? "visible" : false}
       variants={containerVariants}
     >
       <div className={styles.bentoGrid}>
