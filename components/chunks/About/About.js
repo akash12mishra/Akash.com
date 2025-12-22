@@ -21,7 +21,6 @@ const About = () => {
   const [typewriterComplete, setTypewriterComplete] = useState(false);
   const [cardsScope, animateCards] = useAnimate();
   const [isMounted, setIsMounted] = useState(false);
-  const [scrollLocked, setScrollLocked] = useState(false);
 
   // Typewriter animation states
   const [typedText1, setTypedText1] = useState("");
@@ -61,65 +60,7 @@ const About = () => {
     };
   }, []);
 
-  // Store the locked scroll position
-  const lockedScrollY = useRef(0);
-
-  // Scroll lock - prevent scroll events without using position fixed
-  useEffect(() => {
-    if (!isMounted) return;
-
-    if (scrollLocked && sectionRef.current) {
-      // Get the About section's top position and scroll to it
-      const rect = sectionRef.current.getBoundingClientRect();
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
-      lockedScrollY.current = scrollTop + rect.top;
-
-      // Scroll to About section
-      window.scrollTo(0, lockedScrollY.current);
-
-      // Lock scroll by preventing all scroll-related events
-      const preventScroll = (e) => {
-        e.preventDefault();
-        window.scrollTo(0, lockedScrollY.current);
-      };
-
-      const preventKeys = (e) => {
-        const keys = [32, 33, 34, 35, 36, 37, 38, 39, 40];
-        if (keys.includes(e.keyCode)) {
-          e.preventDefault();
-        }
-      };
-
-      // Add listeners
-      window.addEventListener("wheel", preventScroll, { passive: false });
-      window.addEventListener("touchmove", preventScroll, { passive: false });
-      window.addEventListener("scroll", preventScroll, { passive: false });
-      window.addEventListener("keydown", preventKeys, { passive: false });
-
-      return () => {
-        window.removeEventListener("wheel", preventScroll);
-        window.removeEventListener("touchmove", preventScroll);
-        window.removeEventListener("scroll", preventScroll);
-        window.removeEventListener("keydown", preventKeys);
-      };
-    }
-  }, [scrollLocked, isMounted]);
-
-  // Start scroll lock when About section becomes visible
-  useEffect(() => {
-    if (isVisible && !scrollLocked && !typewriterComplete) {
-      setScrollLocked(true);
-    }
-  }, [isVisible, scrollLocked, typewriterComplete]);
-
-  // Unlock scroll immediately when typewriter completes so user can scroll to see cards
-  useEffect(() => {
-    if (!typewriterComplete || !scrollLocked) return;
-    setScrollLocked(false);
-  }, [typewriterComplete, scrollLocked]);
-
-  // Trigger animations on scroll - detect early and snap to section
+  // Trigger animations on scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -283,322 +224,319 @@ const About = () => {
   }, [typewriterComplete, animateCards, cardsScope]);
 
   return (
-    <>
-      <section id="about" className={styles.aboutSection} ref={sectionRef}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            {isMobile ? (
-              /* Mobile version of the button with minimal styling */
-              <div className={styles.mobileTagWrapper}>
-                <span className={styles.mobileSectionTag}>About Me</span>
-              </div>
-            ) : (
-              /* Desktop version remains unchanged */
-              <span className={styles.sectionTag}>About Me</span>
-            )}
-            <h2 className={styles.sectionTitle}>Who I Am</h2>
+    <section id="about" className={styles.aboutSection} ref={sectionRef}>
+      <div className={styles.container}>
+        <div className={styles.sectionHeader}>
+          {isMobile ? (
+            /* Mobile version of the button with minimal styling */
+            <div className={styles.mobileTagWrapper}>
+              <span className={styles.mobileSectionTag}>About Me</span>
+            </div>
+          ) : (
+            /* Desktop version remains unchanged */
+            <span className={styles.sectionTag}>About Me</span>
+          )}
+          <h2 className={styles.sectionTitle}>Who I Am</h2>
+        </div>
+
+        <div className={styles.content}>
+          <div className={styles.imageContainer}>
+            <Image
+              src={logoImg}
+              alt="Arka Lal Chakravarty"
+              width={350}
+              height={350}
+              className={styles.profileImage}
+            />
+            <div className={styles.imageBorder}></div>
           </div>
 
-          <div className={styles.content}>
-            <div className={styles.imageContainer}>
-              <Image
-                src={logoImg}
-                alt="Arka Lal Chakravarty"
-                width={350}
-                height={350}
-                className={styles.profileImage}
-              />
-              <div className={styles.imageBorder}></div>
-            </div>
-
-            <div className={styles.textContent}>
-              <h3 className={styles.greeting}>
-                {greetingText}
-                <span className={styles.cursor}>|</span>
-              </h3>
-              <p className={styles.bio}>
-                {typedText1.slice(0, bioText1.length)}
-                {typedText1.length > bioText1.length && (
-                  <span>
-                    {typedText1.slice(
-                      bioText1.length,
-                      bioText1.length + bioHighlight1.length
-                    )}
-                  </span>
-                )}
-                {typedText1.length > bioText1.length + bioHighlight1.length && (
-                  <>
-                    {typedText1.slice(
-                      bioText1.length + bioHighlight1.length,
-                      bioText1.length + bioHighlight1.length + bioText2.length
-                    )}
-                  </>
-                )}
-                {typedText1.length >
-                  bioText1.length + bioHighlight1.length + bioText2.length && (
-                  <span>
-                    {typedText1.slice(
-                      bioText1.length + bioHighlight1.length + bioText2.length,
-                      bioText1.length +
-                        bioHighlight1.length +
-                        bioText2.length +
-                        bioHighlight2.length
-                    )}
-                  </span>
-                )}
-                {typedText1.length >
-                  bioText1.length +
-                    bioHighlight1.length +
-                    bioText2.length +
-                    bioHighlight2.length && (
-                  <>
-                    {typedText1.slice(
-                      bioText1.length +
-                        bioHighlight1.length +
-                        bioText2.length +
-                        bioHighlight2.length
-                    )}
-                  </>
-                )}
-              </p>
-              <p className={styles.bio}>{typedText2}</p>
-
-              <div className={styles.skillCards} ref={cardsScope}>
-                <motion.div
-                  className={`${styles.skillCard} skill-card`}
-                  initial={{ opacity: 0 }}
-                >
-                  <motion.div
-                    className={styles.iconContainer}
-                    animate={
-                      typewriterComplete
-                        ? {
-                            rotate: [0, -10, 10, -10, 0],
-                            scale: [1, 1.1, 1],
-                          }
-                        : {}
-                    }
-                    transition={{
-                      duration: 2,
-                      delay: 1.2,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <FaLaptopCode className={styles.icon} />
-                  </motion.div>
-                  <h4>Full-Stack Development</h4>
-                  <p>
-                    Building modern, responsive web applications with the latest
-                    technologies.
-                  </p>
-                  {showSimulations && (
-                    <motion.div
-                      className={styles.codeSimulation}
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className={styles.codeHeader}>
-                        <span
-                          className={styles.codeDot}
-                          style={{ background: "#ff5f56" }}
-                        />
-                        <span
-                          className={styles.codeDot}
-                          style={{ background: "#ffbd2e" }}
-                        />
-                        <span
-                          className={styles.codeDot}
-                          style={{ background: "#27ca40" }}
-                        />
-                        <span className={styles.codeTitle}>app.js</span>
-                      </div>
-                      <div className={styles.codeBody}>
-                        {[
-                          { text: "const app = express();", delay: 0 },
-                          { text: "app.use(cors());", delay: 0.3 },
-                          { text: "app.get('/api', handler);", delay: 0.6 },
-                          { text: "app.listen(3000); ✓", delay: 0.9 },
-                        ].map((line, i) => (
-                          <motion.div
-                            key={i}
-                            className={styles.codeLine}
-                            initial={{ opacity: 0, width: 0 }}
-                            animate={{ opacity: 1, width: "100%" }}
-                            transition={{ duration: 0.4, delay: line.delay }}
-                          >
-                            <span className={styles.lineNum}>{i + 1}</span>
-                            <span className={styles.lineCode}>{line.text}</span>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </motion.div>
+          <div className={styles.textContent}>
+            <h3 className={styles.greeting}>
+              {greetingText}
+              <span className={styles.cursor}>|</span>
+            </h3>
+            <p className={styles.bio}>
+              {typedText1.slice(0, bioText1.length)}
+              {typedText1.length > bioText1.length && (
+                <span>
+                  {typedText1.slice(
+                    bioText1.length,
+                    bioText1.length + bioHighlight1.length
                   )}
-                </motion.div>
+                </span>
+              )}
+              {typedText1.length > bioText1.length + bioHighlight1.length && (
+                <>
+                  {typedText1.slice(
+                    bioText1.length + bioHighlight1.length,
+                    bioText1.length + bioHighlight1.length + bioText2.length
+                  )}
+                </>
+              )}
+              {typedText1.length >
+                bioText1.length + bioHighlight1.length + bioText2.length && (
+                <span>
+                  {typedText1.slice(
+                    bioText1.length + bioHighlight1.length + bioText2.length,
+                    bioText1.length +
+                      bioHighlight1.length +
+                      bioText2.length +
+                      bioHighlight2.length
+                  )}
+                </span>
+              )}
+              {typedText1.length >
+                bioText1.length +
+                  bioHighlight1.length +
+                  bioText2.length +
+                  bioHighlight2.length && (
+                <>
+                  {typedText1.slice(
+                    bioText1.length +
+                      bioHighlight1.length +
+                      bioText2.length +
+                      bioHighlight2.length
+                  )}
+                </>
+              )}
+            </p>
+            <p className={styles.bio}>{typedText2}</p>
 
+            <div className={styles.skillCards} ref={cardsScope}>
+              <motion.div
+                className={`${styles.skillCard} skill-card`}
+                initial={false}
+                style={{ opacity: 0 }}
+              >
                 <motion.div
-                  className={`${styles.skillCard} skill-card`}
-                  initial={{ opacity: 0 }}
+                  className={styles.iconContainer}
+                  animate={
+                    typewriterComplete
+                      ? {
+                          rotate: [0, -10, 10, -10, 0],
+                          scale: [1, 1.1, 1],
+                        }
+                      : {}
+                  }
+                  transition={{
+                    duration: 2,
+                    delay: 1.2,
+                    ease: "easeInOut",
+                  }}
                 >
+                  <FaLaptopCode className={styles.icon} />
+                </motion.div>
+                <h4>Full-Stack Development</h4>
+                <p>
+                  Building modern, responsive web applications with the latest
+                  technologies.
+                </p>
+                {showSimulations && (
                   <motion.div
-                    className={styles.iconContainer}
-                    animate={
-                      typewriterComplete
-                        ? {
-                            scale: [1, 1.2, 1, 1.2, 1],
-                            rotate: [0, 360],
-                          }
-                        : {}
-                    }
-                    transition={{
-                      duration: 2,
-                      delay: 1.35,
-                      ease: "easeInOut",
-                    }}
+                    className={styles.codeSimulation}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <FaRobot className={styles.icon} />
+                    <div className={styles.codeHeader}>
+                      <span
+                        className={styles.codeDot}
+                        style={{ background: "#ff5f56" }}
+                      />
+                      <span
+                        className={styles.codeDot}
+                        style={{ background: "#ffbd2e" }}
+                      />
+                      <span
+                        className={styles.codeDot}
+                        style={{ background: "#27ca40" }}
+                      />
+                      <span className={styles.codeTitle}>app.js</span>
+                    </div>
+                    <div className={styles.codeBody}>
+                      {[
+                        { text: "const app = express();", delay: 0 },
+                        { text: "app.use(cors());", delay: 0.3 },
+                        { text: "app.get('/api', handler);", delay: 0.6 },
+                        { text: "app.listen(3000); ✓", delay: 0.9 },
+                      ].map((line, i) => (
+                        <motion.div
+                          key={i}
+                          className={styles.codeLine}
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "100%" }}
+                          transition={{ duration: 0.4, delay: line.delay }}
+                        >
+                          <span className={styles.lineNum}>{i + 1}</span>
+                          <span className={styles.lineCode}>{line.text}</span>
+                        </motion.div>
+                      ))}
+                    </div>
                   </motion.div>
-                  <h4>AI Integration</h4>
-                  <p>
-                    Implementing advanced AI solutions and automations for
-                    practical business needs.
-                  </p>
-                  {showSimulations && (
+                )}
+              </motion.div>
+
+              <motion.div
+                className={`${styles.skillCard} skill-card`}
+                initial={false}
+                style={{ opacity: 0 }}
+              >
+                <motion.div
+                  className={styles.iconContainer}
+                  animate={
+                    typewriterComplete
+                      ? {
+                          scale: [1, 1.2, 1, 1.2, 1],
+                          rotate: [0, 360],
+                        }
+                      : {}
+                  }
+                  transition={{
+                    duration: 2,
+                    delay: 1.35,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <FaRobot className={styles.icon} />
+                </motion.div>
+                <h4>AI Integration</h4>
+                <p>
+                  Implementing advanced AI solutions and automations for
+                  practical business needs.
+                </p>
+                {showSimulations && (
+                  <motion.div
+                    className={styles.aiSimulation}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    transition={{ duration: 0.3 }}
+                  >
                     <motion.div
-                      className={styles.aiSimulation}
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.3 }}
+                      className={styles.chatBubble}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
                     >
+                      <span className={styles.userLabel}>You</span>
+                      <span>Build me an AI chatbot</span>
+                    </motion.div>
+                    <motion.div
+                      className={styles.aiThinking}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0, 1, 1, 0] }}
+                      transition={{
+                        duration: 1.2,
+                        delay: 0.4,
+                        times: [0, 0.2, 0.8, 1],
+                      }}
+                    >
+                      <span className={styles.thinkingDot} />
+                      <span className={styles.thinkingDot} />
+                      <span className={styles.thinkingDot} />
+                    </motion.div>
+                    <motion.div
+                      className={`${styles.chatBubble} ${styles.aiResponse}`}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: 1.6 }}
+                    >
+                      <span className={styles.aiLabel}>AI</span>
+                      <span>Done! Your chatbot is ready ✨</span>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </motion.div>
+
+              <motion.div
+                className={`${styles.skillCard} skill-card`}
+                initial={false}
+                style={{ opacity: 0 }}
+              >
+                <motion.div
+                  className={styles.iconContainer}
+                  animate={
+                    typewriterComplete
+                      ? {
+                          y: [0, -8, 0],
+                          rotate: [0, 5, -5, 0],
+                        }
+                      : {}
+                  }
+                  transition={{
+                    duration: 2,
+                    delay: 1.5,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <FaCode className={styles.icon} />
+                </motion.div>
+                <h4>Product Architecture</h4>
+                <p>
+                  Designing scalable, maintainable systems with a focus on
+                  performance and user experience.
+                </p>
+                {showSimulations && (
+                  <motion.div
+                    className={styles.archSimulation}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className={styles.archDiagram}>
                       <motion.div
-                        className={styles.chatBubble}
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        className={styles.archNode}
+                        initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.3, delay: 0.1 }}
                       >
-                        <span className={styles.userLabel}>You</span>
-                        <span>Build me an AI chatbot</span>
+                        🖥️ Frontend
                       </motion.div>
                       <motion.div
-                        className={styles.aiThinking}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: [0, 1, 1, 0] }}
-                        transition={{
-                          duration: 1.2,
-                          delay: 0.4,
-                          times: [0, 0.2, 0.8, 1],
-                        }}
-                      >
-                        <span className={styles.thinkingDot} />
-                        <span className={styles.thinkingDot} />
-                        <span className={styles.thinkingDot} />
-                      </motion.div>
+                        className={styles.archConnector}
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: 1 }}
+                        transition={{ duration: 0.2, delay: 0.4 }}
+                      />
                       <motion.div
-                        className={`${styles.chatBubble} ${styles.aiResponse}`}
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        className={styles.archNode}
+                        initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.3, delay: 1.6 }}
+                        transition={{ duration: 0.3, delay: 0.6 }}
                       >
-                        <span className={styles.aiLabel}>AI</span>
-                        <span>Done! Your chatbot is ready ✨</span>
+                        ⚙️ API
                       </motion.div>
-                    </motion.div>
-                  )}
-                </motion.div>
-
-                <motion.div
-                  className={`${styles.skillCard} skill-card`}
-                  initial={{ opacity: 0 }}
-                >
-                  <motion.div
-                    className={styles.iconContainer}
-                    animate={
-                      typewriterComplete
-                        ? {
-                            y: [0, -8, 0],
-                            rotate: [0, 5, -5, 0],
-                          }
-                        : {}
-                    }
-                    transition={{
-                      duration: 2,
-                      delay: 1.5,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <FaCode className={styles.icon} />
-                  </motion.div>
-                  <h4>Product Architecture</h4>
-                  <p>
-                    Designing scalable, maintainable systems with a focus on
-                    performance and user experience.
-                  </p>
-                  {showSimulations && (
-                    <motion.div
-                      className={styles.archSimulation}
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className={styles.archDiagram}>
-                        <motion.div
-                          className={styles.archNode}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.3, delay: 0.1 }}
-                        >
-                          🖥️ Frontend
-                        </motion.div>
-                        <motion.div
-                          className={styles.archConnector}
-                          initial={{ scaleY: 0 }}
-                          animate={{ scaleY: 1 }}
-                          transition={{ duration: 0.2, delay: 0.4 }}
-                        />
-                        <motion.div
-                          className={styles.archNode}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.3, delay: 0.6 }}
-                        >
-                          ⚙️ API
-                        </motion.div>
-                        <motion.div
-                          className={styles.archConnector}
-                          initial={{ scaleY: 0 }}
-                          animate={{ scaleY: 1 }}
-                          transition={{ duration: 0.2, delay: 0.9 }}
-                        />
-                        <motion.div
-                          className={styles.archNode}
-                          initial={{ opacity: 0, scale: 0 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.3, delay: 1.1 }}
-                        >
-                          🗄️ Database
-                        </motion.div>
-                      </div>
                       <motion.div
-                        className={styles.archStatus}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1.5 }}
+                        className={styles.archConnector}
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: 1 }}
+                        transition={{ duration: 0.2, delay: 0.9 }}
+                      />
+                      <motion.div
+                        className={styles.archNode}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3, delay: 1.1 }}
                       >
-                        ✓ Architecture Ready
+                        🗄️ Database
                       </motion.div>
+                    </div>
+                    <motion.div
+                      className={styles.archStatus}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.5 }}
+                    >
+                      ✓ Architecture Ready
                     </motion.div>
-                  )}
-                </motion.div>
-              </div>
+                  </motion.div>
+                )}
+              </motion.div>
             </div>
           </div>
         </div>
-      </section>
-      {/* Blocker overlay that hides content below until animation completes */}
-      {!typewriterComplete && isVisible && (
-        <div className={styles.contentBlocker} />
-      )}
-    </>
+      </div>
+    </section>
   );
 };
 

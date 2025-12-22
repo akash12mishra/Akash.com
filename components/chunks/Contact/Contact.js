@@ -96,9 +96,9 @@ const Contact = () => {
                 <FaEnvelope />
               </div>
               <h3>Email</h3>
-              <p>arkalal.chakravarty@gmail.com</p>
+              <p>admin@arkalalchakravarty.com</p>
               <a
-                href="mailto:arkalal.chakravarty@gmail.com"
+                href="mailto:admin@arkalalchakravarty.com"
                 className={styles.contactButton}
               >
                 Send Email
@@ -121,7 +121,7 @@ const Contact = () => {
               </a>
             </div>
           </div>
-          
+
           <div className={styles.connectSection}>
             <div className={styles.socialsContainer}>
               <h3>Connect with me</h3>
