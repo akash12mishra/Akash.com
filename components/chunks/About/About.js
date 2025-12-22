@@ -71,7 +71,7 @@ const About = () => {
           }
         });
       },
-      { threshold: 0, rootMargin: "0px 0px -80% 0px" } // Trigger when top 20% of section enters viewport
+      { threshold: 0, rootMargin: "200px 0px 0px 0px" } // Trigger 200px before section enters viewport
     );
 
     const current = sectionRef.current;
