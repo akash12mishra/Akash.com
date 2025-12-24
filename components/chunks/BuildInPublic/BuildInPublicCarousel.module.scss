@@ -37,26 +37,62 @@
 }
 
 .masonryGrid {
-  column-count: 2;
-  column-gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
   width: 100%;
+  align-items: start;
 
-  @media (max-width: 640px) {
-    column-count: 1;
-    column-gap: 0;
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.columnHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.platformIcon {
+  font-size: 1.2rem;
+
+  .column:first-child & {
+    color: #0077b5;
+  }
+
+  .column:last-child & {
+    color: var(--text-primary);
   }
 }
 
 .postCard {
   display: block;
-  break-inside: avoid;
-  margin-bottom: 16px;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 
   &:hover {
-    transform: translateY(-4px);
+    -webkit-transform: translateY(-4px) translateZ(0);
+    transform: translateY(-4px) translateZ(0);
 
     .cardInner {
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);

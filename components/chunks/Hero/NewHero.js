@@ -118,8 +118,8 @@ const NewHero = () => {
             <div className={styles.mobileDownloadWrapper}>
               {!mobileButtonFallen ? (
                 <motion.a
-                  href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
-                  download="Arka_Lal_Chakravarty_Resume.pdf"
+                  href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+                  download="Arka_Lal_Chakravarty_CV_2026.pdf"
                   className={styles.mobileDownloadButton}
                   onClick={handleMobileDownloadClick}
                   whileHover="hover"
@@ -230,8 +230,8 @@ const NewHero = () => {
               {/* Actual button - absolutely positioned */}
               {!buttonFallen ? (
                 <motion.a
-                  href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
-                  download="Arka_Lal_Chakravarty_Resume.pdf"
+                  href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+                  download="Arka_Lal_Chakravarty_CV_2026.pdf"
                   className={styles.downloadButton}
                   onClick={handleDownloadClick}
                   whileHover="hover"
@@ -398,43 +398,53 @@ const NewHero = () => {
                 <HiOutlineBriefcase className={styles.cardIcon} />
                 <span className={styles.cardTitle}>My Experience</span>
               </div>
-              <div className={styles.experienceTimeline}>
-                <ExperienceItem
-                  role="Freelance Software Engineer"
-                  company="arkalalchakravarty.com"
-                  period="2025"
-                  type="Freelance"
-                  index={0}
-                />
-                <ExperienceItem
-                  role="AI Engineer"
-                  company="Helionix"
-                  period="2025"
-                  type="Contract"
-                  index={1}
-                />
-                <ExperienceItem
-                  role="AI Engineer"
-                  company="ScaleGenAI"
-                  period="2024"
-                  type="Full-time"
-                  index={2}
-                />
-                <ExperienceItem
-                  role="Software Developer"
-                  company="Infojini Inc"
-                  period="2022-24"
-                  type="Full-time"
-                  index={3}
-                />
-                <ExperienceItem
-                  role="Frontend Web Developer"
-                  company="CRIMSON INTELLIGENCE SA"
-                  period="2021-22"
-                  type="Full-time"
-                  index={4}
-                  isLast
-                />
+              <div className={styles.experienceTimelineWrapper}>
+                <div className={styles.experienceTimeline}>
+                  <ExperienceItem
+                    role="Lead Software Engineer"
+                    company="Epigroww Global"
+                    period="2025"
+                    type="Full-time"
+                    index={0}
+                    isCurrent
+                  />
+                  <ExperienceItem
+                    role="Freelance Software Engineer"
+                    company="arkalalchakravarty.com"
+                    period="2025"
+                    type="Freelance"
+                    index={1}
+                  />
+                  <ExperienceItem
+                    role="AI Engineer"
+                    company="Helionix"
+                    period="2025"
+                    type="Contract"
+                    index={2}
+                  />
+                  <ExperienceItem
+                    role="AI Engineer"
+                    company="ScaleGenAI"
+                    period="2024"
+                    type="Full-time"
+                    index={3}
+                  />
+                  <ExperienceItem
+                    role="Software Developer"
+                    company="Infojini Inc"
+                    period="2022-24"
+                    type="Full-time"
+                    index={4}
+                  />
+                  <ExperienceItem
+                    role="Frontend Web Developer"
+                    company="CRIMSON INTELLIGENCE SA"
+                    period="2021-22"
+                    type="Internship"
+                    index={5}
+                    isLast
+                  />
+                </div>
               </div>
             </motion.div>
 
@@ -555,7 +565,15 @@ const NewHero = () => {
 };
 
 // Experience Item Component with Timeline
-const ExperienceItem = ({ role, company, period, type, index, isLast }) => (
+const ExperienceItem = ({
+  role,
+  company,
+  period,
+  type,
+  index,
+  isLast,
+  isCurrent,
+}) => (
   <motion.div
     className={styles.expItem}
     initial={{ opacity: 0, x: -10 }}

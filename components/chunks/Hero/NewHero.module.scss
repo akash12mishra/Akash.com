@@ -560,6 +560,37 @@
   }
 }
 
+.experienceTimelineWrapper {
+  max-height: 280px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  margin-right: -4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-primary) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+  }
+
+  @media (max-width: 768px) {
+    max-height: 200px;
+  }
+}
+
 .experienceTimeline {
   display: flex;
   flex-direction: column;

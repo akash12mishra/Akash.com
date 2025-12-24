@@ -69,8 +69,8 @@ const NewNavbar = () => {
               <span>Source</span>
             </a>
             <a
-              href="/assets/doc/Arka resume 2025 - AI new.pdf"
-              download="Arka_Lal_Chakravarty_Resume.pdf"
+              href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+              download="Arka_Lal_Chakravarty_CV_2026.pdf"
               className={styles.cvButton}
             >
               <FaFileDownload size={18} />
@@ -118,8 +118,8 @@ const NewNavbar = () => {
               <span>Source</span>
             </a>
             <a
-              href="/assets/doc/Arka_Lal_Chakravarty_Resume.pdf"
-              download="Arka_Lal_Chakravarty_Resume.pdf"
+              href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+              download="Arka_Lal_Chakravarty_CV_2026.pdf"
               className={styles.mobileCvButton}
               onClick={() => setMobileMenuOpen(false)}
             >

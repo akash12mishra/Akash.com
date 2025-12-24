@@ -75,7 +75,9 @@
 
 .activeDot {
   background: var(--accent-primary);
-  box-shadow: 0 0 0 2px var(--accent-primary), 0 0 12px rgba(255, 107, 53, 0.6);
+  box-shadow:
+    0 0 0 2px var(--accent-primary),
+    0 0 12px rgba(255, 107, 53, 0.6);
 
   &::before {
     content: "";
@@ -169,6 +171,11 @@
   &[data-type="full-time"] {
     background: rgba(16, 185, 129, 0.1);
     color: #10b981;
+  }
+
+  &[data-type="internship"] {
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
   }
 }
 
