@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 import styles from "./ProjectShowcase.module.scss";
 import Link from "next/link";
 import Image from "next/image";
-import { FaGithub, FaExternalLinkAlt, FaYoutube } from "react-icons/fa";
+import { FaGithub, FaExternalLinkAlt, FaYoutube, FaPlay } from "react-icons/fa";
 import VideoPopup from "./VideoPopup";
 
 let youTubeIframeApiPromise;
@@ -218,33 +218,42 @@ const ProjectShowcase = () => {
     });
   };
 
-  // Project data
+  // Project data - Order: Disco, NixBuilder, AI RAG Copilot, Browzpot, TalTracker, Quenlo
   const allProjects = [
     {
       id: 1,
-      name: "CawLab",
+      name: "Disco",
       description:
-        "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
-      image: "/images/projects/clientWork/cawlab-app.png",
-      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
-      liveLink: "https://cawlab.ai",
+        "Full-scale influencer marketing platform with in-depth creator discovery, filtering, and profile enrichment.",
+      image: "/images/projects/selfWork/disco-image.png",
+      technologies: ["Next.js 16", "Node.js", "MongoDB"],
+      liveLink: null,
       githubLink: null,
       featured: true,
-      demoVideo: "https://youtu.be/egetCm7cjJM",
+      demoVideo: "https://youtu.be/9Dhl5c9lDN8",
+      previewVideo: "https://youtu.be/GLAM1qw2ZHA",
     },
-    // Commented out Disco project as requested
-    // {
-    //   id: 2,
-    //   name: "Disco",
-    //   description: "Influencer marketing platform connecting brands with social media influencers.",
-    //   image: "/images/projects/clientWork/disco-app.png",
-    //   technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
-    //   liveLink: null,
-    //   githubLink: null,
-    //   featured: true
-    // },
     {
       id: 2,
+      name: "NixBuilder — AI App Builder",
+      description:
+        "AI-powered platform that enables users to build full SaaS MVP applications end-to-end using natural language prompts, without writing code.",
+      image: "/images/projects/selfWork/nixbuilder-image.png",
+      technologies: [
+        "Next.js 16",
+        "Node.js",
+        "Supabase",
+        "OpenRouter LLM APIs",
+        "Vercel AI SDK",
+      ],
+      liveLink: null,
+      githubLink: null,
+      featured: true,
+      demoVideo: "https://youtu.be/BYfE1g8MC0g",
+      previewVideo: "https://youtu.be/zcdSslIl5pw",
+    },
+    {
+      id: 3,
       name: "AI RAG Copilot",
       description:
         "Advanced AI Integrated RAG system chatbot agent, where you can chat with your created knowledge base data and allow LLM Models to take actions on your behalf.",
@@ -259,13 +268,14 @@ const ProjectShowcase = () => {
         "Vector DB",
         "Prisma",
       ],
-      liveLink: "https://youtu.be/CtTtYksEmxs",
+      liveLink: null,
       githubLink: null,
       featured: true,
-      demoVideo: "https://youtu.be/CtTtYksEmxs",
+      demoVideo: "https://youtu.be/UaMSO7ypGEs",
+      previewVideo: "https://youtu.be/Y1sDX0leo5o",
     },
     {
-      id: 3,
+      id: 4,
       name: "BrowzPot",
       description:
         "AI powered chrome extension Software that helps in your day to day productivity automation from writing emails to getting summaries from web pages to taking notes instantly on your browser and many more ! (Under Development)",
@@ -274,10 +284,36 @@ const ProjectShowcase = () => {
       liveLink: "https://browzpot.com",
       githubLink: "https://github.com/arkalal/BrowzPot",
       featured: true,
-      demoVideo: "https://youtu.be/FWaDZX17rEE",
+      demoVideo: "https://youtu.be/GwutUEqp2gc",
+      previewVideo: "https://youtu.be/PSeyteGONXg",
     },
     {
-      id: 4,
+      id: 5,
+      name: "TalTracker",
+      description:
+        "Advanced talent tracking and management platform for recruiting professionals.",
+      image: "/images/projects/clientWork/taltracker-app.png",
+      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
+      liveLink: "https://taltracker.io",
+      githubLink: null,
+      featured: true,
+      demoVideo: "https://youtu.be/zAr0qU9_onk",
+    },
+    {
+      id: 6,
+      name: "CawLab",
+      description:
+        "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
+      image: "/images/projects/clientWork/cawlab-app.png",
+      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
+      liveLink: "https://cawlab.ai",
+      githubLink: null,
+      featured: true,
+      demoVideo: "https://youtu.be/egetCm7cjJM",
+      previewVideo: "https://youtu.be/hpRzwtmf8H0",
+    },
+    {
+      id: 7,
       name: "Quenlo AI",
       description:
         "AI-driven content generation and marketing automation platform.",
@@ -293,18 +329,6 @@ const ProjectShowcase = () => {
       liveLink: null,
       githubLink: null,
       featured: true,
-    },
-    {
-      id: 5,
-      name: "TalTracker",
-      description:
-        "Advanced talent tracking and management platform for recruiting professionals.",
-      image: "/images/projects/clientWork/taltracker-app.png",
-      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
-      liveLink: "https://taltracker.io",
-      githubLink: null,
-      featured: true,
-      demoVideo: "https://youtu.be/zAr0qU9_onk",
     },
   ];
 
@@ -364,6 +388,7 @@ const ProjectCard = ({ project, openVideoPopup }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
 
   // Set mounted state to prevent SSR hydration flicker
   useEffect(() => {
@@ -390,14 +415,27 @@ const ProjectCard = ({ project, openVideoPopup }) => {
   useEffect(() => {
     if (isMobile) {
       setIsHovering(false);
+      setIsPreviewPlaying(false);
     }
   }, [isMobile]);
+
+  // Reset preview when not hovering
+  useEffect(() => {
+    if (!isHovering) {
+      setIsPreviewPlaying(false);
+    }
+  }, [isHovering]);
 
   const [ref, inView] = useInView({
     threshold: 0.05,
     triggerOnce: true,
     rootMargin: "100px",
   });
+
+  const handlePlayClick = (e) => {
+    e.stopPropagation();
+    setIsPreviewPlaying(true);
+  };
 
   return (
     <motion.div
@@ -421,21 +459,39 @@ const ProjectCard = ({ project, openVideoPopup }) => {
           if (!isMobile) setIsHovering(false);
         }}
       >
-        {project.demoVideo ? (
+        {project.previewVideo && isPreviewPlaying ? (
           <YouTubePreview
-            videoUrl={project.demoVideo}
+            videoUrl={project.previewVideo}
             poster={project.image}
             title={project.name}
-            active={!isMobile && isHovering}
+            active={!isMobile && isHovering && isPreviewPlaying}
           />
         ) : (
-          <Image
-            src={project.image}
-            alt={project.name}
-            width={600}
-            height={340}
-            className={styles.projectImage}
-          />
+          <>
+            <Image
+              src={project.image}
+              alt={project.name}
+              width={600}
+              height={340}
+              className={styles.projectImage}
+            />
+            {project.previewVideo && isHovering && !isMobile && (
+              <motion.button
+                className={styles.playButton}
+                onClick={handlePlayClick}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className={styles.playButtonInner}>
+                  <FaPlay className={styles.playIcon} />
+                </div>
+                <div className={styles.playButtonRing} />
+              </motion.button>
+            )}
+          </>
         )}
       </div>
 

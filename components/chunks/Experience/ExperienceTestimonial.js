@@ -23,17 +23,28 @@ const ExperienceTestimonial = () => {
   const experiences = [
     {
       id: 1,
+      role: "Lead Software Engineer",
+      company: "Epigroww Global",
+      location: "Remote",
+      duration: "Sept 2025 - Present",
+      type: "Full-time",
+      description:
+        "Leading development of influencer marketing platform using Next.js 16, Node.js, and MongoDB. Built AI automations reducing manual effort by ~30%.",
+      skills: ["Next.js 16", "Node.js", "MongoDB", "AI Automation"],
+    },
+    {
+      id: 2,
       role: "Freelance Software Engineer",
       company: "arkalalchakravarty.com",
       location: "Remote",
-      duration: "Jan 2025 - Present",
+      duration: "Jan 2025 - Aug 2025",
       type: "Freelance",
       description:
         "Building AI-driven SaaS MVPs and implementing agentic automation solutions for diverse clients.",
       skills: ["AI/ML", "NextJS", "Python", "Automation"],
     },
     {
-      id: 2,
+      id: 3,
       role: "AI Engineer",
       company: "Helionix",
       location: "Remote",
@@ -44,7 +55,7 @@ const ExperienceTestimonial = () => {
       skills: ["Autogen", "FastAPI", "Chrome Extension", "AI"],
     },
     {
-      id: 3,
+      id: 4,
       role: "AI Engineer",
       company: "ScaleGenAI",
       location: "Remote",
@@ -55,10 +66,10 @@ const ExperienceTestimonial = () => {
       skills: ["NextJS", "AI", "SCSS", "Scalable Systems"],
     },
     {
-      id: 4,
+      id: 5,
       role: "Software Developer",
       company: "Infojini Inc",
-      location: "Kolkata, India",
+      location: "Hyderabad, Telangana, India",
       duration: "Mar 2022 - Jul 2024",
       type: "Full-time",
       description:
@@ -66,12 +77,12 @@ const ExperienceTestimonial = () => {
       skills: ["ReactJS", "AngularJS", "CMS", "Healthcare"],
     },
     {
-      id: 5,
+      id: 6,
       role: "Frontend Web Developer",
       company: "CRIMSON INTELLIGENCE SA",
       location: "Remote",
       duration: "Sep 2021 - Feb 2022",
-      type: "Full-time",
+      type: "Internship",
       description:
         "Developed E-commerce products and data dashboards for sales analytics.",
       skills: ["HTML5", "CSS3", "JavaScript", "E-commerce"],
