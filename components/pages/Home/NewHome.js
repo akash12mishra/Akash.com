@@ -3,6 +3,7 @@
 import React from "react";
 import styles from "./NewHome.module.scss";
 import NewHero from "../../chunks/Hero/NewHero";
+import GlobalCollaboration from "../../chunks/GlobalCollaboration/GlobalCollaboration";
 import About from "../../chunks/About/About";
 import TechStack from "../../chunks/TechStack/TechStack";
 import ExperienceTestimonial from "../../chunks/Experience/ExperienceTestimonial";
@@ -19,6 +20,7 @@ const NewHome = () => {
   return (
     <div className={styles.pageWrapper}>
       <NewHero />
+      <GlobalCollaboration />
       <About />
       <TechStack />
       <ExperienceTestimonial />

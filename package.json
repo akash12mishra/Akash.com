@@ -11,6 +11,7 @@
   "dependencies": {
     "@radix-ui/react-select": "^2.1.3",
     "axios": "^1.7.9",
+    "cobe": "^0.6.5",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "eventsource-parser": "^3.0.0",
@@ -22,14 +23,14 @@
     "pako": "^2.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
     "react-intersection-observer": "^9.16.0",
     "react-tsparticles": "^2.12.2",
     "resend": "^4.0.1",
     "sass": "^1.83.0",
     "tsparticles": "^3.9.0",
     "tsparticles-slim": "^2.12.0",
-    "ws": "^8.18.0",
-    "react-icons": "^5.5.0"
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "eslint": "^8",
