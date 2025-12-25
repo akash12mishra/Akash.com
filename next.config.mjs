@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "video.twimg.com",
       },
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
     ],
   },
 };
