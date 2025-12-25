@@ -1,10 +1,60 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./GlobalCollaboration.module.scss";
 import { motion } from "framer-motion";
 import { HiOutlineArrowRight } from "react-icons/hi";
-import Image from "next/image";
+
+const floatingAvatars = [
+  {
+    id: 1,
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+    position: { top: "8%", left: "25%" },
+    delay: 0,
+  },
+  {
+    id: 2,
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    position: { top: "15%", right: "20%" },
+    delay: 0.2,
+  },
+  {
+    id: 3,
+    image:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+    position: { top: "45%", left: "2%" },
+    delay: 0.4,
+  },
+  {
+    id: 4,
+    image:
+      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop&crop=face",
+    position: { top: "70%", right: "18%" },
+    delay: 0.6,
+  },
+  {
+    id: 5,
+    image:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+    position: { top: "35%", right: "5%" },
+    delay: 0.3,
+  },
+];
+
+const pulseAnimation = {
+  initial: { scale: 1, opacity: 0.6 },
+  animate: {
+    scale: [1, 1.15, 1],
+    opacity: [0.6, 1, 0.6],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  },
+};
 
 const GlobalCollaboration = () => {
   const canvasRef = useRef(null);
@@ -34,48 +84,74 @@ const GlobalCollaboration = () => {
   }, []);
 
   useEffect(() => {
-    if (!canvasRef.current || !containerRef.current || !isInView) return;
+    if (!canvasRef.current || !isInView) return;
 
-    if (globeRef.current) return;
+    const getGlobeSize = () => {
+      if (typeof window === "undefined") return 600;
+      if (window.innerWidth <= 480) return 300;
+      if (window.innerWidth <= 768) return 380;
+      return 600;
+    };
 
-    let width = containerRef.current.offsetWidth;
-    const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
+    let currentSize = getGlobeSize();
 
     const initGlobe = async () => {
       const createGlobe = (await import("cobe")).default;
 
+      if (globeRef.current) {
+        globeRef.current.destroy();
+        globeRef.current = null;
+      }
+
       globeRef.current = createGlobe(canvasRef.current, {
-        devicePixelRatio: pixelRatio,
-        width: width * pixelRatio,
-        height: width * pixelRatio,
+        devicePixelRatio: 2,
+        width: currentSize * 2,
+        height: currentSize * 2,
         phi: 0,
         theta: 0.25,
         dark: 1,
         diffuse: 1.2,
-        mapSamples: 4000,
+        mapSamples: 16000,
         mapBrightness: 6,
-        baseColor: [0.15, 0.15, 0.15],
+        baseColor: [0.15, 0.15, 0.2],
         markerColor: [1, 0.42, 0.21],
-        glowColor: [0.08, 0.08, 0.08],
+        glowColor: [0.15, 0.15, 0.2],
         markers: [
+          { location: [37.7595, -122.4367], size: 0.06 },
+          { location: [40.7128, -74.006], size: 0.06 },
+          { location: [51.5074, -0.1278], size: 0.06 },
+          { location: [35.6762, 139.6503], size: 0.06 },
+          { location: [-33.8688, 151.2093], size: 0.06 },
+          { location: [19.076, 72.8777], size: 0.06 },
           { location: [22.5726, 88.3639], size: 0.06 },
-          { location: [37.7749, -122.4194], size: 0.04 },
-          { location: [51.5074, -0.1278], size: 0.04 },
-          { location: [40.7128, -74.006], size: 0.04 },
-          { location: [19.076, 72.8777], size: 0.03 },
+          { location: [1.3521, 103.8198], size: 0.06 },
         ],
         onRender: (state) => {
           state.phi = phiRef.current;
           phiRef.current += 0.003;
-          state.width = width * pixelRatio;
-          state.height = width * pixelRatio;
         },
       });
     };
 
     initGlobe();
 
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const newSize = getGlobeSize();
+        if (newSize !== currentSize) {
+          currentSize = newSize;
+          initGlobe();
+        }
+      }, 300);
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimeout);
       if (globeRef.current) {
         globeRef.current.destroy();
         globeRef.current = null;
@@ -105,15 +181,6 @@ const GlobalCollaboration = () => {
       },
     },
   };
-
-  const avatarNodes = [
-    { id: 1, top: "12%", left: "35%", delay: 0 },
-    { id: 2, top: "18%", left: "58%", delay: 0.1 },
-    { id: 3, top: "38%", left: "22%", delay: 0.2 },
-    { id: 4, top: "45%", left: "72%", delay: 0.3 },
-    { id: 5, top: "58%", left: "40%", delay: 0.4 },
-    { id: 6, top: "65%", left: "62%", delay: 0.5 },
-  ];
 
   return (
     <section className={styles.globalSection}>
@@ -148,53 +215,68 @@ const GlobalCollaboration = () => {
           </motion.div>
         </div>
 
-        <motion.div
-          className={styles.globeWrapper}
-          variants={itemVariants}
-          ref={containerRef}
-        >
-          <div className={styles.globeContainer}>
+        <div className={styles.globeContainer} ref={containerRef}>
+          <motion.div
+            className={styles.globeWrapper}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 1, ease: "easeOut" }}
+          >
             <canvas
               ref={canvasRef}
               className={styles.globeCanvas}
-              style={{
-                width: "100%",
-                height: "100%",
-                contain: "layout paint size",
-              }}
+              style={{ width: "100%", height: "100%" }}
             />
 
-            {avatarNodes.map((node) => (
+            {floatingAvatars.map((avatar) => (
               <motion.div
-                key={node.id}
-                className={styles.avatarNode}
-                style={{ top: node.top, left: node.left }}
-                initial={{ scale: 0, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true }}
+                key={avatar.id}
+                className={styles.floatingAvatar}
+                style={{
+                  top: avatar.position.top,
+                  left: avatar.position.left,
+                  right: avatar.position.right,
+                }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={
+                  isInView
+                    ? {
+                        opacity: 1,
+                        scale: 1,
+                        y: [-5, 5, -5],
+                      }
+                    : {}
+                }
                 transition={{
-                  delay: node.delay + 0.5,
-                  duration: 0.4,
-                  ease: "backOut",
+                  opacity: { delay: avatar.delay, duration: 0.5 },
+                  scale: { delay: avatar.delay, duration: 0.5 },
+                  y: {
+                    delay: avatar.delay + 0.5,
+                    duration: 3 + avatar.delay,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  },
                 }}
               >
                 <div className={styles.avatarRing}>
-                  <div className={styles.avatarInner}>
-                    <Image
-                      src={`https://i.pravatar.cc/100?img=${node.id + 10}`}
-                      alt="Team member"
-                      width={40}
-                      height={40}
-                      className={styles.avatarImage}
-                    />
-                  </div>
+                  <motion.div
+                    className={styles.ringPulse}
+                    variants={pulseAnimation}
+                    initial="initial"
+                    animate="animate"
+                  />
                 </div>
+                <img
+                  src={avatar.image}
+                  alt="Team member"
+                  className={styles.avatarImage}
+                />
               </motion.div>
             ))}
 
-            <div className={styles.globeGradient} />
-          </div>
-        </motion.div>
+            <div className={styles.globeGlow} />
+          </motion.div>
+        </div>
       </motion.div>
     </section>
   );
