@@ -415,16 +415,15 @@ const ProjectCard = ({ project, openVideoPopup }) => {
   useEffect(() => {
     if (isMobile) {
       setIsHovering(false);
-      setIsPreviewPlaying(false);
     }
   }, [isMobile]);
 
-  // Reset preview when not hovering
+  // Reset preview when not hovering (only on desktop)
   useEffect(() => {
-    if (!isHovering) {
+    if (!isHovering && !isMobile) {
       setIsPreviewPlaying(false);
     }
-  }, [isHovering]);
+  }, [isHovering, isMobile]);
 
   const [ref, inView] = useInView({
     threshold: 0.05,
@@ -464,7 +463,9 @@ const ProjectCard = ({ project, openVideoPopup }) => {
             videoUrl={project.previewVideo}
             poster={project.image}
             title={project.name}
-            active={!isMobile && isHovering && isPreviewPlaying}
+            active={
+              isMobile ? isPreviewPlaying : isHovering && isPreviewPlaying
+            }
           />
         ) : (
           <>
@@ -475,14 +476,18 @@ const ProjectCard = ({ project, openVideoPopup }) => {
               height={340}
               className={styles.projectImage}
             />
-            {project.previewVideo && isHovering && !isMobile && (
+            {project.previewVideo && (isMobile || isHovering) && (
               <motion.button
                 className={styles.playButton}
                 onClick={handlePlayClick}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={
+                  isMobile
+                    ? { opacity: 1, scale: 1 }
+                    : { opacity: 0, scale: 0.8 }
+                }
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                whileHover={{ scale: 1.1 }}
+                whileHover={isMobile ? {} : { scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <div className={styles.playButtonInner}>
