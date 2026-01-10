@@ -69,7 +69,7 @@ const NewNavbar = () => {
               <span>Source</span>
             </a>
             <a
-              href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+              href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
               download="Arka_Lal_Chakravarty_CV_2026.pdf"
               className={styles.cvButton}
             >
@@ -118,7 +118,7 @@ const NewNavbar = () => {
               <span>Source</span>
             </a>
             <a
-              href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+              href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
               download="Arka_Lal_Chakravarty_CV_2026.pdf"
               className={styles.mobileCvButton}
               onClick={() => setMobileMenuOpen(false)}

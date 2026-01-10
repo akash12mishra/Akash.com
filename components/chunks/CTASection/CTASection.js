@@ -37,10 +37,10 @@ const CTASection = () => {
         <div className={styles.ctaContent}>
           <h2>Ready to build something amazing?</h2>
           <p>
-            Looking to hire me as your AI Engineer or Full-Stack Developer?
-            Whether you need help with an AI-powered SaaS, MVP development, or
-            want to discuss full-time or contract opportunities, I&apos;ve got
-            you covered. I&apos;m here to help bring your vision to life.
+            Looking to hire me as your Frontend or Full-Stack Developer? Whether
+            you need help with an AI-powered SaaS, MVP development, or want to
+            discuss full-time or contract opportunities, I&apos;ve got you
+            covered. I&apos;m here to help bring your vision to life.
           </p>
           <a
             href="https://calendly.com/arkalal-chakravarty/30min"

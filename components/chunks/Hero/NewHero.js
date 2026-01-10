@@ -118,7 +118,7 @@ const NewHero = () => {
             <div className={styles.mobileDownloadWrapper}>
               {!mobileButtonFallen ? (
                 <motion.a
-                  href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+                  href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
                   download="Arka_Lal_Chakravarty_CV_2026.pdf"
                   className={styles.mobileDownloadButton}
                   onClick={handleMobileDownloadClick}
@@ -230,7 +230,7 @@ const NewHero = () => {
               {/* Actual button - absolutely positioned */}
               {!buttonFallen ? (
                 <motion.a
-                  href="/assets/doc/Arka Lal Chakravarty CV - 2026.pdf"
+                  href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
                   download="Arka_Lal_Chakravarty_CV_2026.pdf"
                   className={styles.downloadButton}
                   onClick={handleDownloadClick}
@@ -356,13 +356,10 @@ const NewHero = () => {
           </motion.h1>
 
           <motion.h2 className={styles.roleHeading} variants={itemVariants}>
-            <span className={styles.rolePrefix}>I&apos;m an </span>
-            <span className={styles.roleHighlight}>AI Engineer</span>
+            <span className={styles.rolePrefix}>I&apos;m a </span>
+            <span className={styles.roleHighlight}>Full Stack Engineer</span>
             <span className={styles.roleText}> & </span> <br />
-            <span className={styles.roleHighlight}>
-              Full Stack Developer.
-            </span>{" "}
-            <br />
+            <span className={styles.roleHighlight}>AI Enthusiast</span> <br />
             <span className={styles.statusBadge}>
               <span className={styles.statusDot}></span>
               Open to Collaborate
