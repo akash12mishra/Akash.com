@@ -29,12 +29,12 @@ const About = () => {
   const [greetingText, setGreetingText] = useState("Hi there! I'm Arka");
   const [showCursor, setShowCursor] = useState(true);
 
-  const bioText1 = "I'm an ";
-  const bioHighlight1 = "AI Engineer";
+  const bioText1 = "I'm a ";
+  const bioHighlight1 = "Full-Stack Engineer";
   const bioText2 = " and ";
-  const bioHighlight2 = "Full-Stack Developer";
+  const bioHighlight2 = "AI Enthusiast";
   const bioText3 =
-    " with a passion for building advanced AI SaaS products and automations. With expertise in both AI integration and web development, I specialize in creating powerful, user-friendly applications that leverage cutting-edge technologies.";
+    " with a passion for building advanced AI SaaS and web applications. With expertise in both AI integration and web development, I specialize in creating powerful, user-friendly applications that leverage cutting-edge technologies.";
 
   const fullBio1 =
     bioText1 + bioHighlight1 + bioText2 + bioHighlight2 + bioText3;
@@ -92,10 +92,11 @@ const About = () => {
 
     const phrases = [
       "Hi there! I'm Arka",
-      "Hi there! I'm a Full Stack developer",
-      "Hi there! I'm an AI engineer",
-      "Hi there! I build AI Agents",
-      "Need tech support? Lets collaborate and work together!",
+      "Hi there! I'm a Full Stack engineer",
+      "Hi there! I'm an AI Enthusiast",
+      "Hi there! I'm Frontend focused",
+      "Hi there! I've built AI Agentic features",
+      "Looking for an Engineer? Let's collaborate!",
     ];
 
     let currentPhraseIndex = 0;

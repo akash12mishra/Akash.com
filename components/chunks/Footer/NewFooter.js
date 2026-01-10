@@ -13,24 +13,36 @@ const NewFooter = () => {
         <div className={styles.footerContent}>
           <div className={styles.branding}>
             <h3>Arka Lal Chakravarty</h3>
-            <p>AI Engineer & Full-Stack Developer</p>
+            <p>Full Stack Engineer & AI Enthusiast</p>
           </div>
-          
+
           <div className={styles.navLinks}>
             <div className={styles.linksColumn}>
               <h4>Navigation</h4>
               <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#experience">Experience</a></li>
+                <li>
+                  <a href="/">Home</a>
+                </li>
+                <li>
+                  <a href="#about">About</a>
+                </li>
+                <li>
+                  <a href="#experience">Experience</a>
+                </li>
               </ul>
             </div>
             <div className={styles.linksColumn}>
               <h4>Work</h4>
               <ul>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#buildinpublic">Journey</a></li>
-                <li><a href="#resume">Resume</a></li>
+                <li>
+                  <a href="#projects">Projects</a>
+                </li>
+                <li>
+                  <a href="#buildinpublic">Journey</a>
+                </li>
+                <li>
+                  <a href="#resume">Resume</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -65,7 +77,7 @@ const NewFooter = () => {
             </div>
           </div>
         </div>
-        
+
         <div className={styles.footerBottom}>
           <p>&copy; {currentYear} Arka Lal Chakravarty. All rights reserved.</p>
           <div className={styles.footerLinks}>
