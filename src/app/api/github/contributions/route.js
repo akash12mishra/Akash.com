@@ -92,9 +92,8 @@ export async function GET(request) {
     
     // Check if there's an error in the response
     if (data.errors) {
-      const errorDetails = JSON.stringify(data.errors, null, 2);
-      console.error("GitHub API Error:", errorDetails);
-      return NextResponse.json({ error: `GitHub API Error: ${data.errors[0].message}`, details: data.errors }, { status: 500 });
+      console.error("GitHub API Error:", JSON.stringify(data.errors, null, 2));
+      return NextResponse.json({ error: "Failed to fetch GitHub contributions" }, { status: 500 });
     }
     
     // Return contribution data with year info for validation
@@ -106,6 +105,6 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error("Error fetching GitHub contribution data:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch GitHub contributions" }, { status: 500 });
   }
 }

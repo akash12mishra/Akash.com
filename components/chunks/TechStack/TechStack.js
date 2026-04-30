@@ -135,8 +135,16 @@ const TechStack = () => {
     isPinnedRef.current = false;
     setIsPinned(false);
     if (typeof window === "undefined") return;
-    if (window.__lenis) window.__lenis.start();
 
+    // Order matters here. While the body was position:fixed during the
+    // pin, the document was effectively viewport-tall, so Lenis cached
+    // its scroll limit as ~0 and window.scrollY was forced to 0. We
+    // must (1) un-fix the body so the real document height returns,
+    // (2) restore scroll via native scrollTo (Lenis's own scrollTo
+    // would clamp the target against the stale 0 limit and snap the
+    // page to the very top), (3) ask Lenis to recompute its limits,
+    // and only then (4) resume Lenis — so its first post-pin tick
+    // reads the correct scroll position instead of locking 0 in.
     if (lockedScrollYRef.current !== null) {
       const scrollY = lockedScrollYRef.current;
       lockedScrollYRef.current = null;
@@ -147,21 +155,21 @@ const TechStack = () => {
       body.style.right = "";
       body.style.width = "";
       body.style.overflow = "";
-      // Restore visual scroll position immediately so the user doesn't
-      // see the page jump back to the top when body un-fixes. Prefer
-      // Lenis's immediate scrollTo so its internal scroll model stays
-      // in sync; fall back to native scrollTo if Lenis isn't ready.
-      if (window.__lenis && typeof window.__lenis.scrollTo === "function") {
-        window.__lenis.scrollTo(scrollY, { immediate: true, force: true });
-      } else {
-        window.scrollTo(0, scrollY);
+      window.scrollTo(0, scrollY);
+    }
+
+    if (window.__lenis) {
+      if (typeof window.__lenis.resize === "function") {
+        window.__lenis.resize();
       }
+      window.__lenis.start();
     }
   }, []);
 
   // Safety net: if the component unmounts while pinned (e.g. route
   // change mid-morph), restore the body styles so the rest of the
-  // site isn't left scroll-locked.
+  // site isn't left scroll-locked, and resync Lenis with the freshly
+  // un-fixed document so the next view doesn't inherit a stale limit.
   useEffect(() => {
     return () => {
       if (lockedScrollYRef.current !== null) {
@@ -174,7 +182,12 @@ const TechStack = () => {
         body.style.right = "";
         body.style.width = "";
         body.style.overflow = "";
-        if (typeof window !== "undefined") window.scrollTo(0, scrollY);
+        if (typeof window !== "undefined") {
+          window.scrollTo(0, scrollY);
+          if (window.__lenis && typeof window.__lenis.resize === "function") {
+            window.__lenis.resize();
+          }
+        }
       }
     };
   }, []);
