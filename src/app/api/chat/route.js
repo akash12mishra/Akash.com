@@ -1,7 +1,65 @@
 import { NextResponse } from "next/server";
 
+// Per-IP in-memory rate limit. Best-effort only: each Vercel serverless
+// instance has its own Map, so the effective ceiling can be looser than
+// the constants suggest. That's acceptable for a portfolio chatbot —
+// the goal is just to blunt obvious abuse without a Redis dependency.
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 15;
+const rateLimitStore = new Map();
+
+function getClientIp(req) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return req.headers.get("x-real-ip") || "unknown";
+}
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateLimitStore.get(ip);
+
+  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW_MS) {
+    rateLimitStore.set(ip, { windowStart: now, count: 1 });
+    return { allowed: true };
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX) {
+    const retryAfter = Math.ceil(
+      (RATE_LIMIT_WINDOW_MS - (now - entry.windowStart)) / 1000
+    );
+    return { allowed: false, retryAfter };
+  }
+
+  entry.count += 1;
+  // Opportunistic cleanup to keep the Map bounded; only sweeps when
+  // it grows large so the common path stays O(1).
+  if (rateLimitStore.size > 1000) {
+    for (const [key, value] of rateLimitStore.entries()) {
+      if (now - value.windowStart > RATE_LIMIT_WINDOW_MS * 2) {
+        rateLimitStore.delete(key);
+      }
+    }
+  }
+  return { allowed: true };
+}
+
 export async function POST(req) {
   try {
+    const ip = getClientIp(req);
+    const limit = checkRateLimit(ip);
+    if (!limit.allowed) {
+      return new Response(
+        JSON.stringify({ error: "Too many requests. Please slow down." }),
+        {
+          status: 429,
+          headers: {
+            "Content-Type": "application/json",
+            "Retry-After": String(limit.retryAfter),
+          },
+        }
+      );
+    }
+
     const { prompt, conversationHistory } = await req.json();
 
     if (!prompt) {
@@ -230,7 +288,7 @@ Respond in a friendly, professional manner. Use markdown formatting for better r
     });
   } catch (error) {
     console.error("Error in chat API:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: "Chat service unavailable" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
