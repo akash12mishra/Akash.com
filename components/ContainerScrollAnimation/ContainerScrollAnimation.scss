@@ -14,7 +14,12 @@
   width: 100%;
 
   @media (max-width: 768px) {
-    perspective: 600px;
+    /* Disable 3D perspective on mobile — the card renders flat on
+       mobile (no scroll-driven rotateX/scale/translateY) and combining
+       `perspective` with a child `transform-style: preserve-3d` +
+       `backface-visibility: hidden` is a known iOS Safari compositor
+       bug that can render the element as invisible. */
+    perspective: none;
   }
 }
 
@@ -34,6 +39,12 @@
   backface-visibility: hidden;
 
   @media (max-width: 768px) {
+    /* Render flat on mobile — the 3D properties were causing the card
+       to disappear on iOS Safari due to GPU compositor culling when
+       no active 3D transform is applied. */
+    transform-style: flat;
+    backface-visibility: visible;
+    will-change: auto;
     padding: 16px;
     border-radius: 20px;
   }
