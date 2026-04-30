@@ -79,6 +79,13 @@ const TechStack = () => {
   const morphValRef = useRef(0);
   const scrollRef = useRef(0);
   const virtualScroll = useMotionValue(0);
+  // Stores the document scrollY at the moment we locked the body so we
+  // can restore the user to the same visual position on unpin. iOS
+  // Safari ignores preventDefault on touchmove during momentum scroll
+  // (and overflow:hidden on body alone doesn't stop momentum), so on
+  // touch devices we lock the body via position:fixed — the only
+  // reliable way to halt native scroll mid-pin.
+  const lockedScrollYRef = useRef(null);
 
   // --- Container size ---
   useEffect(() => {
@@ -99,8 +106,27 @@ const TechStack = () => {
     if (isPinnedRef.current) return;
     isPinnedRef.current = true;
     setIsPinned(true);
-    if (typeof window !== "undefined" && window.__lenis) {
-      window.__lenis.stop();
+    if (typeof window === "undefined") return;
+    if (window.__lenis) window.__lenis.stop();
+
+    // On touch devices, Lenis doesn't intercept native scroll by default,
+    // so .stop() alone leaves iOS momentum scrolling free to fly past
+    // the section before our touchmove preventDefault can fire. Lock the
+    // body via the proven iOS pattern (position:fixed + restored scroll
+    // offset) so native scroll truly halts for the duration of the pin.
+    const isTouch =
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) ||
+      "ontouchstart" in window;
+    if (isTouch && lockedScrollYRef.current === null) {
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      lockedScrollYRef.current = scrollY;
+      const body = document.body;
+      body.style.position = "fixed";
+      body.style.top = `-${scrollY}px`;
+      body.style.left = "0";
+      body.style.right = "0";
+      body.style.width = "100%";
+      body.style.overflow = "hidden";
     }
   }, []);
 
@@ -108,9 +134,49 @@ const TechStack = () => {
     if (!isPinnedRef.current) return;
     isPinnedRef.current = false;
     setIsPinned(false);
-    if (typeof window !== "undefined" && window.__lenis) {
-      window.__lenis.start();
+    if (typeof window === "undefined") return;
+    if (window.__lenis) window.__lenis.start();
+
+    if (lockedScrollYRef.current !== null) {
+      const scrollY = lockedScrollYRef.current;
+      lockedScrollYRef.current = null;
+      const body = document.body;
+      body.style.position = "";
+      body.style.top = "";
+      body.style.left = "";
+      body.style.right = "";
+      body.style.width = "";
+      body.style.overflow = "";
+      // Restore visual scroll position immediately so the user doesn't
+      // see the page jump back to the top when body un-fixes. Prefer
+      // Lenis's immediate scrollTo so its internal scroll model stays
+      // in sync; fall back to native scrollTo if Lenis isn't ready.
+      if (window.__lenis && typeof window.__lenis.scrollTo === "function") {
+        window.__lenis.scrollTo(scrollY, { immediate: true, force: true });
+      } else {
+        window.scrollTo(0, scrollY);
+      }
     }
+  }, []);
+
+  // Safety net: if the component unmounts while pinned (e.g. route
+  // change mid-morph), restore the body styles so the rest of the
+  // site isn't left scroll-locked.
+  useEffect(() => {
+    return () => {
+      if (lockedScrollYRef.current !== null) {
+        const scrollY = lockedScrollYRef.current;
+        lockedScrollYRef.current = null;
+        const body = document.body;
+        body.style.position = "";
+        body.style.top = "";
+        body.style.left = "";
+        body.style.right = "";
+        body.style.width = "";
+        body.style.overflow = "";
+        if (typeof window !== "undefined") window.scrollTo(0, scrollY);
+      }
+    };
   }, []);
 
   // --- Intersection Observer (direction-aware) ---
