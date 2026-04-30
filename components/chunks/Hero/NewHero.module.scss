@@ -611,9 +611,14 @@
   padding: 20px;
   transition: all 0.3s ease;
   cursor: default;
+  min-width: 0;
 
   &:hover {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  @media (max-width: 520px) {
+    padding: 16px;
   }
 }
 
@@ -708,11 +713,18 @@
 
 .expContent {
   flex: 1;
+  min-width: 0;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   padding-bottom: 16px;
   gap: 8px;
+
+  @media (max-width: 520px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
 }
 
 .expInfo {
@@ -739,6 +751,10 @@
   color: var(--text-light);
   white-space: nowrap;
   text-align: right;
+
+  @media (max-width: 520px) {
+    text-align: left;
+  }
 }
 
 /* Tech Stack Card */
@@ -748,8 +764,12 @@
 
 .techIconsGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+
+  @media (max-width: 520px) {
+    gap: 8px;
+  }
 }
 
 .techIconWrapper {
