@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useGithubContributions } from "../../../utils/useGithubContributions";
 import { useGithubRepositories } from "../../../utils/useGithubRepositories";
@@ -50,57 +49,7 @@ const GitHubAnalytics = () => {
     ? contributionYears 
     : contributionYears.slice(0, YEARS_DEFAULT_DISPLAY);
   
-  // Render loading state
-  if (isLoading) {
-    return (
-      <section className={styles.githubSection}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.sectionTag}>GitHub</span>
-            <h2 className={styles.heading}>
-              Coding <span>Activity</span>
-            </h2>
-          </div>
-          <div className={styles.loadingContainer}>
-            <div className={styles.loadingPulse}></div>
-            <p>Loading GitHub data...</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Render error state
-  if (hasError) {
-    return (
-      <section className={styles.githubSection}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.sectionTag}>GitHub</span>
-            <h2 className={styles.heading}>
-              Coding <span>Activity</span>
-            </h2>
-          </div>
-          <div className={styles.errorContainer}>
-            <p>Unable to load GitHub data</p>
-            <button 
-              className={`${styles.retryButton} ${isRefreshing ? styles.spinning : ''}`} 
-              onClick={handleRefresh} 
-              aria-label="Retry fetching GitHub data"
-              disabled={isRefreshing}
-            >
-              <FaSync /> Retry
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // Return early if data isn't loaded yet
-  if (!contributionData || !reposData) {
-    return null;
-  }
+  const dataReady = !isLoading && !hasError && contributionData && reposData;
   
   // Extract relevant data for display
   const { totalContributions: heatmapContributions } = contributionData || {};
@@ -185,11 +134,8 @@ const GitHubAnalytics = () => {
     .sort((a, b) => b.__sortTime - a.__sortTime);
 
   return (
-    <motion.section
+    <section
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6 }}
       className={styles.githubSection}
       id="github-repos"
     >
@@ -212,6 +158,29 @@ const GitHubAnalytics = () => {
           </button>
         </div>
 
+        {isLoading && (
+          <div className={styles.loadingContainer}>
+            <div className={styles.loadingPulse}></div>
+            <p>Loading GitHub data...</p>
+          </div>
+        )}
+
+        {hasError && !isLoading && (
+          <div className={styles.errorContainer}>
+            <p>Unable to load GitHub data</p>
+            <button
+              className={`${styles.retryButton} ${isRefreshing ? styles.spinning : ''}`}
+              onClick={handleRefresh}
+              aria-label="Retry fetching GitHub data"
+              disabled={isRefreshing}
+            >
+              <FaSync /> Retry
+            </button>
+          </div>
+        )}
+
+        {dataReady && (
+        <>
         {/* GitHub Profile Summary */}
         <div className={styles.profileCard}>
           <div className={styles.profileHeader}>
@@ -450,8 +419,10 @@ const GitHubAnalytics = () => {
             )}
           </div>
         </div>
+        </>
+        )}
       </div>
-    </motion.section>
+    </section>
   );
 };
 

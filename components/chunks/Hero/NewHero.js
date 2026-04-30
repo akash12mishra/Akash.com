@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from "react";
 import styles from "./NewHero.module.scss";
 import Image from "next/image";
-import { FaEnvelope } from "react-icons/fa6";
-import { FaFileAlt, FaGithub } from "react-icons/fa";
+
+import { FaFileAlt, FaGithub, FaTimes } from "react-icons/fa";
+import CtaButton from "../../CtaButton/CtaButton";
 import { HiOutlineBriefcase, HiOutlineLightBulb } from "react-icons/hi";
-import { FiMapPin, FiCode, FiLayers, FiArrowDown } from "react-icons/fi";
+import { FiMapPin, FiCode, FiLayers } from "react-icons/fi";
 import {
   SiNextdotjs,
   SiReact,
@@ -16,33 +17,117 @@ import {
   SiNodedotjs,
 } from "react-icons/si";
 import { motion } from "framer-motion";
+import { ContainerScroll } from "../../ContainerScrollAnimation/ContainerScrollAnimation";
 import logoImg from "../../../assets/images/arka.png";
 
 const NewHero = () => {
-  const [buttonFallen, setButtonFallen] = useState(false);
-  const [mobileButtonFallen, setMobileButtonFallen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const experienceWrapperRef = React.useRef(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  const handleDownloadClick = (e) => {
-    if (buttonFallen) {
-      e.preventDefault();
-      return;
-    }
-    setButtonFallen(true);
-  };
+  // Lock body scroll while mobile drawer is open and close on Escape
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
 
-  const handleMobileDownloadClick = (e) => {
-    if (mobileButtonFallen) {
-      e.preventDefault();
-      return;
-    }
-    setMobileButtonFallen(true);
-  };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKey = (e) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    window.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [mobileMenuOpen]);
+
+  const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  const mobileNavLinks = [
+    { name: "Home", href: "#home" },
+    { name: "About", href: "#about" },
+    { name: "Projects", href: "#projects" },
+    { name: "Skills", href: "#skills" },
+    { name: "Contact", href: "#contact" },
+  ];
+
+  // Smooth auto-scroll for the experience timeline card so the user
+  // can see the entries that overflow the visible card area without
+  // having to manually scroll. Bounces top↔bottom slowly; pauses on
+  // hover so visitors can read at their own pace.
+  useEffect(() => {
+    const el = experienceWrapperRef.current;
+    if (!el) return;
+
+    let raf;
+    let direction = 1;
+    let last = performance.now();
+    let paused = false;
+    // Target ~3.5s per direction regardless of how much content overflows.
+    // Recompute if the wrapper resizes (responsive). Falling back to a
+    // sane minimum so very small overflows don't crawl.
+    const directionDurationMs = 3500;
+    // Hold time at each end so the user can read the first/last item
+    // before the scroll reverses.
+    const endHoldMs = 1400;
+    let holdUntil = 0;
+
+    const tick = (now) => {
+      const dt = now - last;
+      last = now;
+      const max = el.scrollHeight - el.clientHeight;
+      if (!paused && max > 0) {
+        if (now < holdUntil) {
+          // Currently holding at an end — skip movement this frame.
+          raf = requestAnimationFrame(tick);
+          return;
+        }
+        const speed = Math.max(20, max / (directionDurationMs / 1000));
+        const next = el.scrollTop + direction * speed * (dt / 1000);
+        if (next >= max) {
+          el.scrollTop = max;
+          direction = -1;
+          holdUntil = now + endHoldMs;
+        } else if (next <= 0) {
+          el.scrollTop = 0;
+          direction = 1;
+          holdUntil = now + endHoldMs;
+        } else {
+          el.scrollTop = next;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    const onEnter = () => {
+      paused = true;
+    };
+    const onLeave = () => {
+      paused = false;
+      last = performance.now();
+    };
+
+    el.addEventListener("mouseenter", onEnter);
+    el.addEventListener("mouseleave", onLeave);
+    el.addEventListener("touchstart", onEnter, { passive: true });
+    el.addEventListener("touchend", onLeave, { passive: true });
+
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener("mouseenter", onEnter);
+      el.removeEventListener("mouseleave", onLeave);
+      el.removeEventListener("touchstart", onEnter);
+      el.removeEventListener("touchend", onLeave);
+    };
+  }, [isMounted]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -77,18 +162,11 @@ const NewHero = () => {
       >
         {/* Top Bar */}
         <motion.div className={styles.topBar} variants={itemVariants}>
-          <a
-            href="mailto:admin@arkalalchakravarty.com"
-            className={styles.emailTag}
-          >
-            <FaEnvelope size={14} />
-            <span>admin@arkalalchakravarty.com</span>
-          </a>
-
           {/* Mobile Hamburger Menu Button */}
           <div
-            className={styles.mobileMenuButton}
+            className={`${styles.mobileMenuButton} ${mobileMenuOpen ? styles.hidden : ""}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Open menu"
           >
             <div
               className={`${styles.hamburgerLine} ${mobileMenuOpen ? styles.open : ""}`}
@@ -101,238 +179,88 @@ const NewHero = () => {
             ></div>
           </div>
 
-          {/* Mobile Menu Dropdown */}
+          {/* Mobile Drawer Backdrop */}
           <div
-            className={`${styles.mobileMenu} ${mobileMenuOpen ? styles.open : ""}`}
-          >
-            <a
-              href="https://github.com/arkalal/arkalalchakravarty.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.mobileSourceButton}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <FaGithub size={18} />
-              <span>Source</span>
-            </a>
-            <div className={styles.mobileDownloadWrapper}>
-              {!mobileButtonFallen ? (
-                <motion.a
-                  href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
-                  download="Arka_Lal_Chakravarty_CV_2026.pdf"
-                  className={styles.mobileDownloadButton}
-                  onClick={handleMobileDownloadClick}
-                  whileHover="hover"
-                  initial="initial"
-                  animate="animate"
-                  variants={{
-                    initial: { rotate: 0 },
-                    animate: {
-                      boxShadow: [
-                        "0 2px 8px rgba(255, 107, 53, 0.25)",
-                        "0 4px 16px rgba(255, 107, 53, 0.4)",
-                        "0 2px 8px rgba(255, 107, 53, 0.25)",
-                      ],
-                    },
-                    hover: {
-                      rotate: 10,
-                      scale: 1.03,
-                    },
-                  }}
-                  transition={{
-                    boxShadow: {
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    },
-                    rotate: { duration: 0.1, ease: "easeOut" },
-                    scale: { duration: 0.1 },
-                  }}
-                >
-                  <motion.span
-                    className={styles.mobileDownloadIcon}
-                    variants={{
-                      initial: { y: 0 },
-                      animate: { y: [0, 3, 0] },
-                      hover: { y: [0, 8, 0] },
-                    }}
-                    transition={{
-                      y: { duration: 0.6, repeat: Infinity, ease: "easeInOut" },
-                    }}
-                  >
-                    <FaFileAlt size={18} />
-                  </motion.span>
-                  <span>Download Resume</span>
-                  <motion.span
-                    className={styles.mobileArrowDown}
-                    variants={{
-                      initial: { opacity: 0, y: -5 },
-                      hover: { opacity: [0, 1, 0], y: [0, 10, 15] },
-                    }}
-                    transition={{
-                      duration: 0.7,
-                      repeat: Infinity,
-                      ease: "easeIn",
-                    }}
-                  >
-                    <FiArrowDown size={14} />
-                  </motion.span>
-                </motion.a>
-              ) : (
-                <motion.div
-                  className={styles.mobileDownloadButtonFalling}
-                  initial={{
-                    y: 0,
-                    x: 0,
-                    rotate: 10,
-                    opacity: 1,
-                  }}
-                  animate={{
-                    y: [0, 400, 385, 420, 410, 440, 435, 450, 448, 455, 800],
-                    x: [0, 25, 28, 40, 43, 50, 53, 58, 60, 63, 100],
-                    rotate: [
-                      10, 90, 88, 110, 108, 125, 123, 135, 134, 140, 180,
-                    ],
-                    opacity: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0.8, 0],
-                  }}
-                  transition={{
-                    duration: 1.8,
-                    times: [
-                      0, 0.25, 0.3, 0.4, 0.45, 0.55, 0.6, 0.7, 0.75, 0.85, 1,
-                    ],
-                    ease: [0.55, 0.085, 0.68, 0.53],
-                  }}
-                >
-                  <FaFileAlt size={18} />
-                  <span>Download Resume</span>
-                </motion.div>
-              )}
-            </div>
-          </div>
+            className={`${styles.mobileBackdrop} ${mobileMenuOpen ? styles.open : ""}`}
+            onClick={closeMobileMenu}
+            aria-hidden="true"
+          />
 
-          <div className={styles.topBarActions}>
-            <a
-              href="https://github.com/arkalal/arkalalchakravarty.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.sourceButton}
-              title="View Source Code"
-            >
-              <FaGithub size={18} />
-              <span>Source</span>
-            </a>
-            <div className={styles.downloadButtonWrapper}>
-              {/* Invisible placeholder to maintain layout */}
-              <div className={styles.downloadButtonPlaceholder}>
+          {/* Mobile Navigation Drawer */}
+          <aside
+            className={`${styles.mobileDrawer} ${mobileMenuOpen ? styles.open : ""}`}
+            aria-hidden={!mobileMenuOpen}
+          >
+            <div className={styles.mobileDrawerHeader}>
+              <Image
+                src={logoImg}
+                alt="Arka Lal Chakravarty"
+                width={40}
+                height={40}
+                className={styles.mobileDrawerLogo}
+              />
+              <span className={styles.mobileDrawerName}>
+                Arka Lal Chakravarty
+              </span>
+              <button
+                type="button"
+                className={styles.mobileDrawerClose}
+                onClick={closeMobileMenu}
+                aria-label="Close menu"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            <ul className={styles.mobileDrawerLinks}>
+              {mobileNavLinks.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} onClick={closeMobileMenu}>
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <div className={styles.mobileDrawerActions}>
+              <a
+                href="https://github.com/arkalal/arkalalchakravarty.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.mobileDrawerSource}
+                onClick={closeMobileMenu}
+              >
+                <FaGithub size={18} />
+                <span>Source</span>
+              </a>
+              <a
+                href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
+                download="Arka_Lal_Chakravarty_CV_2026.pdf"
+                className={styles.mobileDrawerCv}
+                onClick={closeMobileMenu}
+              >
                 <FaFileAlt size={18} />
                 <span>Download Resume</span>
-              </div>
-              {/* Actual button - absolutely positioned */}
-              {!buttonFallen ? (
-                <motion.a
-                  href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
-                  download="Arka_Lal_Chakravarty_CV_2026.pdf"
-                  className={styles.downloadButton}
-                  onClick={handleDownloadClick}
-                  whileHover="hover"
-                  initial="initial"
-                  animate="animate"
-                  variants={{
-                    initial: { rotate: 0 },
-                    animate: {
-                      boxShadow: [
-                        "0 2px 8px rgba(255, 107, 53, 0.25)",
-                        "0 4px 16px rgba(255, 107, 53, 0.4)",
-                        "0 2px 8px rgba(255, 107, 53, 0.25)",
-                      ],
-                    },
-                    hover: {
-                      rotate: 15,
-                      scale: 1.05,
-                    },
-                  }}
-                  transition={{
-                    boxShadow: {
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    },
-                    rotate: {
-                      duration: 0.1,
-                      ease: "easeOut",
-                    },
-                    scale: {
-                      duration: 0.1,
-                    },
-                  }}
-                >
-                  <motion.span
-                    className={styles.downloadIcon}
-                    variants={{
-                      initial: { y: 0 },
-                      animate: { y: [0, 3, 0] },
-                      hover: { y: [0, 10, 0] },
-                    }}
-                    transition={{
-                      y: {
-                        duration: 0.6,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      },
-                    }}
-                  >
-                    <FaFileAlt size={18} />
-                  </motion.span>
-                  <span className={styles.buttonText}>Download Resume</span>
-                  <motion.span
-                    className={styles.arrowDown}
-                    variants={{
-                      initial: { opacity: 0, y: -10 },
-                      hover: {
-                        opacity: [0, 1, 0],
-                        y: [0, 15, 20],
-                      },
-                    }}
-                    transition={{
-                      duration: 0.8,
-                      repeat: Infinity,
-                      ease: "easeIn",
-                    }}
-                  >
-                    <FiArrowDown size={16} />
-                  </motion.span>
-                  <span className={styles.shineEffect}></span>
-                </motion.a>
-              ) : (
-                <motion.div
-                  className={styles.downloadButtonFalling}
-                  initial={{
-                    y: 0,
-                    x: 0,
-                    rotate: 15,
-                    opacity: 1,
-                  }}
-                  animate={{
-                    y: [0, 800, 780, 850, 840, 870, 865, 880, 878, 885, 2000],
-                    x: [0, 50, 55, 80, 85, 100, 105, 115, 118, 125, 200],
-                    rotate: [
-                      15, 180, 175, 220, 215, 250, 245, 270, 268, 280, 360,
-                    ],
-                    opacity: [1, 1, 1, 1, 1, 1, 1, 1, 1, 0.8, 0],
-                  }}
-                  transition={{
-                    duration: 1.8,
-                    times: [
-                      0, 0.25, 0.3, 0.4, 0.45, 0.55, 0.6, 0.7, 0.75, 0.85, 1,
-                    ],
-                    ease: [0.55, 0.085, 0.68, 0.53],
-                  }}
-                >
-                  <FaFileAlt size={18} />
-                  <span>Download Resume</span>
-                </motion.div>
-              )}
+              </a>
             </div>
+          </aside>
+
+          <div className={styles.topBarActions}>
+            <CtaButton
+              href="https://github.com/arkalal/arkalalchakravarty.com"
+              label="Source"
+              external
+              size="sm"
+              icon={<FaGithub />}
+              title="View Source Code"
+            />
+            <CtaButton
+              href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
+              download="Arka_Lal_Chakravarty_CV_2026.pdf"
+              label="Download Resume"
+              size="sm"
+              icon={<FaFileAlt />}
+            />
           </div>
         </motion.div>
 
@@ -359,7 +287,7 @@ const NewHero = () => {
             <span className={styles.rolePrefix}>I&apos;m a </span>
             <span className={styles.roleHighlight}>Full Stack Engineer</span>
             <span className={styles.roleText}> & </span> <br />
-            <span className={styles.roleHighlight}>AI Enthusiast</span> <br />
+            <span className={styles.roleHighlight}>AI Specialist</span> <br />
             <span className={styles.statusBadge}>
               <span className={styles.statusDot}></span>
               Open to Collaborate
@@ -368,14 +296,12 @@ const NewHero = () => {
 
           {/* CTA Section */}
           <motion.div className={styles.ctaRow} variants={itemVariants}>
-            <a
+            <CtaButton
               href="https://calendly.com/arkalal-chakravarty/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.ctaButton}
-            >
-              Book a call
-            </a>
+              label="Book a Call"
+              external
+              variant="primary"
+            />
             <p className={styles.ctaText}>
               Feel free to explore my portfolio and reach out
               <br />
@@ -383,178 +309,189 @@ const NewHero = () => {
             </p>
           </motion.div>
 
-          {/* Bento Cards Grid */}
-          <motion.div className={styles.bentoGrid} variants={containerVariants}>
-            {/* Experience Card with Timeline */}
+          {/* Bento Cards Grid — wrapped in scroll animation */}
+          <ContainerScroll>
             <motion.div
-              className={`${styles.bentoCard} ${styles.experienceCard}`}
-              variants={itemVariants}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className={styles.bentoGrid}
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.1 }}
             >
-              <div className={styles.cardHeader}>
-                <HiOutlineBriefcase className={styles.cardIcon} />
-                <span className={styles.cardTitle}>My Experience</span>
-              </div>
-              <div className={styles.experienceTimelineWrapper}>
-                <div className={styles.experienceTimeline}>
-                  <ExperienceItem
-                    role="Lead Software Engineer"
-                    company="Epigroww Global"
-                    period="2025"
-                    type="Full-time"
-                    index={0}
-                    isCurrent
+              {/* Experience Card with Timeline */}
+              <motion.div
+                className={`${styles.bentoCard} ${styles.experienceCard}`}
+                variants={itemVariants}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              >
+                <div className={styles.cardHeader}>
+                  <HiOutlineBriefcase className={styles.cardIcon} />
+                  <span className={styles.cardTitle}>My Experience</span>
+                </div>
+                <div
+                  className={styles.experienceTimelineWrapper}
+                  ref={experienceWrapperRef}
+                >
+                  <div className={styles.experienceTimeline}>
+                    <ExperienceItem
+                      role="Lead Software Engineer"
+                      company="Epigroww Global"
+                      period="2025"
+                      type="Full-time"
+                      index={0}
+                      isCurrent
+                    />
+                    <ExperienceItem
+                      role="Freelance Software Engineer"
+                      company="arkalalchakravarty.com"
+                      period="2025"
+                      type="Freelance"
+                      index={1}
+                    />
+                    <ExperienceItem
+                      role="AI Engineer"
+                      company="Helionix"
+                      period="2025"
+                      type="Contract"
+                      index={2}
+                    />
+                    <ExperienceItem
+                      role="AI Engineer"
+                      company="ScaleGenAI"
+                      period="2024"
+                      type="Full-time"
+                      index={3}
+                    />
+                    <ExperienceItem
+                      role="Software Developer"
+                      company="Infojini Inc"
+                      period="2022-24"
+                      type="Full-time"
+                      index={4}
+                    />
+                    <ExperienceItem
+                      role="Frontend Web Developer"
+                      company="CRIMSON INTELLIGENCE SA"
+                      period="2021-22"
+                      type="Internship"
+                      index={5}
+                      isLast
+                    />
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Tech Stack Card with Floating Icons */}
+              <motion.div
+                className={`${styles.bentoCard} ${styles.techCard}`}
+                variants={itemVariants}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              >
+                <div className={styles.cardHeader}>
+                  <FiCode className={styles.cardIcon} />
+                  <span className={styles.cardTitle}>Tech Stack</span>
+                </div>
+                <div className={styles.techIconsGrid}>
+                  <TechIcon Icon={SiNextdotjs} name="NextJS" delay={0} />
+                  <TechIcon
+                    Icon={SiReact}
+                    name="React"
+                    delay={0.1}
+                    color="#61DAFB"
                   />
-                  <ExperienceItem
-                    role="Freelance Software Engineer"
-                    company="arkalalchakravarty.com"
-                    period="2025"
-                    type="Freelance"
-                    index={1}
+                  <TechIcon
+                    Icon={SiPython}
+                    name="Python"
+                    delay={0.2}
+                    color="#3776AB"
                   />
-                  <ExperienceItem
-                    role="AI Engineer"
-                    company="Helionix"
-                    period="2025"
-                    type="Contract"
-                    index={2}
+                  <TechIcon Icon={SiOpenai} name="OpenAI" delay={0.3} />
+                  <TechIcon
+                    Icon={SiMongodb}
+                    name="MongoDB"
+                    delay={0.4}
+                    color="#47A248"
                   />
-                  <ExperienceItem
-                    role="AI Engineer"
-                    company="ScaleGenAI"
-                    period="2024"
-                    type="Full-time"
-                    index={3}
-                  />
-                  <ExperienceItem
-                    role="Software Developer"
-                    company="Infojini Inc"
-                    period="2022-24"
-                    type="Full-time"
-                    index={4}
-                  />
-                  <ExperienceItem
-                    role="Frontend Web Developer"
-                    company="CRIMSON INTELLIGENCE SA"
-                    period="2021-22"
-                    type="Internship"
-                    index={5}
-                    isLast
+                  <TechIcon
+                    Icon={SiNodedotjs}
+                    name="Node.js"
+                    delay={0.5}
+                    color="#339933"
                   />
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            {/* Tech Stack Card with Floating Icons */}
-            <motion.div
-              className={`${styles.bentoCard} ${styles.techCard}`}
-              variants={itemVariants}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            >
-              <div className={styles.cardHeader}>
-                <FiCode className={styles.cardIcon} />
-                <span className={styles.cardTitle}>Tech Stack</span>
-              </div>
-              <div className={styles.techIconsGrid}>
-                <TechIcon Icon={SiNextdotjs} name="NextJS" delay={0} />
-                <TechIcon
-                  Icon={SiReact}
-                  name="React"
-                  delay={0.1}
-                  color="#61DAFB"
-                />
-                <TechIcon
-                  Icon={SiPython}
-                  name="Python"
-                  delay={0.2}
-                  color="#3776AB"
-                />
-                <TechIcon Icon={SiOpenai} name="OpenAI" delay={0.3} />
-                <TechIcon
-                  Icon={SiMongodb}
-                  name="MongoDB"
-                  delay={0.4}
-                  color="#47A248"
-                />
-                <TechIcon
-                  Icon={SiNodedotjs}
-                  name="Node.js"
-                  delay={0.5}
-                  color="#339933"
-                />
-              </div>
-            </motion.div>
+              {/* What I Build Card */}
+              <motion.div
+                className={`${styles.bentoCard} ${styles.buildCard}`}
+                variants={itemVariants}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              >
+                <div className={styles.cardHeader}>
+                  <FiLayers className={styles.cardIcon} />
+                  <span className={styles.cardTitle}>What I Build</span>
+                </div>
+                <p className={styles.buildText}>
+                  Full-stack web applications with modern frontend UI/UX and
+                  AI-powered SaaS products that solve real problems.
+                </p>
+              </motion.div>
 
-            {/* What I Build Card */}
-            <motion.div
-              className={`${styles.bentoCard} ${styles.buildCard}`}
-              variants={itemVariants}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            >
-              <div className={styles.cardHeader}>
-                <FiLayers className={styles.cardIcon} />
-                <span className={styles.cardTitle}>What I Build</span>
-              </div>
-              <p className={styles.buildText}>
-                AI-powered SaaS products, automation tools, and full-stack web
-                applications that solve real problems.
-              </p>
-            </motion.div>
-
-            {/* Location Card with Map Animation */}
-            <motion.div
-              className={`${styles.bentoCard} ${styles.locationCard}`}
-              variants={itemVariants}
-              whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            >
-              <div className={styles.cardHeader}>
-                <FiMapPin className={styles.cardIcon} />
-                <span className={styles.cardTitle}>Location</span>
-              </div>
-              <div className={styles.locationContent}>
-                <div className={styles.mapContainer}>
-                  <div className={styles.mapGrid}>
-                    {[...Array(25)].map((_, i) => (
-                      <div key={i} className={styles.mapDot} />
-                    ))}
-                  </div>
-                  <motion.div
-                    className={styles.locationPin}
-                    animate={{
-                      y: [0, -6, 0],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <FiMapPin />
+              {/* Location Card with Map Animation */}
+              <motion.div
+                className={`${styles.bentoCard} ${styles.locationCard}`}
+                variants={itemVariants}
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              >
+                <div className={styles.cardHeader}>
+                  <FiMapPin className={styles.cardIcon} />
+                  <span className={styles.cardTitle}>Location</span>
+                </div>
+                <div className={styles.locationContent}>
+                  <div className={styles.mapContainer}>
+                    <div className={styles.mapGrid}>
+                      {[...Array(25)].map((_, i) => (
+                        <div key={i} className={styles.mapDot} />
+                      ))}
+                    </div>
                     <motion.div
-                      className={styles.pinPulse}
+                      className={styles.locationPin}
                       animate={{
-                        scale: [1, 1.8, 1],
-                        opacity: [0.6, 0, 0.6],
+                        y: [0, -6, 0],
                       }}
                       transition={{
                         duration: 1.5,
                         repeat: Infinity,
-                        ease: "easeOut",
+                        ease: "easeInOut",
                       }}
-                    />
-                  </motion.div>
+                    >
+                      <FiMapPin />
+                      <motion.div
+                        className={styles.pinPulse}
+                        animate={{
+                          scale: [1, 1.8, 1],
+                          opacity: [0.6, 0, 0.6],
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          ease: "easeOut",
+                        }}
+                      />
+                    </motion.div>
+                  </div>
+                  <div className={styles.locationText}>
+                    <span className={styles.city}>KOLKATA</span>
+                    <span className={styles.country}>INDIA</span>
+                    <span className={styles.remote}>Available Remotely</span>
+                  </div>
                 </div>
-                <div className={styles.locationText}>
-                  <span className={styles.city}>KOLKATA</span>
-                  <span className={styles.country}>INDIA</span>
-                  <span className={styles.remote}>Available Remotely</span>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
 
-            {/* How I Work Card with Step Animation */}
-            <HowIWorkCard itemVariants={itemVariants} />
-          </motion.div>
+              {/* How I Work Card with Step Animation */}
+              <HowIWorkCard itemVariants={itemVariants} />
+            </motion.div>
+          </ContainerScroll>
         </motion.div>
       </motion.div>
     </section>
