@@ -3,11 +3,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./ProjectShowcase.module.scss";
-import Link from "next/link";
 import Image from "next/image";
 import { FaGithub, FaExternalLinkAlt, FaYoutube, FaPlay } from "react-icons/fa";
 import VideoPopup from "./VideoPopup";
+
+gsap.registerPlugin(ScrollTrigger);
 
 let youTubeIframeApiPromise;
 
@@ -195,30 +198,33 @@ const YouTubePreview = ({ videoUrl, poster, title, active }) => {
   );
 };
 
+const TILT_ANGLE = 4;
+const FLOAT_Y = 10;
+const FLOAT_OFFSETS = [0, 0.7, 0.3, 0.9, 0.5, 0.2, 0.8];
+
 const ProjectShowcase = () => {
-  const [showAll, setShowAll] = useState(false);
   const [videoPopup, setVideoPopup] = useState({
     isOpen: false,
     videoId: "",
   });
 
-  // Open video popup
+  const sectionRef = useRef(null);
+  const galleryRef = useRef(null);
+  const cardsAreaRef = useRef(null);
+  const stripRef = useRef(null);
+  const bgHeadingRef = useRef(null);
+
+  const cardEls = useRef([]);
+  const ctxRef = useRef(null);
+
   const openVideoPopup = (videoId) => {
-    setVideoPopup({
-      isOpen: true,
-      videoId,
-    });
+    setVideoPopup({ isOpen: true, videoId });
   };
 
-  // Close video popup
   const closeVideoPopup = () => {
-    setVideoPopup({
-      isOpen: false,
-      videoId: "",
-    });
+    setVideoPopup({ isOpen: false, videoId: "" });
   };
 
-  // Project data - Order: Disco, NixBuilder, AI RAG Copilot, Browzpot, TalTracker, Quenlo
   const allProjects = [
     {
       id: 1,
@@ -332,104 +338,323 @@ const ProjectShowcase = () => {
     },
   ];
 
-  // Determine which projects to show based on showAll state
-  const displayProjects = showAll ? allProjects : allProjects.slice(0, 4);
+  // --- GSAP horizontal scroll ---
+  useEffect(() => {
+    const ctxCleanups = [];
+    // Wait for images and cards to render before measuring
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        const strip = stripRef.current;
+        const gallery = galleryRef.current;
+        const cardsArea = cardsAreaRef.current;
+        const cards = cardEls.current.filter(Boolean);
 
-  // Handle the "See More Projects" button click
-  const handleSeeMoreClick = () => {
-    setShowAll(true);
-  };
+        if (!strip || !gallery || !cardsArea || !cards.length) return;
+
+        let stripWidth;
+        let startX;
+        let endX;
+        // Visual distance the strip translates (off-right → off-left).
+        let sweepDistance;
+        // Actual scroll distance the user travels through the pin.
+        // Decoupled from sweepDistance so the cards can complete a full
+        // visual sweep without forcing a 2.4× longer pin — that long pin
+        // was what made Contact's pin engage feel like a hard snap under
+        // Lenis smooth scroll.
+        let scrollDistance;
+        // Precomputed at refresh time so the scroll onUpdate handler
+        // does ZERO DOM reads — that was the source of the stutter at
+        // the Projects → GitHub pin-release boundary (forced layouts
+        // every frame from getBoundingClientRect).
+        //
+        // We use offsetLeft / offsetWidth (pure layout values) here
+        // instead of getBoundingClientRect — bbox is affected by any
+        // transforms that happen to be on the strip or cards at the
+        // moment refresh fires (e.g. on a post-image-load refresh
+        // after the user has already scrolled), and that error was
+        // freezing every card at the same tilt instead of letting the
+        // tilt swing left/right as cards passed the area's center.
+        let cardOffsets = [];
+        let areaCenter = 0;
+        let halfAreaWidth = 0;
+
+        function refresh() {
+          stripWidth = strip.scrollWidth;
+          // Cards sweep fully — start off the right edge of cardsArea,
+          // end past the left edge so every card visually exits to the
+          // left.
+          startX = cardsArea.offsetWidth;
+          endX = -stripWidth;
+          sweepDistance = startX - endX;
+          // Lengthen the pin so the horizontal sweep feels slower per
+          // scroll-pixel — even on a hard wheel flick the user has time
+          // to register each card. Stays under the prior breaking-point
+          // (≈ stripWidth + cardsArea.offsetWidth ≈ 1.42×) that made
+          // Contact's pin engage feel like a snap under Lenis.
+          scrollDistance = stripWidth * 1.3;
+
+          // Each card's center expressed in the strip's untranslated
+          // local x-axis (offsetLeft already accounts for strip's
+          // padding, since strip is the offsetParent).
+          cardOffsets = cards.map(
+            (card) => card.offsetLeft + card.offsetWidth / 2
+          );
+          // The cardsArea is the strip's offsetParent. Strip's
+          // offsetLeft within it is 0 horizontally (cardsArea has
+          // no horizontal padding), so the cardsArea center expressed
+          // in the strip's local x-axis is just half its width.
+          areaCenter = cardsArea.offsetWidth / 2;
+          halfAreaWidth = areaCenter || 1;
+        }
+
+        refresh();
+
+        // Park the strip off the right edge before the pin engages —
+        // prevents a single frame of cards-at-default-position before the
+        // scrollTrigger applies the fromTo "from" value.
+        gsap.set(strip, { x: startX, force3D: true });
+
+        const floatTweens = cards.map((card, i) =>
+          gsap.to(card, {
+            y: FLOAT_Y,
+            duration: 2.2 + i * 0.3,
+            ease: "sine.inOut",
+            repeat: -1,
+            yoyo: true,
+            delay: (FLOAT_OFFSETS[i % FLOAT_OFFSETS.length] || 0) * 2,
+            force3D: true,
+            paused: true,
+          })
+        );
+
+        // Only run the infinite float tweens while the gallery is in
+        // view. Letting them run continuously caused the cards to
+        // repaint forever, fighting the strip's transform during the
+        // pin-release into GitHub.
+        ScrollTrigger.create({
+          trigger: gallery,
+          start: "top bottom",
+          end: "bottom top",
+          onToggle: (self) => {
+            if (self.isActive) floatTweens.forEach((t) => t.play());
+            else floatTweens.forEach((t) => t.pause());
+          },
+        });
+
+        gsap.set(cards, { opacity: 0, y: 50, force3D: true });
+
+        gsap.to(cards, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: gallery,
+            start: "top 90%",
+            toggleActions: "play none none none",
+          },
+        });
+
+        // Pre-compile a quickTo for each card's rotation. This avoids
+        // creating a fresh tween on every scroll frame (the previous
+        // gsap.to-in-onUpdate pattern produced hundreds of tweens/sec
+        // and caused stutter at the pin boundary into the next section).
+        const rotateTo = cards.map((card) =>
+          gsap.quickTo(card, "rotation", {
+            duration: 0.4,
+            ease: "power2.out",
+          })
+        );
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: gallery,
+            start: "top top",
+            end: () => `+=${scrollDistance}`,
+            pin: gallery,
+            scrub: true,
+            invalidateOnRefresh: true,
+            pinSpacing: true,
+            anticipatePin: 1,
+            // Lenis uses native window scroll, so pinType: "fixed" is
+            // the right choice — "transform" is for custom (non-window)
+            // scrollers and is known to introduce sub-pixel vibration
+            // under native-scroll smooth scrollers like Lenis.
+            pinType: "fixed",
+            fastScrollEnd: true,
+            onUpdate: (self) => {
+              // No DOM reads during scroll — derive each card's center
+              // from the precomputed offsets and the timeline progress.
+              // This keeps the pin-release transition into GitHub
+              // smooth, since the scroll handler no longer triggers
+              // forced layouts every frame.
+              const stripX = startX - self.progress * sweepDistance;
+              for (let i = 0; i < cards.length; i++) {
+                const cardCenter = cardOffsets[i] + stripX;
+                const offset = (cardCenter - areaCenter) / halfAreaWidth;
+                const clamped = offset < -1 ? -1 : offset > 1 ? 1 : offset;
+                rotateTo[i](clamped * -TILT_ANGLE);
+              }
+            },
+          },
+        });
+
+        tl.fromTo(
+          strip,
+          { x: () => startX },
+          {
+            x: () => endX,
+            ease: "none",
+            force3D: true,
+          },
+          0
+        );
+
+        // Fade the background "Recent Work" heading from prominent to
+        // soft as the user scrolls horizontally, so it reads boldly when
+        // the area is empty and recedes as cards slide over it.
+        if (bgHeadingRef.current) {
+          tl.fromTo(
+            bgHeadingRef.current,
+            { opacity: 0.9 },
+            { opacity: 0.08, ease: "none" },
+            0
+          );
+        }
+
+        ScrollTrigger.addEventListener("refreshInit", refresh);
+        // Make the listener removable on unmount so HMR / route changes
+        // don't accumulate stale refresh callbacks.
+        ctxCleanups.push(() =>
+          ScrollTrigger.removeEventListener("refreshInit", refresh)
+        );
+
+        // Refresh after images load — but defer to an idle moment so
+        // the refresh never fires while the user is actively scrolling
+        // through the section. A mid-scroll ScrollTrigger.refresh()
+        // briefly reverts the pin to take measurements and that revert
+        // is exactly the visible "stuck frame" people sometimes saw at
+        // the Projects → GitHub boundary. (Card layout is fixed-width
+        // with a fixed image aspect-ratio so the refresh isn't even
+        // needed for correctness — only as a safety net.)
+        const safeRefresh = () => {
+          const ric = window.requestIdleCallback;
+          if (typeof ric === "function") {
+            ric(() => ScrollTrigger.refresh(), { timeout: 1500 });
+          } else {
+            setTimeout(() => ScrollTrigger.refresh(), 200);
+          }
+        };
+        const imgs = strip.querySelectorAll("img");
+        let loaded = 0;
+        const onLoad = () => {
+          loaded++;
+          if (loaded >= imgs.length) {
+            safeRefresh();
+          }
+        };
+        imgs.forEach((img) => {
+          if (img.complete) {
+            loaded++;
+          } else {
+            img.addEventListener("load", onLoad);
+          }
+        });
+        if (loaded >= imgs.length) {
+          safeRefresh();
+        }
+      }, sectionRef);
+
+      ctxRef.current = ctx;
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      ctxCleanups.forEach((fn) => fn());
+      if (ctxRef.current) ctxRef.current.revert();
+    };
+  }, []);
 
   return (
-    <section id="projects" className={styles.projectsSection}>
-      <div className={styles.container}>
+    <section id="projects" className={styles.projectsSection} ref={sectionRef}>
+      {/* Horizontal scroll gallery — header inside so it stays visible when pinned */}
+      <div className={styles.gallery} ref={galleryRef}>
         <div className={styles.sectionHeader}>
           <span className={styles.sectionTag}>Projects</span>
-          <h2 className={styles.heading}>
-            Recent <span>Work</span>
-          </h2>
           <p className={styles.subheading}>
             A selection of my recent projects and applications built with modern
             technologies.
           </p>
         </div>
 
-        <div className={styles.projectsGrid}>
-          {displayProjects.map((project) => (
-            <ProjectCard
+        <div className={styles.cardsArea} ref={cardsAreaRef}>
+          {/* Background heading sits behind the strip; cards slide over it */}
+          <div
+            className={styles.bgHeading}
+            ref={bgHeadingRef}
+            aria-hidden="true"
+          >
+            Recent Work
+          </div>
+
+          {/* Fade edges */}
+          <div className={styles.fadeLeft} />
+          <div className={styles.fadeRight} />
+
+          <div className={styles.strip} ref={stripRef}>
+          {allProjects.map((project, i) => (
+            <div
               key={project.id}
-              project={project}
-              openVideoPopup={openVideoPopup}
-            />
+              ref={(el) => (cardEls.current[i] = el)}
+              className={styles.projectCard}
+            >
+              <ProjectCard
+                project={project}
+                openVideoPopup={openVideoPopup}
+              />
+            </div>
           ))}
+          </div>
         </div>
-
-        <div className={styles.moreProjects}>
-          {!showAll && (
-            <button onClick={handleSeeMoreClick} className={styles.btnOutline}>
-              See More Projects
-            </button>
-          )}
-        </div>
-
-        {/* Video Popup Component */}
-        <VideoPopup
-          isOpen={videoPopup.isOpen}
-          onClose={closeVideoPopup}
-          videoId={videoPopup.videoId}
-        />
       </div>
+
+      <VideoPopup
+        isOpen={videoPopup.isOpen}
+        onClose={closeVideoPopup}
+        videoId={videoPopup.videoId}
+      />
     </section>
   );
 };
 
-// Project Card Component
+// Project Card Component — keeps same styling/functionality
 const ProjectCard = ({ project, openVideoPopup }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isPreviewPlaying, setIsPreviewPlaying] = useState(false);
 
-  // Set mounted state to prevent SSR hydration flicker
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Detect mobile device
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-
-    // Initial check
     checkMobile();
-
-    // Add resize listener
     window.addEventListener("resize", checkMobile);
-
-    return () => {
-      window.removeEventListener("resize", checkMobile);
-    };
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   useEffect(() => {
-    if (isMobile) {
-      setIsHovering(false);
-    }
+    if (isMobile) setIsHovering(false);
   }, [isMobile]);
 
-  // Reset preview when not hovering (only on desktop)
   useEffect(() => {
-    if (!isHovering && !isMobile) {
-      setIsPreviewPlaying(false);
-    }
+    if (!isHovering && !isMobile) setIsPreviewPlaying(false);
   }, [isHovering, isMobile]);
-
-  const [ref, inView] = useInView({
-    threshold: 0.05,
-    triggerOnce: true,
-    rootMargin: "100px",
-  });
 
   const handlePlayClick = (e) => {
     e.stopPropagation();
@@ -437,18 +662,7 @@ const ProjectCard = ({ project, openVideoPopup }) => {
   };
 
   return (
-    <motion.div
-      ref={ref}
-      className={styles.projectCard}
-      initial={false}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{
-        duration: 0.4,
-        ease: [0.25, 0.1, 0.25, 1],
-      }}
-      style={{ opacity: 0, y: 20 }}
-    >
-      {/* Project Image */}
+    <>
       <div
         className={styles.projectImageWrapper}
         onMouseEnter={() => {
@@ -500,7 +714,6 @@ const ProjectCard = ({ project, openVideoPopup }) => {
         )}
       </div>
 
-      {/* Project Content */}
       <div className={styles.projectContent}>
         <h3 className={styles.projectName}>{project.name}</h3>
         <p className={styles.projectDescription}>{project.description}</p>
@@ -514,7 +727,6 @@ const ProjectCard = ({ project, openVideoPopup }) => {
         </div>
 
         <div className={styles.projectLinks}>
-          {/* GitHub code link when available */}
           {project.githubLink && (
             <a
               href={project.githubLink}
@@ -526,7 +738,6 @@ const ProjectCard = ({ project, openVideoPopup }) => {
             </a>
           )}
 
-          {/* Demo video button */}
           {project.demoVideo && (
             <button
               className={`${styles.projectLink} ${styles.liveLink}`}
@@ -539,7 +750,6 @@ const ProjectCard = ({ project, openVideoPopup }) => {
             </button>
           )}
 
-          {/* External link when there's no demo video */}
           {project.liveLink && !project.demoVideo && (
             <a
               href={project.liveLink}
@@ -552,7 +762,7 @@ const ProjectCard = ({ project, openVideoPopup }) => {
           )}
         </div>
       </div>
-    </motion.div>
+    </>
   );
 };
 

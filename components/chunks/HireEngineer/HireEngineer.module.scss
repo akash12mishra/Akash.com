@@ -1,0 +1,95 @@
+.hireSection {
+  width: 100%;
+  background: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 2rem 4rem;
+  position: relative;
+  overflow: hidden;
+  /* Pull this section UP into Contact's post-pin scroll-off tail.
+     Contact is height:100vh and pinned, so ScrollTrigger's pin-spacer
+     adds (section_height + pin_distance) to the document. After pin
+     releases, the user has to scroll through 100vh of empty section
+     background before this section becomes visible — that's the gap.
+     Negative margin-top lets HireEngineer overlap that empty tail.
+     -75vh leaves a small ~25vh breathing space at pin release, then
+     this section enters. z-index 11 paints above Contact's z-index:10
+     so the bg-only Contact tail doesn't sit on top of this section. */
+  margin-top: -75vh;
+  z-index: 11;
+}
+
+.content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  position: relative;
+}
+
+.heading {
+  font-size: clamp(5rem, 15vw, 14rem);
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 0.9;
+  margin: 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &::after {
+    content: "";
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    margin-top: 1.5rem;
+  }
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.1em;
+}
+
+/* CTA is overlaid on top of the giant heading — absolutely centred
+   over the heading area so it sits visually "on top of" the text. */
+.ctaWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  margin-top: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hireSection {
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .heading {
+    font-size: clamp(3.5rem, 18vw, 8rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .hireSection {
+    padding: 1.5rem 1.2rem 2.5rem;
+  }
+
+  .heading {
+    font-size: clamp(2.5rem, 20vw, 5rem);
+  }
+}

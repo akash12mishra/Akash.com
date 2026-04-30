@@ -13,7 +13,7 @@ const NewFooter = () => {
         <div className={styles.footerContent}>
           <div className={styles.branding}>
             <h3>Arka Lal Chakravarty</h3>
-            <p>Full Stack Engineer & AI Enthusiast</p>
+            <p>Full Stack Engineer & AI Specialist</p>
           </div>
 
           <div className={styles.navLinks}>
@@ -27,7 +27,7 @@ const NewFooter = () => {
                   <a href="#about">About</a>
                 </li>
                 <li>
-                  <a href="#experience">Experience</a>
+                  <a href="#skills">Skills</a>
                 </li>
               </ul>
             </div>

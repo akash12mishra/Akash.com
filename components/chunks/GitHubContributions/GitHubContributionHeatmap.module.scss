@@ -2,6 +2,13 @@
   padding: 60px 0;
   background-color: var(--background);
   color: var(--text-primary);
+  /* will-change: opacity hints the browser that the section's
+     framer-motion entry animation will mutate opacity — no
+     `transform` here on purpose, because the tooltip rendered inside
+     the section uses position: fixed and a transform on a fixed
+     descendant's ancestor would change its containing block and
+     break tooltip placement. */
+  will-change: opacity;
 
   .container {
     max-width: 900px;
@@ -14,34 +21,60 @@
   }
 
   .sectionHeader {
-    margin-bottom: 20px;
-    text-align: left;
+    margin-bottom: 30px;
+    text-align: center;
     position: relative;
 
     .sectionTag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0;
-      background: none;
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      font-weight: 500;
+      display: inline-block;
+      padding: 5px 14px;
+      background: rgba(var(--accent-primary-rgb), 0.08);
+      color: var(--accent-primary);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-radius: 50px;
+      border: 1px solid rgba(var(--accent-primary-rgb), 0.15);
+      margin-bottom: 12px;
     }
 
     .heading {
-      display: none;
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 8px;
+      letter-spacing: -0.03em;
+
+      span {
+        color: var(--text-primary);
+      }
+
+      @media (max-width: 768px) {
+        font-size: 1.3rem;
+      }
     }
 
     .subheading {
-      display: none;
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0 auto;
+      max-width: 440px;
+
+      @media (max-width: 768px) {
+        font-size: 0.8rem;
+      }
     }
 
     .yearSelector {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 16px;
+      margin-top: 20px;
+      justify-content: center;
 
       .yearButton {
         padding: 8px 16px;
@@ -76,6 +109,26 @@
     margin-bottom: 1rem;
     width: 100%;
     overflow: hidden;
+    /* Promote the heatmap card to its own GPU compositing layer +
+       scope paint/layout so the 365 contribution cells don't trigger
+       layer allocation the first time the section comes into view.
+       The tooltip is rendered as a sibling of .container at the
+       motion.section level, so it's NOT a descendant of this wrapper
+       and its position: fixed remains anchored to the viewport. */
+    transform: translateZ(0);
+    contain: layout paint;
+
+    /* While Lenis is actively scrolling, suppress all pointer events
+       inside the heatmap. The 365 cells each have a mouseenter
+       handler that triggers a React re-render + forced layout for
+       tooltip positioning; without this, scrolling sweeps the cursor
+       across many cells per frame and produces the visible "stuck"
+       feeling on scroll up/down through this section. The class is
+       toggled directly via classList from the component's scroll
+       listener (no React state churn). */
+    &.isScrolling {
+      pointer-events: none;
+    }
   }
 
   .heatmapContainer {
@@ -85,6 +138,12 @@
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     @media (max-width: 768px) {
       padding-bottom: 1rem;

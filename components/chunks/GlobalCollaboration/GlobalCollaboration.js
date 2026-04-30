@@ -3,7 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./GlobalCollaboration.module.scss";
 import { motion } from "framer-motion";
-import { HiOutlineArrowRight } from "react-icons/hi";
+import createGlobe from "cobe";
+import CtaButton from "../../CtaButton/CtaButton";
 
 const floatingAvatars = [
   {
@@ -75,7 +76,7 @@ const GlobalCollaboration = () => {
       ([entry]) => {
         setIsInView(entry.isIntersecting);
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(containerRef.current);
@@ -95,9 +96,7 @@ const GlobalCollaboration = () => {
 
     let currentSize = getGlobeSize();
 
-    const initGlobe = async () => {
-      const createGlobe = (await import("cobe")).default;
-
+    const initGlobe = () => {
       if (globeRef.current) {
         globeRef.current.destroy();
         globeRef.current = null;
@@ -192,26 +191,25 @@ const GlobalCollaboration = () => {
         variants={containerVariants}
       >
         <div className={styles.textContent}>
+          <motion.span className={styles.sectionTag} variants={itemVariants}>
+            Collaboration
+          </motion.span>
           <motion.h2 className={styles.headline} variants={itemVariants}>
             Building with <span className={styles.highlight}>Global Teams</span>
           </motion.h2>
 
           <motion.p className={styles.subheadline} variants={itemVariants}>
-            I collaborate with founders and engineering teams worldwide to ship
-            AI products and full-stack applications with high ownership and
-            clear communication.
+            I work with founders and engineering teams to ship AI products and
+            full-stack applications with high ownership and clear communication.
           </motion.p>
 
           <motion.div className={styles.ctaRow} variants={itemVariants}>
-            <a
+            <CtaButton
               href="https://calendly.com/arkalal-chakravarty/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.primaryCta}
-            >
-              <span>Book a call</span>
-              <HiOutlineArrowRight className={styles.ctaIcon} />
-            </a>
+              label="Book a Call"
+              external
+              variant="primary"
+            />
           </motion.div>
         </div>
 
