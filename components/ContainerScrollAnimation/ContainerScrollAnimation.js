@@ -41,8 +41,17 @@ export const ContainerScroll = ({ titleComponent, children }) => {
   const translateY = useSpring(rawTranslateY, springConfig);
   const opacity = useSpring(rawOpacity, springConfig);
 
+  // On mobile, render the card at identity values (no scroll-driven
+  // animation). We must pass explicit values rather than `undefined`,
+  // because framer-motion does not reliably clear previously-applied
+  // inline transforms/opacity when the `style` prop changes from a
+  // motion-value object to `undefined`. On real iOS/Android devices
+  // the card was getting stuck at `opacity: 0` (the initial value of
+  // the spring transform when scrollYProgress is at 0), making the
+  // hero card invisible. Explicit identity values guarantee the DOM
+  // is written with `opacity: 1` on mobile.
   const cardStyle = isMobile
-    ? undefined
+    ? { rotateX: 0, scale: 1, translateY: 0, opacity: 1 }
     : { rotateX, scale, translateY, opacity };
 
   return (
