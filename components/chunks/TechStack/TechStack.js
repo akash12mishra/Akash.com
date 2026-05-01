@@ -2,6 +2,8 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import styles from "./TechStack.module.scss";
 import {
   SiNextdotjs,
@@ -17,6 +19,8 @@ import {
   SiPython,
 } from "react-icons/si";
 import { FaAws } from "react-icons/fa";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const TECH_ITEMS = [
   { icon: SiNextdotjs, name: "Next.js", color: "#000000" },
@@ -38,6 +42,15 @@ const SETS = 3;
 const MAX_SCROLL = 600;
 const DELTA_CLAMP = 25;
 const lerp = (a, b, t) => a * (1 - t) + b * t;
+
+// Touch-primary device check: pointer:coarse means the user's primary
+// input is a finger (true mobile/tablet). Hybrid devices like
+// touchscreen laptops report pointer:fine and stay on the desktop path.
+const detectTouchPrimary = () => {
+  if (typeof window === "undefined") return false;
+  if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return true;
+  return false;
+};
 
 // --- Icon Card ---
 const TechIconCard = ({ tech, target }) => {
@@ -74,20 +87,24 @@ const TechStack = () => {
   const sectionRef = useRef(null);
   const containerRef = useRef(null);
   const [containerSize, setContainerSize] = useState({ width: 800, height: 600 });
+  // Decide once at mount which scroll mechanism to use. Desktop keeps
+  // the proven IO + Lenis-stop + virtual-scroll wheel/touch path that
+  // shipped previously. Touch-primary devices use a ScrollTrigger pin
+  // — Lenis ↔ ScrollTrigger is already wired up in SmoothScroll, and
+  // ScrollTrigger doesn't body-lock or corrupt Lenis state, so it
+  // avoids the iOS momentum-scroll, spring-lag, and snap-to-top
+  // problems that the desktop path runs into on mobile hardware.
+  const [isTouchDevice] = useState(detectTouchPrimary);
+
+  // Desktop-path state/refs. Unused on the mobile path but cheap to
+  // declare unconditionally so the hooks rules stay satisfied.
   const [isPinned, setIsPinned] = useState(false);
   const isPinnedRef = useRef(false);
   const morphValRef = useRef(0);
   const scrollRef = useRef(0);
   const virtualScroll = useMotionValue(0);
-  // Stores the document scrollY at the moment we locked the body so we
-  // can restore the user to the same visual position on unpin. iOS
-  // Safari ignores preventDefault on touchmove during momentum scroll
-  // (and overflow:hidden on body alone doesn't stop momentum), so on
-  // touch devices we lock the body via position:fixed — the only
-  // reliable way to halt native scroll mid-pin.
-  const lockedScrollYRef = useRef(null);
 
-  // --- Container size ---
+  // --- Container size (both paths) ---
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -101,32 +118,13 @@ const TechStack = () => {
     return () => ro.disconnect();
   }, []);
 
-  // --- Pin / Unpin ---
+  // --- Pin / Unpin (desktop path) ---
   const pinSection = useCallback(() => {
     if (isPinnedRef.current) return;
     isPinnedRef.current = true;
     setIsPinned(true);
-    if (typeof window === "undefined") return;
-    if (window.__lenis) window.__lenis.stop();
-
-    // On touch devices, Lenis doesn't intercept native scroll by default,
-    // so .stop() alone leaves iOS momentum scrolling free to fly past
-    // the section before our touchmove preventDefault can fire. Lock the
-    // body via the proven iOS pattern (position:fixed + restored scroll
-    // offset) so native scroll truly halts for the duration of the pin.
-    const isTouch =
-      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) ||
-      "ontouchstart" in window;
-    if (isTouch && lockedScrollYRef.current === null) {
-      const scrollY = window.scrollY || window.pageYOffset || 0;
-      lockedScrollYRef.current = scrollY;
-      const body = document.body;
-      body.style.position = "fixed";
-      body.style.top = `-${scrollY}px`;
-      body.style.left = "0";
-      body.style.right = "0";
-      body.style.width = "100%";
-      body.style.overflow = "hidden";
+    if (typeof window !== "undefined" && window.__lenis) {
+      window.__lenis.stop();
     }
   }, []);
 
@@ -134,66 +132,14 @@ const TechStack = () => {
     if (!isPinnedRef.current) return;
     isPinnedRef.current = false;
     setIsPinned(false);
-    if (typeof window === "undefined") return;
-
-    // Order matters here. While the body was position:fixed during the
-    // pin, the document was effectively viewport-tall, so Lenis cached
-    // its scroll limit as ~0 and window.scrollY was forced to 0. We
-    // must (1) un-fix the body so the real document height returns,
-    // (2) restore scroll via native scrollTo (Lenis's own scrollTo
-    // would clamp the target against the stale 0 limit and snap the
-    // page to the very top), (3) ask Lenis to recompute its limits,
-    // and only then (4) resume Lenis — so its first post-pin tick
-    // reads the correct scroll position instead of locking 0 in.
-    if (lockedScrollYRef.current !== null) {
-      const scrollY = lockedScrollYRef.current;
-      lockedScrollYRef.current = null;
-      const body = document.body;
-      body.style.position = "";
-      body.style.top = "";
-      body.style.left = "";
-      body.style.right = "";
-      body.style.width = "";
-      body.style.overflow = "";
-      window.scrollTo(0, scrollY);
-    }
-
-    if (window.__lenis) {
-      if (typeof window.__lenis.resize === "function") {
-        window.__lenis.resize();
-      }
+    if (typeof window !== "undefined" && window.__lenis) {
       window.__lenis.start();
     }
   }, []);
 
-  // Safety net: if the component unmounts while pinned (e.g. route
-  // change mid-morph), restore the body styles so the rest of the
-  // site isn't left scroll-locked, and resync Lenis with the freshly
-  // un-fixed document so the next view doesn't inherit a stale limit.
+  // --- Desktop: IntersectionObserver (direction-aware) ---
   useEffect(() => {
-    return () => {
-      if (lockedScrollYRef.current !== null) {
-        const scrollY = lockedScrollYRef.current;
-        lockedScrollYRef.current = null;
-        const body = document.body;
-        body.style.position = "";
-        body.style.top = "";
-        body.style.left = "";
-        body.style.right = "";
-        body.style.width = "";
-        body.style.overflow = "";
-        if (typeof window !== "undefined") {
-          window.scrollTo(0, scrollY);
-          if (window.__lenis && typeof window.__lenis.resize === "function") {
-            window.__lenis.resize();
-          }
-        }
-      }
-    };
-  }, []);
-
-  // --- Intersection Observer (direction-aware) ---
-  useEffect(() => {
+    if (isTouchDevice) return;
     const el = sectionRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -217,10 +163,11 @@ const TechStack = () => {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [pinSection, unpinSection, virtualScroll]);
+  }, [isTouchDevice, pinSection, unpinSection, virtualScroll]);
 
-  // --- Wheel / Touch handlers with delta clamping ---
+  // --- Desktop: Wheel / Touch handlers with delta clamping ---
   useEffect(() => {
+    if (isTouchDevice) return;
     const handleWheel = (e) => {
       if (!isPinnedRef.current) return;
 
@@ -270,23 +217,67 @@ const TechStack = () => {
         window.__lenis.start();
       }
     };
-  }, [virtualScroll, unpinSection]);
+  }, [isTouchDevice, virtualScroll, unpinSection]);
 
   // --- Morph: circle → line (scroll 0→400) ---
+  // Spring-smoothed value drives the desktop path's visuals AND its
+  // pin-release boundary check. Mobile path drives morphVal directly
+  // via ScrollTrigger so the spring is unused there.
   const morphProgress = useTransform(virtualScroll, [0, 400], [0, 1]);
   const smoothMorph = useSpring(morphProgress, { stiffness: 120, damping: 30 });
 
   const [morphVal, setMorphVal] = useState(0);
   useEffect(() => {
+    if (isTouchDevice) return;
     return smoothMorph.on("change", (v) => {
       setMorphVal(v);
       morphValRef.current = v;
     });
-  }, [smoothMorph]);
+  }, [isTouchDevice, smoothMorph]);
 
-  // Header transitions
-  const contentOpacity = useTransform(smoothMorph, [0.8, 1], [0, 1]);
-  const contentY = useTransform(smoothMorph, [0.8, 1], [20, 0]);
+  // --- Mobile: ScrollTrigger pin ---
+  // Same pattern Projects and Contact already use successfully here.
+  // Driven by real document scroll via the Lenis ↔ ScrollTrigger
+  // integration in SmoothScroll. No body lock, no manual handlers, no
+  // virtual-scroll spring lag — so iOS momentum scroll can't fly past
+  // the section, the morph progresses 1:1 with each swipe, and pin
+  // release continues into the next section without snapping to top.
+  // Morph runs over the first 70% of the pin (circle → line); the
+  // remaining 30% is the marquee phase before pin releases.
+  useEffect(() => {
+    if (!isTouchDevice) return;
+    if (typeof window === "undefined") return;
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: () => `+=${window.innerHeight}`,
+      pin: true,
+      // Lenis uses native window scroll, so pinType:"fixed" matches
+      // ProjectShowcase's rationale — "transform" introduces sub-pixel
+      // vibration under native-scroll smooth scrollers like Lenis.
+      pinType: "fixed",
+      pinSpacing: true,
+      anticipatePin: 1,
+      scrub: true,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        setMorphVal(Math.min(1, self.progress / 0.7));
+      },
+    });
+
+    return () => trigger.kill();
+  }, [isTouchDevice]);
+
+  // Header transitions — derived from morphVal state so both paths
+  // produce the same reveal regardless of which mechanism is driving
+  // morphVal. (Desktop previously used motion-value transforms here;
+  // collapsing to plain state values keeps behavior identical and
+  // avoids needing a parallel mobile-only transform chain.)
+  const contentOpacity = Math.max(0, Math.min(1, (morphVal - 0.8) / 0.2));
+  const contentY = lerp(20, 0, contentOpacity);
 
   // Line fully formed — start marquee scrolling
   const lineFormed = morphVal > 0.98;
