@@ -867,3 +867,19 @@
     font-size: 0.8rem;
   }
 }
+
+/* Mobile-only sizing bump for the iPhone mockup so it reads as a
+   prominent visual rather than a thumbnail floating in the centre
+   of empty space. Tablet (≥768) and desktop (≥1024) keep their
+   existing tuning untouched (scale 0.85 / 1, height 380 / 600).
+   The floating badges live inside .mockupScale so they scale with
+   the phone and stay proportional. */
+@media (max-width: 767px) {
+  .mockupWrapper {
+    height: 560px;
+  }
+
+  .mockupScale {
+    transform: scale(0.95);
+  }
+}
