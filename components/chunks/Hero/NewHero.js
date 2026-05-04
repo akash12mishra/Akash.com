@@ -69,6 +69,7 @@ const NewHero = () => {
     let direction = 1;
     let last = performance.now();
     let paused = false;
+    let pos = el.scrollTop;
     // Target ~3.5s per direction regardless of how much content overflows.
     // Recompute if the wrapper resizes (responsive). Falling back to a
     // sane minimum so very small overflows don't crawl.
@@ -89,18 +90,17 @@ const NewHero = () => {
           return;
         }
         const speed = Math.max(20, max / (directionDurationMs / 1000));
-        const next = el.scrollTop + direction * speed * (dt / 1000);
-        if (next >= max) {
-          el.scrollTop = max;
+        pos += direction * speed * (dt / 1000);
+        if (pos >= max) {
+          pos = max;
           direction = -1;
           holdUntil = now + endHoldMs;
-        } else if (next <= 0) {
-          el.scrollTop = 0;
+        } else if (pos <= 0) {
+          pos = 0;
           direction = 1;
           holdUntil = now + endHoldMs;
-        } else {
-          el.scrollTop = next;
         }
+        el.scrollTop = pos;
       }
       raf = requestAnimationFrame(tick);
     };
@@ -234,8 +234,8 @@ const NewHero = () => {
                 <span>Source</span>
               </a>
               <a
-                href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
-                download="Arka_Lal_Chakravarty_CV_2026.pdf"
+                href="/assets/doc/Arkalal Resume 2026 official.pdf"
+                download="Arkalal_Resume_2026_official.pdf"
                 className={styles.mobileDrawerCv}
                 onClick={closeMobileMenu}
               >
@@ -255,8 +255,8 @@ const NewHero = () => {
               title="View Source Code"
             />
             <CtaButton
-              href="/assets/doc/Arka Lal Chakravarty CV - 2026 .pdf"
-              download="Arka_Lal_Chakravarty_CV_2026.pdf"
+              href="/assets/doc/Arkalal Resume 2026 official.pdf"
+              download="Arkalal_Resume_2026_official.pdf"
               label="Download Resume"
               size="sm"
               icon={<FaFileAlt />}
@@ -334,7 +334,7 @@ const NewHero = () => {
                 >
                   <div className={styles.experienceTimeline}>
                     <ExperienceItem
-                      role="Lead Software Engineer"
+                      role="Lead Full Stack Engineer"
                       company="Epigroww Global"
                       period="2025"
                       type="Full-time"
@@ -342,39 +342,25 @@ const NewHero = () => {
                       isCurrent
                     />
                     <ExperienceItem
-                      role="Freelance Software Engineer"
-                      company="arkalalchakravarty.com"
+                      role="AI Full Stack Engineer"
+                      company="Helionix Tech"
                       period="2025"
-                      type="Freelance"
+                      type="Contract"
                       index={1}
                     />
                     <ExperienceItem
-                      role="AI Engineer"
-                      company="Helionix"
-                      period="2025"
-                      type="Contract"
-                      index={2}
-                    />
-                    <ExperienceItem
-                      role="AI Engineer"
+                      role="AI Full Stack Engineer"
                       company="ScaleGenAI"
                       period="2024"
                       type="Full-time"
-                      index={3}
+                      index={2}
                     />
                     <ExperienceItem
-                      role="Software Developer"
-                      company="Infojini Inc"
+                      role="Frontend Engineer"
+                      company="Infojini Inc."
                       period="2022-24"
                       type="Full-time"
-                      index={4}
-                    />
-                    <ExperienceItem
-                      role="Frontend Web Developer"
-                      company="CRIMSON INTELLIGENCE SA"
-                      period="2021-22"
-                      type="Internship"
-                      index={5}
+                      index={3}
                       isLast
                     />
                   </div>
@@ -483,7 +469,6 @@ const NewHero = () => {
                   <div className={styles.locationText}>
                     <span className={styles.city}>KOLKATA</span>
                     <span className={styles.country}>INDIA</span>
-                    <span className={styles.remote}>Available Remotely</span>
                   </div>
                 </div>
               </motion.div>

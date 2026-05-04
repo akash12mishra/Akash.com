@@ -95,7 +95,7 @@ const Contact = () => {
             `.${styles.floatingBadge}`,
             `.${styles.phoneWidget}`,
           ],
-          { autoAlpha: 0 }
+          { autoAlpha: 0 },
         );
 
         // Phone slides — first visible, others below
@@ -139,7 +139,7 @@ const Contact = () => {
               clipPath: "inset(0 0% 0 0)",
               ease: "power4.inOut",
             },
-            "-=0.9"
+            "-=0.9",
           );
 
         // Main pinned cinematic timeline.
@@ -179,7 +179,8 @@ const Contact = () => {
                 const dur = tl.duration();
                 const tabsStart = tl.labels.tabs;
                 const exitStart = tl.labels.exit;
-                if (!dur || tabsStart == null || exitStart == null) return progress;
+                if (!dur || tabsStart == null || exitStart == null)
+                  return progress;
                 const startP = tabsStart / dur;
                 const endP = exitStart / dur;
                 // Outside tab phase → reset tracker to the appropriate
@@ -202,7 +203,8 @@ const Contact = () => {
                 const lastP = points[lastTabIdx];
                 let nextIdx = lastTabIdx;
                 if (progress > lastP) nextIdx = Math.min(2, lastTabIdx + 1);
-                else if (progress < lastP) nextIdx = Math.max(0, lastTabIdx - 1);
+                else if (progress < lastP)
+                  nextIdx = Math.max(0, lastTabIdx - 1);
                 lastTabIdx = nextIdx;
                 return points[nextIdx];
               },
@@ -230,13 +232,13 @@ const Contact = () => {
               ease: "power2.inOut",
               duration: 2,
             },
-            LEAD
+            LEAD,
           )
           // Card rises into view
           .to(
             `.${styles.mainCard}`,
             { y: 0, ease: "power3.inOut", duration: 2 },
-            LEAD
+            LEAD,
           )
           // Card expands to fullscreen
           .to(`.${styles.mainCard}`, {
@@ -267,7 +269,7 @@ const Contact = () => {
               ease: "expo.out",
               duration: 2.5,
             },
-            "-=0.8"
+            "-=0.8",
           )
           // Phone widgets stagger in
           .fromTo(
@@ -281,7 +283,7 @@ const Contact = () => {
               ease: "back.out(1.2)",
               duration: 1.2,
             },
-            "-=1.6"
+            "-=1.6",
           )
           // Floating badges
           .fromTo(
@@ -296,20 +298,20 @@ const Contact = () => {
               duration: 1.4,
               stagger: 0.18,
             },
-            "-=2.0"
+            "-=2.0",
           )
           // Side text panels
           .fromTo(
             `.${styles.cardLeftText}`,
             { x: -50, autoAlpha: 0 },
             { x: 0, autoAlpha: 1, ease: "power4.out", duration: 1.4 },
-            "-=1.4"
+            "-=1.4",
           )
           .fromTo(
             `.${styles.cardRightText}`,
             { x: 50, autoAlpha: 0, scale: 0.85 },
             { x: 0, autoAlpha: 1, scale: 1, ease: "expo.out", duration: 1.4 },
-            "<"
+            "<",
           )
           // Cycle phone tabs (slide 0 → 1 → 2) — original snappy pacing
           .addLabel("tabs", "+=0.3");
@@ -319,20 +321,20 @@ const Contact = () => {
           tl.to(
             slides[i],
             { y: "-100%", autoAlpha: 0, duration: 0.6, ease: "power2.inOut" },
-            `tabs+=${i + 0.05}`
+            `tabs+=${i + 0.05}`,
           );
           tl.fromTo(
             slides[next],
             { y: "100%", autoAlpha: 0 },
             { y: "0%", autoAlpha: 1, duration: 0.6, ease: "power2.inOut" },
-            `tabs+=${i + 0.15}`
+            `tabs+=${i + 0.15}`,
           );
           if (progressFills[next]) {
             tl.fromTo(
               progressFills[next],
               { width: "0%" },
               { width: "100%", duration: 0.5, ease: "none" },
-              `tabs+=${i + 0.15}`
+              `tabs+=${i + 0.15}`,
             );
           }
         }
@@ -355,7 +357,7 @@ const Contact = () => {
               duration: 1.0,
               stagger: 0.05,
             },
-            "exit"
+            "exit",
           )
           .to(
             `.${styles.mainCard}`,
@@ -366,7 +368,7 @@ const Contact = () => {
               ease: "expo.inOut",
               duration: 1.2,
             },
-            "exit+=0.4"
+            "exit+=0.4",
           )
           // Card flies off the top to hand over to HireEngineer. power1.out
           // front-loads the motion so the card clears the viewport in the
@@ -416,14 +418,19 @@ const Contact = () => {
         <h2 className={`${styles.heroLine1} ${styles.heroLine}`}>
           Let's start a
         </h2>
-        <h2 className={`${styles.heroLine2} ${styles.heroLine} ${styles.heroLineAccent}`}>
+        <h2
+          className={`${styles.heroLine2} ${styles.heroLine} ${styles.heroLineAccent}`}
+        >
           conversation.
         </h2>
       </div>
 
       {/* THE PHYSICAL CARD — rises and fills the viewport */}
       <div className={styles.cardLayer} style={{ perspective: "1500px" }}>
-        <div ref={mainCardRef} className={`${styles.mainCard} ${styles.depthCard}`}>
+        <div
+          ref={mainCardRef}
+          className={`${styles.mainCard} ${styles.depthCard}`}
+        >
           <div className={styles.cardSheen} aria-hidden="true" />
 
           <div className={styles.cardGrid}>
@@ -444,10 +451,22 @@ const Contact = () => {
               <div className={styles.mockupScale}>
                 <div ref={mockupRef} className={styles.iphoneBezel}>
                   {/* Hardware buttons */}
-                  <span className={`${styles.hwBtn} ${styles.hwBtnSilencer}`} aria-hidden="true" />
-                  <span className={`${styles.hwBtn} ${styles.hwBtnVolUp}`} aria-hidden="true" />
-                  <span className={`${styles.hwBtn} ${styles.hwBtnVolDown}`} aria-hidden="true" />
-                  <span className={`${styles.hwBtn} ${styles.hwBtnPower}`} aria-hidden="true" />
+                  <span
+                    className={`${styles.hwBtn} ${styles.hwBtnSilencer}`}
+                    aria-hidden="true"
+                  />
+                  <span
+                    className={`${styles.hwBtn} ${styles.hwBtnVolUp}`}
+                    aria-hidden="true"
+                  />
+                  <span
+                    className={`${styles.hwBtn} ${styles.hwBtnVolDown}`}
+                    aria-hidden="true"
+                  />
+                  <span
+                    className={`${styles.hwBtn} ${styles.hwBtnPower}`}
+                    aria-hidden="true"
+                  />
 
                   <div className={styles.iphoneScreen}>
                     <div className={styles.screenGlare} aria-hidden="true" />
@@ -458,16 +477,22 @@ const Contact = () => {
                     </div>
 
                     <div className={styles.appShell}>
-                      <div className={`${styles.phoneWidget} ${styles.appHeader}`}>
+                      <div
+                        className={`${styles.phoneWidget} ${styles.appHeader}`}
+                      >
                         <div>
                           <span className={styles.appHeaderEyebrow}>Today</span>
-                          <span className={styles.appHeaderTitle}>Reach Out</span>
+                          <span className={styles.appHeaderTitle}>
+                            Reach Out
+                          </span>
                         </div>
                         <div className={styles.avatar}>AC</div>
                       </div>
 
                       {/* Tab progress bars (Dynamic-Island style segmented indicator) */}
-                      <div className={`${styles.phoneWidget} ${styles.tabProgress}`}>
+                      <div
+                        className={`${styles.phoneWidget} ${styles.tabProgress}`}
+                      >
                         <div className={styles.progressBar}>
                           <div className={styles.progressFill} />
                         </div>
@@ -483,7 +508,9 @@ const Contact = () => {
                       <div className={styles.phoneSlides}>
                         {/* Tab 1 — Email */}
                         <div className={styles.phoneSlide}>
-                          <div className={`${styles.slideIcon} ${styles.slideIconOrange}`}>
+                          <div
+                            className={`${styles.slideIcon} ${styles.slideIconOrange}`}
+                          >
                             <FaEnvelope />
                           </div>
                           <h4 className={styles.slideTitle}>Send Email</h4>
@@ -503,12 +530,14 @@ const Contact = () => {
 
                         {/* Tab 2 — Calendar */}
                         <div className={styles.phoneSlide}>
-                          <div className={`${styles.slideIcon} ${styles.slideIconAmber}`}>
+                          <div
+                            className={`${styles.slideIcon} ${styles.slideIconAmber}`}
+                          >
                             <FaCalendarAlt />
                           </div>
                           <h4 className={styles.slideTitle}>Book a Call</h4>
                           <p className={styles.slideText}>
-                            A focused 30-minute conversation about your goals.
+                            A focused 30-minute conversation.
                           </p>
                           <a
                             href="https://calendly.com/arkalal-chakravarty/30min"
@@ -522,7 +551,9 @@ const Contact = () => {
 
                         {/* Tab 3 — Social */}
                         <div className={styles.phoneSlide}>
-                          <div className={`${styles.slideIcon} ${styles.slideIconViolet}`}>
+                          <div
+                            className={`${styles.slideIcon} ${styles.slideIconViolet}`}
+                          >
                             <HiOutlineGlobeAlt />
                           </div>
                           <h4 className={styles.slideTitle}>Stay connected</h4>
@@ -561,14 +592,21 @@ const Contact = () => {
                         </div>
                       </div>
 
-                      <div className={styles.homeIndicator} aria-hidden="true" />
+                      <div
+                        className={styles.homeIndicator}
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
                 </div>
 
                 {/* Floating glass badges */}
-                <div className={`${styles.floatingBadge} ${styles.badgeTopLeft}`}>
-                  <div className={`${styles.badgeIcon} ${styles.badgeIconOrange}`}>
+                <div
+                  className={`${styles.floatingBadge} ${styles.badgeTopLeft}`}
+                >
+                  <div
+                    className={`${styles.badgeIcon} ${styles.badgeIconOrange}`}
+                  >
                     <span aria-hidden="true">✦</span>
                   </div>
                   <div>
@@ -577,13 +615,17 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className={`${styles.floatingBadge} ${styles.badgeBottomRight}`}>
-                  <div className={`${styles.badgeIcon} ${styles.badgeIconAmber}`}>
+                <div
+                  className={`${styles.floatingBadge} ${styles.badgeBottomRight}`}
+                >
+                  <div
+                    className={`${styles.badgeIcon} ${styles.badgeIconAmber}`}
+                  >
                     <span aria-hidden="true">⚡</span>
                   </div>
                   <div>
                     <p className={styles.badgeTitle}>Open to work</p>
-                    <p className={styles.badgeSub}>Worldwide remote</p>
+                    <p className={styles.badgeSub}>Worldwide</p>
                   </div>
                 </div>
               </div>

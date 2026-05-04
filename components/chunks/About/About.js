@@ -17,7 +17,7 @@ const About = () => {
   const bioText2 = " and ";
   const bioHighlight2 = "AI Specialist";
   const bioText3 =
-    " with a passion for building advanced AI SaaS and web applications. With expertise in both AI integration and web development, I specialize in creating powerful, user-friendly applications that leverage cutting-edge technologies.";
+    " with a passion for building advanced AI SaaS and full stack applications. With expertise in both AI integration and full stack development, I specialize in creating powerful, user-friendly applications that leverage cutting-edge technologies.";
 
   // Detect mobile devices
   useEffect(() => {
@@ -139,10 +139,8 @@ const About = () => {
               <span className={styles.cursor}>|</span>
             </h3>
             <h2 className={styles.heroHeadline}>
-              I build{" "}
-              <span className={styles.highlight}>AI-powered SaaS</span>,{" "}
-              <span className={styles.highlight}>full-stack web apps</span>,
-              and{" "}
+              I build <span className={styles.highlight}>AI-powered SaaS</span>,{" "}
+              <span className={styles.highlight}>full-stack apps</span>, and{" "}
               <span className={styles.highlight}>production-ready code</span>.
             </h2>
             <p className={styles.bio}>

@@ -240,6 +240,19 @@ const ProjectShowcase = () => {
       previewVideo: "https://youtu.be/GLAM1qw2ZHA",
     },
     {
+      id: 8,
+      name: "AtomX Website",
+      description:
+        "Redesigned and built the entire atomX website with proper SEO and modern UI aligned with the brand. Crafted attractive GSAP and Framer Motion animations to deliver a best-in-class user experience.",
+      image: "/images/projects/clientWork/atomX-preview.png",
+      technologies: ["Next.js", "GSAP", "Framer Motion", "SCSS", "SEO"],
+      liveLink: null,
+      githubLink: null,
+      featured: true,
+      demoVideo: "https://youtu.be/EBH4IC-zW2Y",
+      previewVideo: "https://youtu.be/EBH4IC-zW2Y",
+    },
+    {
       id: 2,
       name: "NixBuilder — AI App Builder",
       description:
@@ -292,49 +305,6 @@ const ProjectShowcase = () => {
       featured: true,
       demoVideo: "https://youtu.be/GwutUEqp2gc",
       previewVideo: "https://youtu.be/PSeyteGONXg",
-    },
-    {
-      id: 5,
-      name: "TalTracker",
-      description:
-        "Advanced talent tracking and management platform for recruiting professionals.",
-      image: "/images/projects/clientWork/taltracker-app.png",
-      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
-      liveLink: "https://taltracker.io",
-      githubLink: null,
-      featured: true,
-      demoVideo: "https://youtu.be/zAr0qU9_onk",
-    },
-    {
-      id: 6,
-      name: "CawLab",
-      description:
-        "AI-powered floor plan generator that converts sketches into professional 2D floor plans.",
-      image: "/images/projects/clientWork/cawlab-app.png",
-      technologies: ["NextJS", "NextAuthJS", "MongoDB", "NodeJS", "OpenAI"],
-      liveLink: "https://cawlab.ai",
-      githubLink: null,
-      featured: true,
-      demoVideo: "https://youtu.be/egetCm7cjJM",
-      previewVideo: "https://youtu.be/hpRzwtmf8H0",
-    },
-    {
-      id: 7,
-      name: "Quenlo AI",
-      description:
-        "AI-driven content generation and marketing automation platform.",
-      image: "/images/projects/clientWork/quenlo-app.png",
-      technologies: [
-        "NextJS",
-        "Python",
-        "Clerk Auth",
-        "Supabase",
-        "Prisma",
-        "OpenAI",
-      ],
-      liveLink: null,
-      githubLink: null,
-      featured: true,
     },
   ];
 
@@ -658,7 +628,8 @@ const ProjectCard = ({ project, openVideoPopup }) => {
 
   const handlePlayClick = (e) => {
     e.stopPropagation();
-    setIsPreviewPlaying(true);
+    const videoUrl = project.previewVideo || project.demoVideo;
+    if (videoUrl) openVideoPopup(videoUrl);
   };
 
   return (
@@ -743,7 +714,7 @@ const ProjectCard = ({ project, openVideoPopup }) => {
               className={`${styles.projectLink} ${styles.liveLink}`}
               onClick={(e) => {
                 e.preventDefault();
-                openVideoPopup(project.demoVideo);
+                openVideoPopup(project.previewVideo || project.demoVideo);
               }}
             >
               <FaYoutube /> Live Demo

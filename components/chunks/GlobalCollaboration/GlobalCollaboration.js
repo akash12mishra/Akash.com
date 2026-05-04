@@ -199,8 +199,9 @@ const GlobalCollaboration = () => {
           </motion.h2>
 
           <motion.p className={styles.subheadline} variants={itemVariants}>
-            I work with founders and engineering teams to ship AI products and
-            full-stack applications with high ownership and clear communication.
+            I have worked with founders and engineering teams to ship AI
+            products and full-stack applications with high ownership and clear
+            communication.
           </motion.p>
 
           <motion.div className={styles.ctaRow} variants={itemVariants}>

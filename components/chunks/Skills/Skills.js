@@ -35,7 +35,7 @@ const SKILLS_DATA = [
     color: "#1c1917",
   },
   {
-    category: "GenAI & Automation",
+    category: "AI & Automation",
     tags: [
       "OPENAI API",
       "CLAUDE API",

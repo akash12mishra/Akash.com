@@ -34,7 +34,7 @@ const CTASection = () => {
             AI-powered SaaS,
           </span>{" "}
           <span className={`${styles.word} ${styles.highlight}`}>
-            full-stack MVPs,
+            full-stack Apps,
           </span>{" "}
           <span className={styles.word}>and</span>{" "}
           <span className={`${styles.word} ${styles.highlight}`}>
