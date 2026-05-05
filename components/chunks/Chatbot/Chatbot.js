@@ -42,8 +42,6 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
     currentMessageRef.current = "";
   };
 
-  console.log("chatHistory", chatHistory);
-
   const updateAssistantMessage = (chunk) => {
     // Just append chunk as is, no extra spacing logic.
     setChatHistory((prev) => {
@@ -331,8 +329,6 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
 
         const chunk = decoder.decode(value);
 
-        console.log("chunk", chunk);
-
         // First, try parsing chunk directly
         let parsedChunk = null;
         try {
@@ -356,7 +352,6 @@ const Chatbot = React.forwardRef(function Chatbot({ showVideo }, ref) {
             parsedChunk.tool_call.function.arguments
           );
           functionCallBuffer.current = "";
-          console.log("Tool call executed:", parsedChunk.tool_call.function.name);
         } else {
           // No direct tool_call in chunk
           // Maybe it's partial tool call data or normal text

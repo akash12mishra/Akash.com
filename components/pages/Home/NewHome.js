@@ -6,12 +6,13 @@ import NewHero from "../../chunks/Hero/NewHero";
 import GlobalCollaboration from "../../chunks/GlobalCollaboration/GlobalCollaboration";
 import About from "../../chunks/About/About";
 import TechStack from "../../chunks/TechStack/TechStack";
-import ExperienceTestimonial from "../../chunks/Experience/ExperienceTestimonial";
+import Skills from "../../chunks/Skills/Skills";
 import ProjectShowcase from "../../chunks/Projects/ProjectShowcase";
 import GitHubContributionHeatmap from "../../chunks/GitHubContributions/GitHubContributionHeatmap";
 import GitHubAnalytics from "../../chunks/GitHubAnalytics/GitHubAnalytics";
 import BuildInPublicCarousel from "../../chunks/BuildInPublic/BuildInPublicCarousel";
 import Contact from "../../chunks/Contact/Contact";
+import HireEngineer from "../../chunks/HireEngineer/HireEngineer";
 import CTASection from "../../chunks/CTASection/CTASection";
 import NewFooter from "../../chunks/Footer/NewFooter";
 import ChatBubble from "../../chunks/ChatBubble/ChatBubble";
@@ -23,12 +24,13 @@ const NewHome = () => {
       <GlobalCollaboration />
       <About />
       <TechStack />
-      <ExperienceTestimonial />
+      <Skills />
       <ProjectShowcase />
       <GitHubContributionHeatmap />
       <GitHubAnalytics />
       <BuildInPublicCarousel />
       <Contact />
+      <HireEngineer />
       <CTASection />
       <NewFooter />
       <ChatBubble />

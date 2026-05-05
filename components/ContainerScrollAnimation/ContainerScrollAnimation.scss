@@ -1,0 +1,56 @@
+.container-scroll {
+  width: 100%;
+  position: relative;
+  padding: 10px 0;
+}
+
+.container-scroll__title {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.container-scroll__perspective {
+  perspective: 800px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    /* Disable 3D perspective on mobile — the card renders flat on
+       mobile (no scroll-driven rotateX/scale/translateY) and combining
+       `perspective` with a child `transform-style: preserve-3d` +
+       `backface-visibility: hidden` is a known iOS Safari compositor
+       bug that can render the element as invisible. */
+    perspective: none;
+  }
+}
+
+.container-scroll__card {
+  width: 100%;
+  transform-origin: center top;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  border-radius: 24px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.04),
+    0 12px 32px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  padding: 24px;
+  backface-visibility: hidden;
+
+  @media (max-width: 768px) {
+    /* Render flat on mobile — the 3D properties were causing the card
+       to disappear on iOS Safari due to GPU compositor culling when
+       no active 3D transform is applied. */
+    transform-style: flat;
+    backface-visibility: visible;
+    will-change: auto;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  @media (max-width: 520px) {
+    padding: 12px;
+    border-radius: 16px;
+  }
+}

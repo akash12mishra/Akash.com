@@ -31,6 +31,39 @@ const GitHubContributionHeatmap = () => {
   const [hoveredCell, setHoveredCell] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const tooltipRef = useRef(null);
+  const heatmapWrapperRef = useRef(null);
+
+  // Suppress pointer events on the heatmap while Lenis is actively
+  // scrolling. The heatmap renders ~365 cells, each with a mouseenter
+  // handler that calls setHoveredCell — without this, scrolling the
+  // page sweeps the cursor across many cells in rapid succession,
+  // producing a cascade of React re-renders + forced layouts (the
+  // tooltip positioning effect reads offsetWidth/offsetHeight) which
+  // is exactly the "stuck on scroll" feeling. We toggle a CSS class
+  // directly on the wrapper so React state stays untouched here.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const lenis = window.__lenis;
+    const wrapper = heatmapWrapperRef.current;
+    if (!lenis || !wrapper) return;
+
+    let endTimer = 0;
+    const onScroll = () => {
+      wrapper.classList.add(styles.isScrolling);
+      if (endTimer) clearTimeout(endTimer);
+      endTimer = window.setTimeout(() => {
+        wrapper.classList.remove(styles.isScrolling);
+        endTimer = 0;
+      }, 140);
+    };
+
+    lenis.on("scroll", onScroll);
+    return () => {
+      lenis.off("scroll", onScroll);
+      if (endTimer) clearTimeout(endTimer);
+      wrapper.classList.remove(styles.isScrolling);
+    };
+  }, [contributionData]);
   
   // Handle refresh button click
   const handleRefresh = async () => {
@@ -192,9 +225,9 @@ const GitHubContributionHeatmap = () => {
   return (
     <motion.section
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6 }}
+      initial={{ opacity: 0 }}
+      animate={inView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className={styles.contributionsSection}
       id="github-contributions"
     >
@@ -241,7 +274,7 @@ const GitHubContributionHeatmap = () => {
           </button>
         </div>
 
-        <div className={styles.heatmapWrapper}>
+        <div className={styles.heatmapWrapper} ref={heatmapWrapperRef}>
           <div className={styles.heatmapContainer}>
             {/* Day of week labels (left side) */}
             <div className={styles.dayLabels}>

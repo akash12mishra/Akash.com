@@ -1,0 +1,135 @@
+/* Reusable CTA button — white pill with orange arrow circle.
+   Sizes (sm/md/lg) only change the size token; the hover swap is
+   driven by --cta-text-w (set in JS from the actual text width)
+   so the arrow always slides to the left edge of the text exactly,
+   regardless of label or size.
+
+   Padding is symmetric (pad-x on both sides) so that both states
+   look balanced:
+     default: [pad] [text] [gap] [arrow] [pad]
+     hover:   [pad] [arrow] [gap] [text] [pad]
+   This keeps the hovered text from kissing the right edge while
+   still letting the arrow travel all the way to the "extreme left". */
+
+.ctaBtn {
+  --arrow-size: 38px;
+  --arrow-gap: 0.5rem;
+  --pad-x: 1.4rem;
+  --pad-y: 0.4rem;
+  --font-size: 0.95rem;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--arrow-gap);
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  padding: var(--pad-y) var(--pad-x);
+  border-radius: 50px;
+  font-size: var(--font-size);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  line-height: 1;
+  white-space: nowrap;
+
+  &:hover,
+  &:focus-visible {
+    box-shadow:
+      0 8px 28px rgba(0, 0, 0, 0.14),
+      0 2px 8px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+    outline: none;
+
+    .btnArrow {
+      transform: translateX(
+        calc(-1 * (var(--cta-text-w, 80px) + var(--arrow-gap)))
+      );
+    }
+
+    .btnText {
+      transform: translateX(calc(var(--arrow-size) + var(--arrow-gap)));
+    }
+  }
+}
+
+.btnText {
+  order: 1;
+  color: #000000;
+  white-space: nowrap;
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.btnArrow {
+  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  border-radius: 50%;
+  background: var(--accent-primary);
+  color: #ffffff;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  svg {
+    font-size: 1em;
+  }
+}
+
+/* Responsive default-size adjustments. Listed BEFORE size variants so
+   that explicit size variants win at any viewport. */
+@media (max-width: 768px) {
+  .ctaBtn {
+    --arrow-size: 34px;
+    --pad-x: 1.2rem;
+    --font-size: 0.88rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ctaBtn {
+    --arrow-size: 30px;
+    --pad-x: 1rem;
+    --font-size: 0.82rem;
+  }
+}
+
+/* Size variants — placed after media queries so they win at every
+   viewport. */
+.sm {
+  --arrow-size: 30px;
+  --pad-x: 1rem;
+  --pad-y: 0.3rem;
+  --font-size: 0.82rem;
+}
+
+.md {
+  /* default tokens */
+}
+
+.lg {
+  --arrow-size: 46px;
+  --pad-x: 1.7rem;
+  --pad-y: 0.45rem;
+  --font-size: 1.05rem;
+}
+
+/* Visual variants — kept for backward compatibility with existing
+   call-sites. The new spec is one consistent look (white bg, orange
+   circle, white arrow, black text), so all variants resolve to that. */
+.primary,
+.secondary,
+.ghost {
+  /* no-op: shared base styling above is the canonical look */
+}

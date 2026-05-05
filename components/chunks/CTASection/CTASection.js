@@ -1,56 +1,53 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
+import CtaButton from "../../CtaButton/CtaButton";
 import styles from "./CTASection.module.scss";
-import { FaCalendarCheck } from "react-icons/fa";
 
 const CTASection = () => {
   const sectionRef = useRef(null);
+  const textRef = useRef(null);
+  const ctaRef = useRef(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add(styles.visible);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const current = sectionRef.current;
-    if (current) {
-      observer.observe(current);
-    }
-
-    return () => {
-      if (current) {
-        observer.unobserve(current);
-      }
-    };
-  }, []);
+  // On-scroll word-by-word fade-in animation disabled per request —
+  // paragraph and CTA render statically without entrance animation.
 
   return (
     <section className={styles.ctaSection} ref={sectionRef}>
-      <div className={styles.container}>
-        <div className={styles.ctaContent}>
-          <h2>Ready to build something amazing?</h2>
-          <p>
-            Looking to hire me as your Frontend or Full-Stack Developer? Whether
-            you need help with an AI-powered SaaS, MVP development, or want to
-            discuss full-time or contract opportunities, I&apos;ve got you
-            covered. I&apos;m here to help bring your vision to life.
-          </p>
-          <a
+      <div className={styles.ctaContent}>
+        <p className={styles.ctaText} ref={textRef}>
+          <span className={styles.word}>Great</span>{" "}
+          <span className={styles.word}>products</span>{" "}
+          <span className={styles.word}>don&apos;t</span>{" "}
+          <span className={styles.word}>build</span>{" "}
+          <span className={styles.word}>themselves.</span>{" "}
+          <span className={styles.word}>They</span>{" "}
+          <span className={styles.word}>need</span>{" "}
+          <span className={styles.word}>the</span>{" "}
+          <span className={styles.word}>right</span>{" "}
+          <span className={styles.word}>engineer</span>{" "}
+          <span className={styles.word}>—</span>{" "}
+          <span className={styles.word}>one</span>{" "}
+          <span className={styles.word}>who</span>{" "}
+          <span className={styles.word}>ships</span>{" "}
+          <span className={`${styles.word} ${styles.highlight}`}>
+            AI-powered SaaS,
+          </span>{" "}
+          <span className={`${styles.word} ${styles.highlight}`}>
+            full-stack Apps,
+          </span>{" "}
+          <span className={styles.word}>and</span>{" "}
+          <span className={`${styles.word} ${styles.highlight}`}>
+            production-ready code.
+          </span>
+        </p>
+        <div className={styles.ctaBtnWrap} ref={ctaRef}>
+          <CtaButton
             href="https://calendly.com/arkalal-chakravarty/30min"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.ctaButton}
-          >
-            <FaCalendarCheck />
-            Schedule a Meeting
-          </a>
+            label="Schedule a Meeting"
+            external
+            variant="primary"
+          />
         </div>
       </div>
     </section>

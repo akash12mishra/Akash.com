@@ -1,423 +1,885 @@
+/* =====================================================================
+   Contact — cinematic, pinned, scroll-driven section.
+   Hero text → premium dark card rises and fills the viewport →
+   iPhone mockup with 3 cycling tabs (Email / Calendar / Social) →
+   card pulls back & exits up → next section (HireEngineer) takes over.
+
+   Light-mode site, but the foreground card is intentionally a deep
+   premium dark surface for contrast and theatrical depth, with orange
+   accents to align with the brand.
+   ===================================================================== */
+
 .contactSection {
-  padding: 60px 0;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
   background-color: var(--background);
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-
-  &.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (max-width: 768px) {
-    padding: 40px 0;
-  }
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 40px;
-
-  @media (max-width: 768px) {
-    padding: 0 24px;
-  }
-}
-
-.sectionHeader {
-  text-align: left;
-  margin-bottom: 20px;
-
-  .sectionTag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0;
-    background: none;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-
-  .sectionTitle {
-    display: none;
-  }
-
-  .sectionDescription {
-    display: none;
-  }
-}
-
-.contactContent {
+  color: var(--text-primary);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 10;
+}
+
+/* Film grain overlay */
+.filmGrain {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  gap: 2.5rem;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.contactCards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.noFormLayout {
-  @media (min-width: 768px) {
-    grid-template-columns: 1fr;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-}
-
-.connectSection {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.infoCard {
-  background-color: var(--card-bg);
-  border-radius: 12px;
-  padding: 2rem;
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: all 0.2s ease;
   height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
+}
+
+/* Subtle grid pattern fading at the edges */
+.bgGrid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-size: 60px 60px;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+}
+
+/* ------------------------------------------------------------------
+   HERO TEXT (visible before scroll, fades as card rises)
+   ------------------------------------------------------------------ */
+.heroTextWrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1rem;
+  will-change: transform;
+}
+
+.sectionTag {
+  display: inline-block;
+  padding: 5px 14px;
+  background: rgba(var(--accent-primary-rgb), 0.08);
+  color: var(--accent-primary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 50px;
+  border: 1px solid rgba(var(--accent-primary-rgb), 0.15);
+  margin-bottom: 24px;
+}
+
+.heroLine {
+  font-size: clamp(2.4rem, 6.5vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.heroLine1 {
+  color: var(--text-primary);
+  text-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.08);
+  visibility: hidden;
+}
+
+.heroLine2 {
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+
+.heroLineAccent {
+  background: linear-gradient(
+    180deg,
+    var(--accent-primary) 0%,
+    var(--accent-secondary) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: translateZ(0);
+  filter:
+    drop-shadow(0 10px 20px rgba(var(--accent-primary-rgb), 0.18))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+/* ------------------------------------------------------------------
+   THE PHYSICAL CARD — rises and fills the viewport
+   ------------------------------------------------------------------ */
+.cardLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.mainCard {
+  position: relative;
+  width: 85vw;
+  height: 85vh;
+  border-radius: 40px;
+  overflow: hidden;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    width: 92vw;
+    height: 92vh;
+    border-radius: 32px;
+  }
+}
+
+/* Deep premium dark surface (warm-tinted) */
+.depthCard {
+  background:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(var(--accent-primary-rgb), 0.18) 0%,
+      transparent 45%
+    ),
+    linear-gradient(145deg, #1a1612 0%, #0a0806 100%);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cardSheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 40%
+  );
+  mix-blend-mode: screen;
+  transition: opacity 0.3s ease;
+}
+
+/* ------------------------------------------------------------------
+   3-column desktop grid: [tagline] [phone] [brand wordmark]
+   On mobile: stacks vertically (brand → phone → tagline)
+   ------------------------------------------------------------------ */
+.cardGrid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  z-index: 10;
+
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 3rem;
+  }
+}
+
+/* Tagline (left on desktop, bottom on mobile) */
+.cardLeftText {
+  order: 3;
+  width: 100%;
+  text-align: center;
+  padding: 0 1rem;
+
+  @media (min-width: 1024px) {
+    order: 1;
+    text-align: left;
+    padding: 0;
+  }
+}
+
+.taglineHeading {
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 14px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.taglineBody {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 400;
+  margin: 0 auto;
+  max-width: 360px;
+
+  @media (min-width: 1024px) {
+    margin: 0;
+    max-width: none;
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+/* iPhone column (center) */
+.mockupWrapper {
+  order: 2;
+  position: relative;
+  width: 100%;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+
+  @media (min-width: 1024px) {
+    height: 600px;
+  }
+}
+
+.mockupScale {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.65);
+
+  @media (min-width: 768px) {
+    transform: scale(0.85);
+  }
+
+  @media (min-width: 1024px) {
+    transform: scale(1);
+  }
+}
+
+/* GSAP marker classes (no styles — used purely as selectors for the
+   timeline's enter / stagger animations). */
+.cardRightText {
+  will-change: transform, opacity;
+}
+
+.phoneWidget {
+  will-change: transform, opacity;
+}
+
+/* Brand wordmark (right on desktop, top on mobile) */
+.brandCol {
+  order: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  @media (min-width: 1024px) {
+    order: 3;
+    justify-content: flex-end;
+  }
+}
+
+.brandWordmark {
+  font-size: clamp(1.6rem, 3.4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0;
+  background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: translateZ(0);
+  filter:
+    drop-shadow(0 10px 20px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+  line-height: 1.05;
+  text-align: center;
+
+  @media (min-width: 1024px) {
+    text-align: right;
+  }
+}
+
+/* ------------------------------------------------------------------
+   iPhone bezel & screen
+   ------------------------------------------------------------------ */
+.iphoneBezel {
+  position: relative;
+  width: 280px;
+  height: 580px;
+  border-radius: 3rem;
+  background-color: #111;
+  box-shadow:
+    inset 0 0 0 2px #52525b,
+    inset 0 0 0 7px #000,
+    0 40px 80px -15px rgba(0, 0, 0, 0.6),
+    0 15px 25px -5px rgba(0, 0, 0, 0.45);
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hwBtn {
+  position: absolute;
+  background: linear-gradient(90deg, #404040 0%, #171717 100%);
+  box-shadow:
+    -2px 0 5px rgba(0, 0, 0, 0.7),
+    inset -1px 0 1px rgba(255, 255, 255, 0.15),
+    inset 1px 0 2px rgba(0, 0, 0, 0.7);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 0;
+}
+
+.hwBtnSilencer {
+  top: 120px;
+  left: -3px;
+  width: 3px;
+  height: 25px;
+  border-radius: 4px 0 0 4px;
+}
+
+.hwBtnVolUp {
+  top: 160px;
+  left: -3px;
+  width: 3px;
+  height: 45px;
+  border-radius: 4px 0 0 4px;
+}
+
+.hwBtnVolDown {
+  top: 220px;
+  left: -3px;
+  width: 3px;
+  height: 45px;
+  border-radius: 4px 0 0 4px;
+}
+
+.hwBtnPower {
+  top: 170px;
+  right: -3px;
+  width: 3px;
+  height: 70px;
+  border-radius: 0 4px 4px 0;
+  transform: scaleX(-1);
+}
+
+.iphoneScreen {
+  position: absolute;
+  inset: 7px;
+  border-radius: 2.5rem;
+  background-color: #050402;
+  overflow: hidden;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 1);
+  color: #fff;
+  z-index: 10;
+}
+
+.screenGlare {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0) 45%
+  );
+}
+
+.dynamicIsland {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 28px;
+  background: #000;
+  border-radius: 999px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 10px;
+  box-shadow: inset 0 -1px 2px rgba(255, 255, 255, 0.08);
+}
+
+.islandDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  box-shadow: 0 0 8px rgba(var(--accent-primary-rgb), 0.8);
+  animation: islandPulse 2s ease-in-out infinite;
+}
+
+@keyframes islandPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ------------------------------------------------------------------
+   App shell inside the screen
+   ------------------------------------------------------------------ */
+.appShell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 44px 18px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.appHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  & > div:first-child {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.appHeaderEyebrow {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.appHeaderTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e4e4e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* Tab progress bars */
+.tabProgress {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  background: var(--accent-primary);
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(var(--accent-primary-rgb), 0.55);
+}
+
+/* ------------------------------------------------------------------
+   Phone slides (3 tabs)
+   ------------------------------------------------------------------ */
+.phoneSlides {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.phoneSlide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 4px 0;
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+.slideIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: #fff;
+  margin-bottom: 16px;
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.slideIconOrange {
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary) 0%,
+    var(--accent-secondary) 100%
+  );
+}
+
+.slideIconAmber {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.slideIconViolet {
+  background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+}
+
+.slideTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.slideText {
+  font-size: 0.72rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 14px;
+  max-width: 200px;
+}
+
+/* Email pill */
+.emailPill {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 10px;
+  border-radius: 50px;
+  margin-bottom: 14px;
+  letter-spacing: 0.01em;
+  word-break: break-all;
+  max-width: 200px;
+}
+
+/* Calendar slot chips */
+.slotRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 14px;
+  max-width: 220px;
+}
+
+.slotChip {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.slotChipActive {
+  color: #fff;
+  background: rgba(var(--accent-primary-rgb), 0.18);
+  border-color: rgba(var(--accent-primary-rgb), 0.4);
+  box-shadow: 0 0 0 1px rgba(var(--accent-primary-rgb), 0.25),
+    0 4px 10px rgba(var(--accent-primary-rgb), 0.18);
+}
+
+/* CTA button inside phone slide */
+.slideCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: linear-gradient(
+    180deg,
+    var(--accent-primary) 0%,
+    var(--accent-secondary) 100%
+  );
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow:
+    0 8px 18px rgba(var(--accent-primary-rgb), 0.32),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    border-color: var(--accent-primary);
-
-    .iconContainer {
-      background: var(--accent-primary);
-      color: white;
-    }
-  }
-
-  .iconContainer {
-    width: 56px;
-    height: 56px;
-    border-radius: 10px;
-    background: var(--background-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.25rem;
-    font-size: 1.3rem;
-    color: var(--accent-primary);
-    transition: all 0.2s ease;
-  }
-
-  h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-  }
-
-  p {
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    font-size: 0.95rem;
-  }
-
-  .contactButton {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.85rem 1.75rem;
-    background: linear-gradient(
-      135deg,
-      var(--accent-primary),
-      var(--accent-secondary)
-    );
-    color: white;
-    text-decoration: none;
-    border-radius: 50px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-top: auto;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(var(--accent-primary-rgb), 0.25);
-
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.4);
-    }
+    transform: translateY(-1px);
+    color: #fff;
+    box-shadow:
+      0 12px 22px rgba(var(--accent-primary-rgb), 0.42),
+      inset 0 1px 1px rgba(255, 255, 255, 0.3),
+      inset 0 -2px 3px rgba(0, 0, 0, 0.18);
   }
 }
 
-.socialsContainer {
-  background-color: var(--card-bg);
-  border-radius: 16px;
-  padding: 2rem 3rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid var(--border);
-  width: 100%;
+/* Social row inside phone */
+.socialRow {
   display: flex;
-  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.socialLink {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+  transition: all 0.3s ease;
 
-  h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: var(--text);
-  }
-
-  .socialIcons {
-    display: flex;
-    gap: 1.5rem;
-
-    .socialIcon {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background-color: var(--card-bg);
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.35rem;
-      color: var(--text);
-      transition: all 0.3s ease;
-
-      &:hover {
-        transform: translateY(-5px);
-        background: linear-gradient(
-          135deg,
-          var(--accent-primary),
-          var(--accent-secondary)
-        );
-        color: white;
-        border-color: transparent;
-        box-shadow: 0 8px 20px rgba(var(--accent-primary-rgb), 0.35);
-      }
-    }
+  &:hover {
+    color: #fff;
+    background: rgba(var(--accent-primary-rgb), 0.18);
+    border-color: rgba(var(--accent-primary-rgb), 0.4);
+    transform: translateY(-2px);
   }
 }
 
-.contactForm {
-  background-color: var(--card-bg);
-  border-radius: 15px;
-  padding: 2.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--border);
+.homeIndicator {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
 
-  form {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+/* ------------------------------------------------------------------
+   Floating glass badges around the phone
+   ------------------------------------------------------------------ */
+.floatingBadge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+  z-index: 30;
+  will-change: transform, opacity;
+}
 
-    @media (min-width: 768px) {
-      grid-template-columns: 1fr 1fr;
-    }
+.badgeTopLeft {
+  top: 24px;
+  left: -10px;
 
-    .formGroup {
-      @media (min-width: 768px) {
-        &:nth-child(3),
-        &:nth-child(4) {
-          grid-column: span 2;
-        }
-      }
-
-      label {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: var(--text);
-      }
-
-      input,
-      textarea {
-        width: 100%;
-        padding: 0.875rem 1.25rem;
-        border-radius: 10px;
-        background-color: var(--bg);
-        border: 1px solid var(--border);
-        color: var(--text);
-        font-size: 0.875rem;
-        transition: all 0.3s ease;
-        font-family: "Inter", sans-serif;
-
-        &:focus {
-          outline: none;
-          border-color: var(--accent-primary);
-          box-shadow: 0 0 0 2px rgba(var(--accent-primary-rgb), 0.2);
-        }
-
-        &::placeholder {
-          color: var(--text);
-          opacity: 0.5;
-        }
-      }
-
-      textarea {
-        resize: vertical;
-        min-height: 150px;
-      }
-    }
-
-    .submitButton {
-      grid-column: span 2;
-      padding: 1rem;
-      background: linear-gradient(
-        135deg,
-        var(--accent-primary),
-        var(--accent-secondary)
-      );
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(var(--accent-primary-rgb), 0.4);
-      }
-
-      &:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-        transform: none;
-      }
-    }
+  @media (min-width: 1024px) {
+    top: 50px;
+    left: -70px;
   }
 }
 
-.formMessage {
-  grid-column: span 2;
-  padding: 1rem;
-  border-radius: 10px;
-  font-size: 0.875rem;
-  text-align: center;
+.badgeBottomRight {
+  bottom: 50px;
+  right: -10px;
 
-  &.submitting {
-    background-color: rgba(var(--accent-primary-rgb), 0.1);
-    color: var(--accent-primary);
-  }
-
-  &.success {
-    background-color: rgba(52, 211, 153, 0.1);
-    color: #10b981;
-  }
-
-  &.error {
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+  @media (min-width: 1024px) {
+    bottom: 90px;
+    right: -70px;
   }
 }
 
-// Responsive adjustments
+.badgeIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.badgeIconOrange {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--accent-primary-rgb), 0.28) 0%,
+    rgba(var(--accent-primary-rgb), 0.06) 100%
+  );
+  color: var(--accent-primary);
+}
+
+.badgeIconAmber {
+  background: linear-gradient(
+    180deg,
+    rgba(251, 191, 36, 0.28) 0%,
+    rgba(251, 191, 36, 0.06) 100%
+  );
+  color: #fbbf24;
+}
+
+.badgeTitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.badgeSub {
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------
+   Mobile fine-tuning
+   ------------------------------------------------------------------ */
+@media (max-width: 1024px) {
+  .floatingBadge {
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .badgeIcon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+
+  .badgeTitle {
+    font-size: 0.72rem;
+  }
+
+  .badgeSub {
+    font-size: 0.58rem;
+  }
+}
+
 @media (max-width: 768px) {
-  .contactSection {
-    padding: 4rem 0;
+  .heroLine {
+    font-size: clamp(2rem, 9vw, 3.4rem);
   }
 
-  .contactContent {
-    gap: 2rem;
+  .brandWordmark {
+    font-size: clamp(1.4rem, 5vw, 2rem);
   }
 
-  .contactCards {
-    gap: 1.25rem;
+  .taglineHeading {
+    font-size: clamp(1.1rem, 5vw, 1.6rem);
   }
 
-  .sectionHeader {
-    margin-bottom: 2rem;
-
-    .sectionTitle {
-      font-size: 2rem;
-    }
-
-    .sectionDescription {
-      font-size: 1rem;
-    }
+  .badgeTopLeft {
+    top: 16px;
+    left: -4px;
   }
 
-  .infoCard {
-    padding: 2rem 1.5rem;
-
-    .iconContainer {
-      width: 56px;
-      height: 56px;
-      font-size: 1.25rem;
-      margin-bottom: 1.25rem;
-    }
-
-    h3 {
-      font-size: 1.25rem;
-    }
-
-    p {
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .contactButton {
-      padding: 0.75rem 1.5rem;
-      font-size: 0.9rem;
-    }
-  }
-
-  .socialsContainer {
-    padding: 1.75rem 2rem;
-
-    h3 {
-      margin-bottom: 1.25rem;
-    }
-
-    .socialIcons {
-      gap: 1.25rem;
-
-      .socialIcon {
-        width: 48px;
-        height: 48px;
-        font-size: 1.2rem;
-      }
-    }
-  }
-
-  .contactForm {
-    padding: 1.5rem;
+  .badgeBottomRight {
+    bottom: 30px;
+    right: -4px;
   }
 }
 
 @media (max-width: 480px) {
-  .contactCards {
-    grid-template-columns: 1fr;
+  .sectionTag {
+    margin-bottom: 18px;
   }
 
-  .infoCard {
-    padding: 1.75rem 1.25rem;
+  .floatingBadge {
+    padding: 8px 10px;
+    gap: 8px;
   }
 
-  .socialsContainer {
-    padding: 1.5rem;
+  .badgeIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+}
 
-    .socialIcons {
-      gap: 1rem;
-    }
+/* Mobile-only sizing bump for the iPhone mockup so it reads as a
+   prominent visual rather than a thumbnail floating in the centre
+   of empty space. Tablet (≥768) and desktop (≥1024) keep their
+   existing tuning untouched (scale 0.85 / 1, height 380 / 600).
+   The floating badges live inside .mockupScale so they scale with
+   the phone and stay proportional. */
+@media (max-width: 767px) {
+  .mockupWrapper {
+    height: 560px;
+  }
+
+  .mockupScale {
+    transform: scale(0.95);
   }
 }
